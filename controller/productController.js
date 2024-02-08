@@ -163,6 +163,70 @@ const editProductGet = async (req,res) => {
 
 const editProductPost = async (req,res) => {
 
+    try {
+
+        const id = req.params.id;
+        const productDetails = req.body;
+        console.log("product Details",productDetails);
+        const files = req.file;
+
+        let obj = [];
+        for(let i=0; i<req.body.variant.size.length; i++) {
+
+            obj.push({
+                size: req.body.variant.size[i],
+                quantity: req.body.variant.size[i]
+            })
+        }
+
+        const productData = await product.findById(id);
+        if (!productData) {
+            console.log('data not found');
+        }
+
+        const oldImages = [...productData.images];
+
+        const updateData = {
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            brand: req.body.brand,
+            category: req.body.category,
+            color: req.body.color,
+            variant: obj,
+            images: []
+        }
+
+        if (files && files.mainImage) {
+            updateData.images[0] = files.mainImage[0].filename
+        }else{
+            updateData.images[0] = productData.images[0]
+        }
+
+        for(let i=1; i<=4; i++) {
+            const imageName = `image${i}`;
+            console.log(imageName,"imagename");
+
+            if(files && files[imageName]) {
+                updateData.images[i] = files[imageName][0].filename;
+            }else{
+                updateData.images[i] = productData.images[i]
+            }
+        }
+
+        const uploaded = await product.updateOne({_id: id}, { $set: updateData });
+
+        if (uploaded) {
+            res.redirect('/admin/product-manage?message=successfullyEdited')
+        }else{
+            console.log('Failed to update product');
+        }
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+
 }
 
 
