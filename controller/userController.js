@@ -4,13 +4,15 @@ const user = require("../model/user");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const category = require("../model/categorySchema");
+const products = require('../model/productSchema');
 
 
 
 const toGuestPageGet = async (req, res) => {
   try {
-    const categoryData = await category.find({status: true})
-    res.render("./user/userhome", {categoryData, title: "userhome" });
+    const categoryData = await category.find({status: true});
+    const productData = await products.find({status: true}).limit(4);
+    res.render("./user/guestuserpage", {categoryData, productData, title: "userhome" });
   } catch (error) {
     console.log(err);
   }
@@ -40,9 +42,10 @@ const toSignUpPageGet = (req, res) => {
 
 const homePageGet = async (req, res) => {
   try {
-    const categoryData = await category.find({status: true})
+    const categoryData = await category.find({status: true});
+    const productData = await products.find({status: true}).limit(4);
     console.log(categoryData);
-    res.render("./user/homePage",{ categoryData, title: "home"});
+    res.render("./user/homePage",{productData, categoryData, title: "home"});
   } catch (error) {
     console.log(error);
   }
@@ -112,6 +115,7 @@ const toLoginPost = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -131,8 +135,76 @@ const userLogOutPost = (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).send("Internal Server Error");
   }
 };
+
+
+
+
+
+
+
+// get method for view all products page get
+
+
+const viewAllProducts = async (req,res) => {
+
+  try {
+    
+    const allProducts = await products.find()
+    console.log(allProducts,"aaaaaaaaaaaaaaaaaaaaaaa");
+    res.render('./user/viewallProducts',{allProducts, title: 'all products'})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
+
+
+
+
+
+// get method for product details page
+
+
+const productDetails = (req,res) => {
+
+  try {
+    
+    res.render('./user/productdetails',{title: 'productDetails'})
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
   toGuestPageGet,
@@ -141,5 +213,7 @@ module.exports = {
   toSignupPost,
   homePageGet,
   toLoginPost,
-  userLogOutPost
+  userLogOutPost,
+  viewAllProducts,
+  productDetails
 };

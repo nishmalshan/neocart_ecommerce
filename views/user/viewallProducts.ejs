@@ -1,0 +1,81 @@
+<%-include('./userPartials/header')%>
+
+
+        
+        <link rel="stylesheet" type="text/css" href="/user_css/viewallProducts.css">
+
+    
+
+
+
+
+
+
+        <section>
+            <div class="d-flex">
+                <div class="sidebar">
+                    <h3>Filter</h3>
+                    
+                    
+                </div>
+                    <div class="product-list">
+                        <div class="header-mark mb-5 d-flex justify-content-start align-items-center">
+                            <span></span>
+                            <h3 class="mb-0 ms-2">All Products</h3>
+                        </div>
+                        <div class="row">
+                            <% allProducts.forEach(data => { %>
+
+                                <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3 mb-5">
+                                    <div class="product position-relative">
+                                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                                        
+                                        <a href="/productdetails">
+                                            <img src="/productImages/<%= data.images[0] %>" alt="">
+                                        <div class="product-btn">
+                                            <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
+                                            <p class=""><%= data.brand %></p>
+                                            <p class=""><%= data.name %></p>
+                                            <p class=""><%= data.color %></p>
+                                            <p class="">MRP: <span> &#8377</span><%= data.price %></p>
+                                        </div>
+                                        </a>
+                                    </div>
+                                </div>
+                             
+                            <% }) %>
+                            
+                            
+                        </div>
+                    </div>
+    
+                
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <%-include('./userPartials/footer')%>

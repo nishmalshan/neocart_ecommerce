@@ -200,23 +200,15 @@
         
         
         
+ 
         
         
-         <script>
+
+        <!-- Your JavaScript code -->
+        <script>
             $(document).ready(function() {
-                /**
-                 * @description Change Home page slider's arrows active status
-                 */
-                function updateSliderArrowsStatus(
-                    cardsContainer,
-                    containerWidth,
-                    cardCount,
-                    cardWidth
-                ) {
-                    if (
-                        $(cardsContainer).scrollLeft() + containerWidth <
-                        cardCount * cardWidth + 15
-                    ) {
+                function updateSliderArrowsStatus(cardsContainer, containerWidth, cardCount, cardWidth) {
+                    if ($(cardsContainer).scrollLeft() + containerWidth < cardCount * cardWidth + 15) {
                         $("#slide-right-container").addClass("active");
                     } else {
                         $("#slide-right-container").removeClass("active");
@@ -227,19 +219,15 @@
                         $("#slide-left-container").removeClass("active");
                     }
                 }
-        
-                // Scroll products' slider left/right
+    
                 let div = $("#cards-container");
-                let cardCount = $(div)
-                    .find(".category-cards")
-                    .children(".category-card").length;
+                let cardCount = $(div).find(".category-cards").children(".category-card").length;
                 let speed = 300;
                 let containerWidth = $(".container").width();
                 let cardWidth = 250;
-        
+    
                 updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-        
-                // Remove scrollbars
+    
                 $("#slide-right-container").click(function(e) {
                     if ($(div).scrollLeft() + containerWidth < cardCount * cardWidth) {
                         $(div).animate(
@@ -250,12 +238,7 @@
                                 duration: speed,
                                 complete: function() {
                                     setTimeout(function() {
-                                        updateSliderArrowsStatus(
-                                            div,
-                                            containerWidth,
-                                            cardCount,
-                                            cardWidth
-                                        );
+                                        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
                                     }, 1005);
                                 }
                             }
@@ -263,6 +246,7 @@
                     }
                     updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
                 });
+    
                 $("#slide-left-container").click(function(e) {
                     if ($(div).scrollLeft() + containerWidth > containerWidth) {
                         $(div).animate(
@@ -273,12 +257,7 @@
                                 duration: speed,
                                 complete: function() {
                                     setTimeout(function() {
-                                        updateSliderArrowsStatus(
-                                            div,
-                                            containerWidth,
-                                            cardCount,
-                                            cardWidth
-                                        );
+                                        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
                                     }, 1005);
                                 }
                             }
@@ -286,17 +265,13 @@
                     }
                     updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
                 });
-        
-                // If resize action occurred then update the container width value
+    
                 $(window).resize(function() {
                     try {
                         containerWidth = $("#cards-container").width();
                         updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
                     } catch (error) {
-                        console.log(
-                            `Error occurred while trying to get updated slider container width: 
-                            ${error}`
-                        );
+                        console.log(`Error occurred while trying to get updated slider container width: ${error}`);
                     }
                 });
             });
@@ -533,6 +508,126 @@ function previousSlide() {
 
 
 
+
+
+
+
+<!-- All products section start -->
+
+<div class="all-products-header"  style="margin: 100px 0; margin-bottom: 0;">
+    <div class="container header-mark my-5 py-4 d-flex justify-content-start align-items-center">
+        <span></span>
+        <h2 class="mb-0 ms-2">All Products</h2>
+    </div>
+</div>
+<section  style="margin: 100px 0; margin-top: 0;">
+    <div class="container">
+        <div class="row">
+            <% productData.forEach(data => { %>
+                <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3">
+                    <div class="product position-relative">
+                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                        <img src="/productImages/<%= data.images[0] %>" alt="">
+                        <div class="product-btn">
+                            <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
+                            <p class=""><%= data.brand %></p>
+                            <p class=""><%= data.name %></p>
+                            <p class=""><%= data.color %></p>
+                            <p class="">MRP: <span> &#8377</span><%= data.price %></p>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+            
+        </div>
+    </div>
+    <div class="viewAllBtn my-5 text-center ">
+        <a href="/allproducts" class="btn btn-success">View All</a>
+    </div>
+</section>
+
+
+
+
+<style>
+    /* All products css start */
+
+    .product-header{
+        background-color: #ededed;
+    }
+    .product{
+        box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .product:hover{
+        transform: scale(1.03);
+    }
+    .product img{
+        width: 100%;
+        border-radius: 5px 5px 0px 0px;
+    }
+    .product-fvrte-btn{
+        text-decoration: none;
+        color: #11101b;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    .product i{
+        font-weight: 600;
+        font-size: 20px;
+    }
+    .product-btn{
+        padding: 10px;
+        border-radius: 0px 0px 5px 5px;
+    }
+    .product-btn p{
+        font-weight: 600;
+        font-size: 16px;
+    }
+    /* .best-seller-btn span{
+        font-family: Arial, Helvetica, sans-serif;
+    } */
+    .product-btn p:nth-child(1), .product-btn p:nth-child(3){
+        color: #979797;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .product-btn i{
+        font-size: 24px;
+        margin-right: 5px;
+    }
+    .header-mark span{
+        background-color: #B05574;
+        padding: 20px 4px;
+        border-radius: 50px;
+    }
+    @media (max-width: 576px){
+                .product{
+                    margin-top: 90px;
+                    padding: 0px 15px;
+                }
+            }
+
+            /* All products css end */
+</style>
+
+
+
+
+<!-- All products section end -->
+
+
+
+
+
+
+
+
+
+
         <!-- video section start -->
 
         <section style="margin: 100px 0;">
@@ -685,17 +780,7 @@ function previousSlide() {
 
 
 
-        <!-- Navbar Button clicking animation Js -->
-
-        <script>
-        document.addEventListener("DOMContentLoaded", function() {       //Nav-bar toggle
-            var hamburger = document.querySelector(".hamburger");
-            hamburger.onclick = function(){
-                var navBar = document.querySelector(".nav-bar");
-                navBar.classList.toggle("active");
-            };
-        });
-    </script>
+        
 
 
  

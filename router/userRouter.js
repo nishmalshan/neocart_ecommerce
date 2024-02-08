@@ -14,6 +14,12 @@ user.post('/register',userAuthentication.existUser,userController.toSignupPost);
 user.get('/home',userAuthentication.verifyingUser,userController.homePageGet);
 
 
+// route for products
+user.get('/allproducts',userAuthentication.verifyingUser,userController.viewAllProducts);
+user.get('/productdetails',userController.productDetails);
+
+
+
 
 
 

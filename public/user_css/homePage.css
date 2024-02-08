@@ -263,6 +263,7 @@
     }
     .best-seller i{
         font-weight: 600;
+        font-size: 20px;
     }
     .best-seller-btn{
         padding: 10px;
@@ -377,6 +378,7 @@
     }
     .new-arrival i{
         font-weight: 600;
+        font-size: 20px;
     }
     .new-arrival-btn{
         padding: 10px;
