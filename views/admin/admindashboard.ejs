@@ -1,0 +1,67 @@
+<%-include('./adminPartials/header')%>
+
+
+  <link rel="stylesheet" href="/admin_css/admindashboard.css">
+
+
+
+  <%-include('./adminPartials/sidebar')%> 
+
+
+<main class="dashboard">
+  <h1>DASHBOARD</h1>
+</main>
+
+
+
+
+
+
+<style>
+  .dashboard{
+    width: 70%;
+    margin: auto;
+    text-align: center;
+  }
+  h1{
+    font-size: 50px;
+    font-weight: 700;
+    font-family: Arial,Helvetica, sans-serif;
+    background: linear-gradient(to right, #f32170, #ff6b08,#cf23cf, #eedd44);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+  }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Dashboard clicking function start -->
+
+  <script>
+    var toggle = document.getElementById("toggle");
+    var container = document.getElementById("container");
+
+    toggle.onclick = function () {
+      container.classList.toggle("active")
+    }
+  </script>
+
+  <!-- Dashboard clicking function end -->
+
+
+
+
+
+
+
+
+
+  <%-include('./adminPartials/footer')%>

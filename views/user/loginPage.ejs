@@ -1,0 +1,167 @@
+
+
+<%-include('./userPartials/header')%>
+
+<link rel="stylesheet" type="text/css" href="user_css/loginPage.css">
+
+
+            
+
+        <div class="wrapper">
+            <div class="container main">
+                <div class="row">
+                    <div class="col-md-6 side-image">
+                        
+                    </div>
+                    <div class="col-md-6 right">
+                            <div class="input-box">
+                                <header>Log In</header>
+                                <form action="/logintohome" method="post" id="login">
+                                    <div class="input-field">
+                                        <input type="text" name="email" class="input" id="email" required>
+                                        <p id="emailError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                                        <label for="email">Email</label>
+                                    </div>
+                                    <div class="input-field">
+                                        <input type="password" name="password" class="input" id="password" required >
+                                        <p id="passwordError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                                        <label for="password">Password</label>
+                                        <span class="password-toggle" id="togglePassword" style="position: absolute; top: 10px; right: 15px;">
+                                            <i class="fas fa-eye" id="eye-icon"></i>
+                                            </span>
+                                    </div>
+                                    <div class="input-field">
+                                        <input type="submit" class="submit" value="Log In">
+                                    </div>
+                                    <div class="forgot-password">
+                                        <span><a href="">Forgot password?</a></span>
+                                    </div>
+                                    <div class="signin">
+                                        <span>Don't have an account? <a href="/usersignup">Sign Up</a></span>
+                                    </div>
+                                </form>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        
+
+
+        <!-- Login form validation -->
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+
+                const loginForm = document.getElementById("login");
+                const emailInput = document.getElementById("email");
+                const passwordInput = document.getElementById("password");
+
+                const emailError = document.getElementById("emailError");
+                const passwordError = document.getElementById("passwordError");
+
+
+                loginForm.addEventListener("submit", function (event) {
+
+                    emailError.innerHTML = "";
+                    passwordError.innerHTML = "";
+
+                    
+                    const emailValue = emailInput.value.trim();
+                    const passwordValue = passwordInput.value.trim();
+
+                    if(!isvalidEmail(emailValue)) {
+                        event.preventDefault()
+                        emailError.textContent = "Please enter a valid email address"
+                        return;
+                    }else{
+                        emailError.textContent = ""
+                    }
+
+                    if(emailValue === "") {
+                        event.preventDefault()
+                        emailError.textContent = "Email address can't be empty"
+                        return;
+                    }
+
+                    if(!isStrongPassword(passwordValue)) {
+                        event.preventDefault()
+                        passwordError.textContent = "Please enter a valid password"
+                        return;
+                    }else{
+                        passwordError.textContent = ""
+                    }
+
+
+                    if(passwordValue === "") {
+                        event.preventDefault()
+                        passwordError.textContent = "Password field can't be empty"
+                        return;
+                    }
+
+
+                // email regex
+                    function isvalidEmail(email) {
+                        return /^[A-Za-z0-9._%+-]+@gmail\.com$/.test(email);
+                    }
+
+
+                // password regex
+                    function isStrongPassword(password) {
+
+                    // Define your criteria for a strong password
+                    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                    return regex.test(password)
+                    }
+
+
+                })
+            })
+
+
+
+
+
+
+            // Password eye-icon show and hide script
+
+            const password = document.getElementById("password");
+            const eyeIcon = document.getElementById("eye-icon");
+            const togglePassword = document.getElementById("togglePassword");
+
+
+            togglePassword.addEventListener('click', () => {
+                togglePasswordVisibility(password, eyeIcon)
+            });
+
+
+            function togglePasswordVisibility(input, icon) {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type',type);
+
+                // Toggle eye icon
+                if(type === 'password') {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }else{
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash')
+                }
+            }
+
+        </script>
+
+
+
+
+
+
+
+
+
+<%-include('./userPartials/footer')%>
