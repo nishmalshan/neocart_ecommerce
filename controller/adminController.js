@@ -6,8 +6,8 @@ const user = require("../model/user");
 
 
 const credential = {
-    email: process.env.email,
-    password: process.env.password
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_PASSWORD
 }
 
 // get method for admin login page

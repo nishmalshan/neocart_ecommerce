@@ -32,6 +32,14 @@
                 align-items: center;
                 padding: 0 100px;
             }
+            /* .nav-menu{
+                background: transparent;
+                padding: 30px;
+                position: fixed;
+                width: 100%;
+                z-index: 9999;
+                transition: all .4s;
+            } */
             .logo{
                 font-size: 28px;
                 font-weight: bold;
