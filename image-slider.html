@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>slider</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+        <!-- image slider link -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+
+        <!-- image slider ajax link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+        <link rel="stylesheet" href="image-slider.css">
+
+        <!-- Bootstrap CSS v5.3.2 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    </head>
+
+    <body>
+        
+        
+
+
+        <main>
+            <!-- Slider -->
+            <section class="bg-light p-md-2 p-0 vh-100">
+                <h3 class="text-center">
+                    Javascript Custom Slider
+                </h3>
+                
+              <div class="container position-relative">
+                <!-- Cards Wrap -->
+                <div class="slider d-flex align-items-center justify-content-start overflow-hidden position-relative">
+                    <div class="slider-wrap d-flex align-items-center position-absolute">
+                        <div class="slide-card 1 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <a href="#" class="text-decoration-none">
+                                <div class="slider-image">
+                                    <img src="images/Adidas_logo.png" alt="slide" width="100%">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="slide-card 2 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <div class="slider-image">
+                                <img src="images/Fila_logo.png" alt="slide" width="100%">
+                            </div>
+                        </div>
+                        <div class="slide-card 3 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <div class="slider-image">
+                                <img src="images/vans_logo.png" alt="slide" width="100%">
+                            </div>
+                        </div>
+                        <div class="slide-card 4 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <div class="slider-image">
+                                <img src="images/nike_logo.png" alt="slide" width="100%">
+                            </div>
+                        </div>
+                        <div class="slide-card 5 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <a href="#" class="text-decoration-none">
+                                <div class="slider-image">
+                                    <img src="images/puma_logo.png" alt="slide" width="100%">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="slide-card 6 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <div class="slider-image">
+                                <img src="images/Under_Armour_logo.png" alt="slide" width="100%">
+                            </div>
+                        </div>
+                        <div class="slide-card 7 position-relative bg-white overflow-hidden shadow-sm mx-2">
+                            <div class="slider-image">
+                                <img src="images/New_Balance_logo.png" alt="slide" width="100%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slider Arrows -->
+                <!-- Previous Arrow -->
+                <button
+                    class="text-dark arrow bg-white d-flex align-items-center justify-content-center shadow-lg border rounded-circle position-absolute bottom-50 start-0"
+                    id="previous-arrow" onclick="previousSlide()">
+                    <div>
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </div>
+                </button>
+                <!-- Next Arrow -->
+                <button
+                    class="text-dark arrow bg-white d-flex align-items-center justify-content-center shadow-lg border rounded-circle position-absolute bottom-50 end-0"
+                    id="next-arrow" onclick="nextSlide()">
+                    <div>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </div>
+                </button>
+            </div>
+            </section>
+        </main>
+
+
+
+
+
+
+
+
+        <script>
+            // add active class by default
+document.querySelectorAll(".slide-card")[0].classList.add("active");
+// disable and style disabled back button
+document.querySelector("#previous-arrow").setAttribute("disabled", " ");
+document.querySelector("#previous-arrow i").style.color = "#c5c5c5";
+document.querySelector("#previous-arrow").classList.replace("bg-white", "bg-disabled");
+// calculate number of slides
+let count = document.querySelectorAll(".slide-card").length;
+
+
+// move to next slide
+function nextSlide() {
+    // enable and style the back button
+    document.querySelector("#previous-arrow").removeAttribute("disabled");
+    document.querySelector("#previous-arrow i").style.color = "#212529";
+    document.querySelector("#previous-arrow").classList.replace("bg-disabled", "bg-white");
+    const elements = document.querySelectorAll('.slide-card');
+    console.log(document.querySelector('.slider-wrap').children);
+    for (let index = 0; index <= count; index++) {
+        let valueIndex = null;
+        if (elements[index].classList.contains('active')) {
+            valueIndex = index;
+        }
+        if (valueIndex == 0) {
+            setTimeout(() => {
+                previousSlide();
+            }, 560);
+        }
+        // set animations
+        elements[index].classList.remove('move-left');
+        elements[elements.length - 1].classList.remove('move-left');
+        setTimeout(() => {
+            elements[index].classList.add('move-left');
+        }, 0);
+        setTimeout(() => {
+            elements[index].classList.remove('active');
+            elements[2].classList.add('active');
+            elements[index].classList.remove('move-left');
+            elements[elements.length - 1].classList.remove('move-left');
+            document.querySelector('.slider-wrap').append(elements[0]);
+        }, 500);
+    }
+};
+
+
+// previous slide
+function previousSlide() {
+    const elements = document.querySelectorAll('.slide-card');
+    // animate the slider wrapper
+    document.querySelector('.slider-wrap').classList.add('slider-move-left');
+    for (let index = 0; index <= count; index++) {
+        // set animations
+        setTimeout(() => {
+            elements[index].classList.add('move-right');
+        }, 0);
+        setTimeout(() => {
+            elements[index].classList.remove('active');
+            elements[0].classList.add('active');
+            elements[index].classList.remove('move-right');
+            document.querySelector('.slider-wrap').prepend(elements[elements.length - 1]);
+        }, 500);
+    }
+}
+        </script>
+
+
+
+
+
+
+        <!-- Bootstrap JavaScript Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+</html>

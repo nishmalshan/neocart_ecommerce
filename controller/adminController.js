@@ -29,6 +29,7 @@ const adminLoginPageGet = (req,res) => {
 const adminLoginPost = (req,res) => {
     try {
         const {email,password} = req.body
+        console.log(req.body,"hhhhhhhhhhhh");
         if(credential.email === email && credential.password === password){
 
             req.session.email = req.body.email

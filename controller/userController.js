@@ -58,10 +58,11 @@ const toSignupPost = async (req, res) => {
     const existUser = await user.findOne({ email: email });
     console.log(username, email, mobile, password);
     if (existUser) {
-      res.redirect("/userlogin");
+       return res.redirect("/userlogin?message=user Already exist");
     }
 
     const saltround = 10;
+    console.log();
     const hashpass = await bcrypt.hash(password, saltround);
     console.log(hashpass);
     const newUser = new user({
@@ -71,7 +72,7 @@ const toSignupPost = async (req, res) => {
       password: hashpass,
     });
     await newUser.save();
-    console.log(newUser);
+    console.log(newUser,"nooooooooooooo");
 
     req.session.email = req.body.email;
     req.session.userlogged = true;
@@ -105,7 +106,7 @@ const toLoginPost = async (req, res) => {
 
           res.redirect("/home");
         } else {
-          res.redirect("/userlogin?message=userblocked");
+          res.redirect("/userlogin?message=user is Blocked");
         }
       } else {
         res.redirect("/userlogin?message=Invalid password");
@@ -152,7 +153,7 @@ const viewAllProducts = async (req,res) => {
 
   try {
     
-    const allProducts = await products.find()
+    const allProducts = await products.find({ status: true })
     console.log(allProducts,"aaaaaaaaaaaaaaaaaaaaaaa");
     res.render('./user/viewallProducts',{allProducts, title: 'all products'})
   } catch (error) {
@@ -170,11 +171,14 @@ const viewAllProducts = async (req,res) => {
 // get method for product details page
 
 
-const productDetails = (req,res) => {
+const productDetails = async (req,res) => {
 
   try {
     
-    res.render('./user/productdetails',{title: 'productDetails'})
+    const id = req.params.id;
+    const productDetailsData = await products.findOne({ _id: id})
+    console.log(productDetailsData,"dddddddddddd");
+    res.render('./user/productdetails',{productDetailsData, title: 'productDetails'})
 
   } catch (error) {
     console.log(error);

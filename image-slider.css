@@ -1,0 +1,41 @@
+/* slider */
+.slider {
+    height: 400px;
+}
+
+/* slider-cards */
+.slide-card {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
+}
+
+/* slider-arrows */
+.arrow {
+    width: 40px;
+    height: 40px;
+}
+
+/* disabled button */
+.bg-disabled {
+    background-color: #e5e3e7;
+}
+
+/* slider and slide transitions */
+.slider-move-left {
+    transform: translate(-320px, 0px);
+    transition: all 0.5s ease;
+}
+
+.move-left {
+    transform: translate(-320px, 0px);
+    transition: all 0.5s ease;
+}
+
+.move-right {
+    transform: translate(320px, 0px);
+    transition: all 0.5s ease;
+}

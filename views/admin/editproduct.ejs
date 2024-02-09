@@ -90,7 +90,7 @@
         <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
           <p id="imageError1" style="color: rgb(252, 56, 56);"></p>
           <label for="imageInput1"  class="form-label fw-bold mb-2">Main Image</label>
-          <input type="file" class="form-control w-75" id="imageInput1"  name="mainImage" accept="image/*" required>
+          <input type="file" class="form-control w-75" id="imageInput1" value="/productImages/<%= productData.images[0] %>"  name="mainImage" accept="image/*" required>
           <p id="image1Error" class="text-danger mb-3" style="font-size: 13px;"></p>
           <img id="imagePreview1" src="/productImages/<%= productData.images[0] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
           <button class="btn btn-danger mt-2 delete-button" id="deleteButton1"
@@ -99,7 +99,7 @@
     
         <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
           <label for="imageInput2" class="form-label fw-bold mb-2">Product Image:</label>
-          <input type="file" class="form-control w-75" id="imageInput2" name="image1" accept="image/*" required>
+          <input type="file" class="form-control w-75" id="imageInput2" value="/productImages/<%= productData.images[1] %>" name="image1" accept="image/*" required>
           <p id="image2Error" class="text-danger mb-3" style="font-size: 13px;"></p>
           <img id="imagePreview2" src="/productImages/<%= productData.images[1] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
           <button class="btn btn-danger mt-2 delete-button" id="deleteButton2"
@@ -108,7 +108,7 @@
     
         <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
           <label for="imageInput3" class="form-label fw-bold mb-2">Product Image:</label>
-          <input type="file" class="form-control w-75" id="imageInput3" name="image2" accept="image/*" required>
+          <input type="file" class="form-control w-75" id="imageInput3" value="/productImages/<%= productData.images[2] %>" name="image2" accept="image/*" required>
           <p id="image3Error" class="text-danger mb-3" style="font-size: 13px;"></p>
           <img id="imagePreview3" src="/productImages/<%= productData.images[2] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
           <button class="btn btn-danger mt-2 delete-button" id="deleteButton3"
@@ -116,7 +116,7 @@
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
           <label for="imageInput4" class="form-label fw-bold mb-2">Product Image:</label>
-          <input type="file" class="form-control w-75" id="imageInput4" name="image3" accept="image/*" >
+          <input type="file" class="form-control w-75" id="imageInput4" value="/productImages/<%= productData.images[3] %>" name="image3" accept="image/*" >
           <p id="image4Error" class="text-danger mb-3" style="font-size: 13px;"></p>
           <img id="imagePreview4" src="/productImages/<%= productData.images[3] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
           <button class="btn btn-danger mt-2 delete-button" id="deleteButton4"
@@ -125,7 +125,7 @@
 
         <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
           <label for="imageInput5" class="form-label fw-bold mb-2">Product Image:</label>
-          <input type="file" class="form-control w-75" id="imageInput5" name="image4" accept="image/*">
+          <input type="file" class="form-control w-75" id="imageInput5" value="/productImages/<%= productData.images[4] %>" name="image4" accept="image/*">
           <p id="image5Error" class="text-danger mb-3" style="font-size: 13px;"></p>
           <img id="imagePreview5" src="/productImages/<%= productData.images[4] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
           <button class="btn btn-danger mt-2 delete-button" id="deleteButton5"

@@ -4,7 +4,7 @@
 
     <%-include('./userPartials/navbar')%>
 
-    <link rel="stylesheet" type="text/css" href="user_css/homePage.css">
+    <link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
 
 
   
@@ -14,38 +14,39 @@
       <div class="row gx-5">
         <aside class="col-lg-6">
           <div class="border rounded-4 mb-3 d-flex justify-content-center">
-            <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp">
-              <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
+            <a data-fslightbox="mygalley" class="rounded-4" data-type="image" href="#">
+              <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="/productImages/<%= productDetailsData.images[0] %>" />
             </a>
           </div>
           <div class="d-flex justify-content-center mb-3">
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big1.webp" class="item-thumb">
+            <% productDetailsData.images.forEach(data => { %>
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2"  data-type="image" href="#">
+               <img width="60" height="60" class="rounded-2" src="/productImages/<%= data %>" />
+              </a>
+              <% }) %>
+            <!-- <a data-fslightbox="mygalley" class="border mx-1 rounded-2"  data-type="image" href="#" class="item-thumb">
               <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
             </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big2.webp" class="item-thumb">
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
               <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
             </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big3.webp" class="item-thumb">
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
               <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
             </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big4.webp" class="item-thumb">
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
               <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp" class="item-thumb">
-              <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a>
+            </a> -->
           </div>
           <!-- thumbs-wrap.// -->
           <!-- gallery-wrap .end// -->
         </aside>
         <main class="col-lg-6">
           <div class="ps-lg-3">
-            <h4 class="title text-dark">
-              Quality Men's Hoodie for Winter, Men's Fashion <br />
-              Casual Hoodie
-            </h4>
+            <h3 class="title text-dark fw-bold">
+              <%= productDetailsData.name %>
+            </h3>
             <div class="d-flex flex-row my-3">
-              <div class="text-warning mb-1 me-2">
+              <!-- <div class="text-warning mb-1 me-2">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -54,33 +55,32 @@
                 <span class="ms-1">
                   4.5
                 </span>
-              </div>
-              <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
-              <span class="text-success ms-2">In stock</span>
+              </div> -->
+              <!-- <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span> -->
+              <!-- <span class="text-success ms-2">In stock</span> -->
             </div>
   
             <div class="mb-3">
-              <span class="h5">$75.00</span>
-              <span class="text-muted">/per box</span>
+              <span class="h5">MRP: <span> &#8377</span><%= productDetailsData.price %></span>
+              <!-- <span class="text-muted">/per box</span> -->
             </div>
   
-            <p>
-              Modern look and quality demo item is a streetwear-inspired collection that continues to break away from the conventions of mainstream fashion. Made in Italy, these black and brown clothing low-top shirts for
-              men.
-            </p>
+            <div class="mb-4">
+              <p><%= productDetailsData.description %></p>
+            </div>
   
             <div class="row">
               <dt class="col-3">Type:</dt>
-              <dd class="col-9">Regular</dd>
+              <dd class="col-9"><%= productDetailsData.category %></dd>
   
               <dt class="col-3">Color</dt>
-              <dd class="col-9">Brown</dd>
+              <dd class="col-9"><%= productDetailsData.color %></dd>
   
-              <dt class="col-3">Material</dt>
-              <dd class="col-9">Cotton, Jeans</dd>
+              <!-- <dt class="col-3">Material</dt>
+              <dd class="col-9">Cotton, Jeans</dd> -->
   
               <dt class="col-3">Brand</dt>
-              <dd class="col-9">Reebook</dd>
+              <dd class="col-9"><%= productDetailsData.brand %></dd>
             </div>
   
             <hr />
@@ -89,13 +89,13 @@
               <div class="col-md-4 col-6">
                 <label class="mb-2">Size</label>
                 <select class="form-select border border-secondary" style="height: 35px;">
-                  <option>Small</option>
-                  <option>Medium</option>
-                  <option>Large</option>
+                  <% productDetailsData.variant.forEach(data => { %>
+                    <option><%= data.size %></option>
+                  <% }) %>
                 </select>
               </div>
               <!-- col.// -->
-              <div class="col-md-4 col-6 mb-3">
+              <!-- <div class="col-md-4 col-6 mb-3">
                 <label class="mb-2 d-block">Quantity</label>
                 <div class="input-group mb-3" style="width: 170px;">
                   <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1" data-mdb-ripple-color="dark">
@@ -106,7 +106,7 @@
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
             <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
             <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a>

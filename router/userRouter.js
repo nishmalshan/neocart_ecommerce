@@ -16,7 +16,7 @@ user.get('/home',userAuthentication.verifyingUser,userController.homePageGet);
 
 // route for products
 user.get('/allproducts',userAuthentication.verifyingUser,userController.viewAllProducts);
-user.get('/productdetails',userController.productDetails);
+user.get('/productdetails/:id',userAuthentication.verifyingUser,userController.productDetails);
 
 
 

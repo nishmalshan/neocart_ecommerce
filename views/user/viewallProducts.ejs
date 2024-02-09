@@ -1,6 +1,8 @@
 <%-include('./userPartials/header')%>
 
+<%-include('./userPartials/navbar')%>
 
+<link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
         
         <link rel="stylesheet" type="text/css" href="/user_css/viewallProducts.css">
 
@@ -30,7 +32,7 @@
                                     <div class="product position-relative">
                                         <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
                                         
-                                        <a href="/productdetails">
+                                        <a href="/productdetails/<%= data.id %>">
                                             <img src="/productImages/<%= data.images[0] %>" alt="">
                                         <div class="product-btn">
                                             <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
