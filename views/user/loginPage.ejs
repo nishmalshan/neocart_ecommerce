@@ -15,6 +15,11 @@
                     </div>
                     <div class="col-md-6 right">
                             <div class="input-box">
+                                <% if (block_message) { %>
+        
+                                    <p class="text-danger text-center" id="block-message" style="font-size: 13px; transition: all 0.5s ease-out;"> <%= block_message %> </p>
+
+                                <% } %>
                                 <header>Log In</header>
                                 <form action="/logintohome" method="post" id="login">
                                     <div class="input-field">
@@ -45,6 +50,24 @@
                 </div>
             </div>
         </div>
+
+
+
+
+        <script>
+        // Remove block message after 3 seconds with a fade out effect
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var blockMessage = document.getElementById("block-message");
+                if (blockMessage) {
+                    blockMessage.style.opacity = "0";
+                    setTimeout(function() {
+                        blockMessage.style.display = "none";
+                    }, 1000); // Wait for the transition to complete before hiding
+                }
+            }, 5000);
+        });
+    </script>
 
 
 

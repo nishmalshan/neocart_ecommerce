@@ -23,7 +23,7 @@ const toLoginPageGet = (req, res) => {
    if(req.session.userlogged){
    res.redirect('/home')
    }else{
-    res.render("./user/loginPage", { title: "login" });
+    res.render("./user/loginPage", {block_message: req.flash('block_message'), title: "login" });
    }
   } catch (error) {
     console.log(error);
@@ -58,7 +58,8 @@ const toSignupPost = async (req, res) => {
     const existUser = await user.findOne({ email: email });
     console.log(username, email, mobile, password);
     if (existUser) {
-       return res.redirect("/userlogin?message=user Already exist");
+      req.flash('block_message', 'User already exist. please login')
+       return res.redirect("/userlogin?message=User already exist. please login");
     }
 
     const saltround = 10;
@@ -106,12 +107,15 @@ const toLoginPost = async (req, res) => {
 
           res.redirect("/home");
         } else {
+          req.flash('block_message', 'User is blocked')
           res.redirect("/userlogin?message=user is Blocked");
         }
       } else {
+        req.flash('block_message', 'Invalid password')
         res.redirect("/userlogin?message=Invalid password");
       }
     } else {
+      req.flash('block_message', 'User not found')
       res.redirect("/userlogin?message=User not found");
     }
   } catch (error) {

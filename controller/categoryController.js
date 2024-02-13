@@ -57,9 +57,8 @@ const addCategoryPost = async (req, res) => {
                     name: lowerCaseName,
                     image: image,
                 });
-                // console.log(newCategory);
-                // req.flash("success", "Category added successfully");
-                res.redirect("/admin/category");
+                
+                res.redirect("/admin/category?success=Category added successfully");
             } else {
                 // req.flash("error", "Image is required for the category");
                 res.redirect("/addcategory");
@@ -117,7 +116,7 @@ console.log(newImage,"imimimimimimimimimim");
 })
 console.log(updatedCategory);
 
-res.redirect('/admin/category');
+// res.redirect('/admin/category?message=Category edited successfully');
 
   } catch (error) {
     console.error(error);
@@ -138,7 +137,7 @@ const blockCategory = async (req,res) => {
     console.log(id,"idididididididid");
     const block = await category.updateOne({ _id:id }, {$set: { status: false }});
     console.log(block,"blblblblblblblbl");
-    res.redirect("/admin/category")
+    res.redirect("/admin/category?message=Category successfully blocked")
 
   } catch (error) {
     console.error(error);
@@ -161,7 +160,7 @@ const unblockCategory = async (req,res) => {
     console.log(id,"idididididididid");
     const unblock = await category.updateOne({ _id:id }, {$set: { status: true }});
     console.log(unblock,"ununununununun");
-    res.redirect("/admin/category")
+    res.redirect("/admin/category?message=Category successfully unblocked")
 
   } catch (error) {
     console.error(error);
@@ -181,11 +180,12 @@ const deleteCategory = async (req,res) => {
     console.log(id,"idididididididi");
     const deleteCategory = await category.deleteOne({ _id: id });
     console.log(deleteCategory,"deldeldeldeldeldel");
-    res.redirect('/admin/category');
+    // res.redirect('/admin/category?message=Category successfully deleted');
+    res.json({ success: true, message: 'Item deleted successfully' });
 
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 
