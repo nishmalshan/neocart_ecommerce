@@ -58,15 +58,16 @@
             <div class="header text-center my-4">
                 <h2 class="fw-bold">CATEGORY</h2>
             </div>
-            <div class="container category-container">
+
+            <div class="container">
                 <div id="slide-left-container">
                   <div class="slide-left">
                   </div>
                 </div>
                 <div id="cards-container">
-                  <div class="category-cards">
+                  <div class="cards">
                     <% categoryData.forEach(data => { %>
-                        <div class="category-card sub-category col-lg-3 col-md-3 col-sm-6 p-3">
+                        <div class="card sub-category col-lg-3 col-md-3 col-sm-6 p-3">
                             <div class="casual position-relative">
                                 <div class="text">
                                     <h1 class="text-white text-uppercase"><%= data.name %></h1>
@@ -76,6 +77,7 @@
                             </div>
                         </div>
                     <% }) %>
+                    
                   </div>
                 </div>
             
@@ -85,7 +87,6 @@
                 </div>
             
               </div>
-
         </section>
 
             
@@ -97,104 +98,103 @@
 
 
 
-              <style>
-                /* body {
-          font-family: Arial, Helvetica, sans-serif;
-          background: #00b09b;
-          background: -webkit-gradient(
-            linear,
-            left top,
-            right top,
-            from(#96c93d),
-            to(#00b09b)
-          );
-          background: linear-gradient(to right, #96c93d, #00b09b);
-        } */
-        
-        .category-container {
-          display: -webkit-box;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          align-items: center;
-          -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-          justify-content: space-between;
-          padding: 4px 16px;
-          max-width: 1300px;
-        }
-        
-        #cards-container {
-          overflow: hidden;
-          margin: 20px;
-        }
-        
-        .category-cards {
-          display: -webkit-box;
-          display: -ms-flexbox;
-          display: flex;
-          /* width: 99999px; */
-        }
-        
-        .category-card {
-          /* Add shadows to create the "card" effect */
-          -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-          background: #fff;
-          -webkit-transition: 0.3s;
-          transition: 0.3s;
-          width: 235px;
-          margin: 15px 7.5px;
-        }
-        
-        .category-card:hover {
-          -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-          box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-        }
-        
-        .category-cards .img {
-          max-width: 220px;
-          height: 220px;
-          display: inline-block;
-        }
-        
-        #slide-left-container,
-        #slide-right-container {
-          display: none;
-        }
-        
-        #slide-left-container.active,
-        #slide-right-container.active {
-          display: block;
-          cursor: pointer;
-        }
-        
-        .slide-left,
-        .slide-right {
-          border-color: #000;
-          border-style: solid;
-          height: 20px;
-          width: 20px;
-          /* margin-top: 30%; */
-        }
-        
-        .slide-left {
-          border-width: 4px 0 0 4px;
-          -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
-          /* margin-left: 40%; */
-        }
-        
-        .slide-right {
-          border-width: 4px 4px 0 0;
-          -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-          /* margin-left: 22%; */
-        }
-        
-              </style>
+          <style>
+            /* body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #00b09b;
+      background: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        from(#96c93d),
+        to(#00b09b)
+      );
+      background: linear-gradient(to right, #96c93d, #00b09b);
+    }
+     */
+    .container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      padding: 4px 16px;
+    }
+    
+    #cards-container {
+      overflow: hidden;
+      margin: 20px;
+    }
+    
+    .cards {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      /* width: 99999px; */
+    }
+    
+    .card {
+      /* Add shadows to create the "card" effect */
+      -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      background: #fff;
+      -webkit-transition: 0.3s;
+      transition: 0.3s;
+      width: 235px;
+      margin: 15px 7.5px;
+    }
+    
+    .card:hover {
+      -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+    
+    .card .img {
+      max-width: 220px;
+      height: 220px;
+      display: inline-block;
+    }
+    
+    #slide-left-container,
+    #slide-right-container {
+      display: none;
+    }
+    
+    #slide-left-container.active,
+    #slide-right-container.active {
+      display: block;
+      cursor: pointer;
+    }
+    
+    .slide-left,
+    .slide-right {
+      border-color: #000;
+      border-style: solid;
+      height: 20px;
+      width: 20px;
+      margin-top: 30%;
+    }
+    
+    .slide-left {
+      border-width: 4px 0 0 4px;
+      -webkit-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+      margin-left: 40%;
+    }
+    
+    .slide-right {
+      border-width: 4px 4px 0 0;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+      margin-left: 22%;
+    }
+    
+          </style>
         
         
         
@@ -203,79 +203,108 @@
  
         
         
+<!-- Include jQuery library -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script> -->
 
-        <!-- Your JavaScript code -->
-        <script>
-            $(document).ready(function() {
-                function updateSliderArrowsStatus(cardsContainer, containerWidth, cardCount, cardWidth) {
-                    if ($(cardsContainer).scrollLeft() + containerWidth < cardCount * cardWidth + 15) {
-                        $("#slide-right-container").addClass("active");
-                    } else {
-                        $("#slide-right-container").removeClass("active");
+<script>
+    $(document).ready(function() {
+        /**
+         * @description Change Home page slider's arrows active status
+         */
+        function updateSliderArrowsStatus(
+            cardsContainer,
+            containerWidth,
+            cardCount,
+            cardWidth
+        ) {
+            if (
+                $(cardsContainer).scrollLeft() + containerWidth <
+                cardCount * cardWidth + 15
+            ) {
+                $("#slide-right-container").addClass("active");
+            } else {
+                $("#slide-right-container").removeClass("active");
+            }
+            if ($(cardsContainer).scrollLeft() > 0) {
+                $("#slide-left-container").addClass("active");
+            } else {
+                $("#slide-left-container").removeClass("active");
+            }
+        }
+
+        // Scroll products' slider left/right
+        let div = $("#cards-container");
+        let cardCount = $(div)
+            .find(".cards")
+            .children(".card").length;
+        let speed = 300;
+        let containerWidth = $(".container").width();
+        let cardWidth = 250;
+
+        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
+
+        // Remove scrollbars
+        $("#slide-right-container").click(function(e) {
+            if ($(div).scrollLeft() + containerWidth < cardCount * cardWidth) {
+                $(div).animate(
+                    {
+                        scrollLeft: $(div).scrollLeft() + cardWidth
+                    },
+                    {
+                        duration: speed,
+                        complete: function() {
+                            setTimeout(function() {
+                                updateSliderArrowsStatus(
+                                    div,
+                                    containerWidth,
+                                    cardCount,
+                                    cardWidth
+                                );
+                            }, 1005);
+                        }
                     }
-                    if ($(cardsContainer).scrollLeft() > 0) {
-                        $("#slide-left-container").addClass("active");
-                    } else {
-                        $("#slide-left-container").removeClass("active");
+                );
+            }
+            updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
+        });
+        $("#slide-left-container").click(function(e) {
+            if ($(div).scrollLeft() + containerWidth > containerWidth) {
+                $(div).animate(
+                    {
+                        scrollLeft: "-=" + cardWidth
+                    },
+                    {
+                        duration: speed,
+                        complete: function() {
+                            setTimeout(function() {
+                                updateSliderArrowsStatus(
+                                    div,
+                                    containerWidth,
+                                    cardCount,
+                                    cardWidth
+                                );
+                            }, 1005);
+                        }
                     }
-                }
-    
-                let div = $("#cards-container");
-                let cardCount = $(div).find(".category-cards").children(".category-card").length;
-                let speed = 300;
-                let containerWidth = $(".container").width();
-                let cardWidth = 250;
-    
+                );
+            }
+            updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
+        });
+
+        // If resize action occurred then update the container width value
+        $(window).resize(function() {
+            try {
+                containerWidth = $("#cards-container").width();
                 updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-    
-                $("#slide-right-container").click(function(e) {
-                    if ($(div).scrollLeft() + containerWidth < cardCount * cardWidth) {
-                        $(div).animate(
-                            {
-                                scrollLeft: $(div).scrollLeft() + cardWidth
-                            },
-                            {
-                                duration: speed,
-                                complete: function() {
-                                    setTimeout(function() {
-                                        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-                                    }, 1005);
-                                }
-                            }
-                        );
-                    }
-                    updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-                });
-    
-                $("#slide-left-container").click(function(e) {
-                    if ($(div).scrollLeft() + containerWidth > containerWidth) {
-                        $(div).animate(
-                            {
-                                scrollLeft: "-=" + cardWidth
-                            },
-                            {
-                                duration: speed,
-                                complete: function() {
-                                    setTimeout(function() {
-                                        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-                                    }, 1005);
-                                }
-                            }
-                        );
-                    }
-                    updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-                });
-    
-                $(window).resize(function() {
-                    try {
-                        containerWidth = $("#cards-container").width();
-                        updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
-                    } catch (error) {
-                        console.log(`Error occurred while trying to get updated slider container width: ${error}`);
-                    }
-                });
-            });
-        </script>
+            } catch (error) {
+                console.log(
+                    `Error occurred while trying to get updated slider container width: 
+                    ${error}`
+                );
+            }
+        });
+    });
+</script>
 
         <!-- category section end -->
 
