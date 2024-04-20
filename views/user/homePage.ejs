@@ -10,7 +10,7 @@
        
 <link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
 
-
+<div id="searchResults" style="display: none;"></div>
 
 <!-- header carousel start -->
 
@@ -59,7 +59,7 @@
                 <h2 class="fw-bold">CATEGORY</h2>
             </div>
 
-            <div class="container">
+            <div class="category-container">
                 <div id="slide-left-container">
                   <div class="slide-left">
                   </div>
@@ -112,7 +112,7 @@
       background: linear-gradient(to right, #96c93d, #00b09b);
     }
      */
-    .container {
+    .category-container {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
@@ -122,7 +122,7 @@
       -webkit-box-pack: justify;
       -ms-flex-pack: justify;
       justify-content: space-between;
-      padding: 4px 16px;
+      padding: 4px 50px;
     }
     
     #cards-container {
@@ -322,7 +322,7 @@
         <section  style="margin: 100px 0; margin-top: 0;">
             <div class="container">
                 <div class="row">
-                    <div class="best-selling col-lg-3 col-md-3 col-sm-6 px-3">
+                    <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
                             <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
@@ -335,7 +335,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="best-selling col-lg-3 col-md-3 col-sm-6 px-3">
+                    <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
                             <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
@@ -348,7 +348,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="best-selling col-lg-3 col-md-3 col-sm-6 px-3">
+                    <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
                             <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
@@ -361,7 +361,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="best-selling col-lg-3 col-md-3 col-sm-6 px-3">
+                    <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
                             <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
@@ -553,11 +553,11 @@ function previousSlide() {
     <div class="container">
         <div class="row">
             <% productData.forEach(data => { %>
-                <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3">
-                    <div class="product position-relative">
+                <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
+                    <div class="product position-relative p-0">
                         <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
                         <a href="/productdetails/<%= data.id %>" class="text-decoration-none text-dark">
-                            <img src="/productImages/<%= data.images[0] %>" alt="">
+                            <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
                         <div class="product-btn">
                             <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                             <p class=""><%= data.brand %></p>
@@ -587,7 +587,7 @@ function previousSlide() {
         background-color: #ededed;
     }
     .product{
-        box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);
+        box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
         border-radius: 5px;
         transition: 0.3s;
         cursor: pointer;
@@ -635,9 +635,15 @@ function previousSlide() {
         padding: 20px 4px;
         border-radius: 50px;
     }
+    @media (max-width: 768px){
+                .product{
+                    margin-top: 40px;
+                    padding: 0px 15px;
+                }
+            }
     @media (max-width: 576px){
                 .product{
-                    margin-top: 90px;
+                    margin-top: 40px;
                     padding: 0px 15px;
                 }
             }
@@ -685,7 +691,7 @@ function previousSlide() {
 <section style="margin: 100px 0; margin-top: 0;">
     <div class="container">
         <div class="row">
-            <div class=".new-arrivalling col-lg-3 col-md-3 col-sm-6 px-3">
+            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
                 <div class="new-arrival position-relative">
                     <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
                     <img src="images/best_selling_image.jpeg" alt="">
@@ -698,7 +704,7 @@ function previousSlide() {
                     </div>
                 </div>
             </div>
-            <div class=".new-arrivalling col-lg-3 col-md-3 col-sm-6 px-3">
+            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
                 <div class="new-arrival position-relative">
                     <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
                     <img src="images/best_selling_image.jpeg" alt="">
@@ -711,7 +717,7 @@ function previousSlide() {
                     </div>
                 </div>
             </div>
-            <div class=".new-arrivalling col-lg-3 col-md-3 col-sm-6 px-3">
+            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
                 <div class="new-arrival position-relative">
                     <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
                     <img src="images/best_selling_image.jpeg" alt="">
@@ -724,7 +730,7 @@ function previousSlide() {
                     </div>
                 </div>
             </div>
-            <div class=".new-arrivalling col-lg-3 col-md-3 col-sm-6 px-3">
+            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
                 <div class="new-arrival position-relative">
                     <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
                     <img src="images/best_selling_image.jpeg" alt="">
@@ -806,7 +812,19 @@ function previousSlide() {
 <!-- footer section end -->
 
 
-
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/66210cd91ec1082f04e409f4/1hrohkcqt';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
 
 
 

@@ -1,12 +1,21 @@
 
 
+const verifyingAdmin = (req,res,next) => {
+    if(req.session.adminlogged){
+
+        next()
+    }else{
+        res.redirect("/admin")
+    }
+}
+
 
 
 const existAdmin = (req,res,next) => {
     
     if(req.session.adminlogged) {
         
-        res.redirect('/home');
+        res.redirect('/admin/dashboard');
 
     }else{
         
@@ -18,5 +27,6 @@ const existAdmin = (req,res,next) => {
 
 
 module.exports = {
-    existAdmin
+    existAdmin,
+    verifyingAdmin
 }

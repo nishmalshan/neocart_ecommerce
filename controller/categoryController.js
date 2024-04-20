@@ -26,7 +26,8 @@ const categoryPageGet = async (req, res) => {
 
 const addCategoryPageGet = (req, res) => {
   try {
-    res.render("./admin/addcategory", { title: "addcategory" });
+    const message = req.flash('success')
+    res.render("./admin/addcategory", { message, title: "addcategory" });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -44,17 +45,19 @@ const addCategoryPost = async (req, res) => {
         const { categoryName } = req.body;
         const image = req.file ? req.file.filename : null;
     // console.log(req.body);
-        const lowerCaseName = categoryName.toLowerCase();
+    const lowerCaseName = categoryName.toLowerCase()
+console.log(lowerCaseName,"llllllllllllllllllllllllllllll");
+    const existCategory = await category.findOne({ name: lowerCaseName });
     
-        const existCategory = await category.findOne({ name: lowerCaseName });
+    console.log(existCategory,"eeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     
         if (existCategory) {
-            // req.flash("success", "Category with the same name already exists");
-            res.redirect("/admin/addNewCategory");
+            req.flash("success", "Category with the same name already exists");
+            res.redirect("/admin/addcategory");
         } else {
             if (image !== null) {
                 const newCategory = await category.create({
-                    name: lowerCaseName,
+                    name: categoryName,
                     image: image,
                 });
                 
@@ -116,7 +119,7 @@ console.log(newImage,"imimimimimimimimimim");
 })
 console.log(updatedCategory);
 
-// res.redirect('/admin/category?message=Category edited successfully');
+res.redirect('/admin/category');
 
   } catch (error) {
     console.error(error);

@@ -33,12 +33,15 @@ app.use(
 app.use(nocache());
 
 // Use bodyParser middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // Use your routers
-app.use("/", router);
 app.use("/admin", adminRouter);
+app.use("/", router);
+app.use((req, res, next) => {
+  res.render('user/404')
+});
 
 // Connect to the database
 connectDB;

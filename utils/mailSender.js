@@ -14,7 +14,7 @@ mailTransporter.verify((error, success) => {
     if (error) {
         console.log(error);
     }else{
-        console.log("email is ready");
+        // console.log("email is ready");
     }
 })
 

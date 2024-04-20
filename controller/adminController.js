@@ -121,6 +121,23 @@ const unblockUser = async (req,res) => {
 
 
 
+// post method for admin logout
+
+const adminLogoutPost = (req, res) => {
+    try {
+        req.session.destroy()
+        res.redirect('/admin')
+        console.log('////////////////////////////////')
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
+
+
+
 
 
 
@@ -142,6 +159,7 @@ module.exports = {
     adminDashboard,
     userManagement,
     blockUser,
-    unblockUser
+    unblockUser,
+    adminLogoutPost
 
 }

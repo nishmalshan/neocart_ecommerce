@@ -9,6 +9,10 @@
 
 
         <div class="container d-flex justify-content-center align-items-center vh-100">
+            <% if (message) { %>
+                <p class="text-danger text-center" id="passwordMessage" style="font-size: 16px; transition: all 0.5s ease-out; position: absolute; top: 50px; left: 50%; transform: translate(-50%, -50%); z-index: 1;"> 
+                    <%= message %></p>
+              <% } %>
             <div class="category-add w-50 rounded shadow p-3 mb-5 bg-body rounded border border-dark-subtle">
                 <div class="p-4">
     

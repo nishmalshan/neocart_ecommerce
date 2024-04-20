@@ -8,35 +8,29 @@
 
 
   
-  <!-- content -->
+
   <section class="py-5">
     <div class="container">
       <div class="row gx-5">
         <aside class="col-lg-6">
-          <div class="border rounded-4 mb-3 d-flex justify-content-center">
-            <a data-fslightbox="mygalley" class="rounded-4" data-type="image" href="#">
-              <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="/productImages/<%= productDetailsData.images[0] %>" />
+          <div class="rounded-4 mb-3 d-flex justify-content-center align-items-center" style="cursor: pointer; overflow: hidden;" id="mainImageContainer">
+            <img style="width: 70%; margin: auto;" class="mainImage rounded-4 fit" src="/productImages/<%= productDetailsData.images[0] %>" />
+        </div>
+        <div class="d-flex justify-content-center mb-3" style="cursor: pointer;">
+            <% productDetailsData.images.forEach((data, index) => { %>
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" onclick="changeMainImage('<%= data %>')">
+                <img width="60" height="60" class="sub-images rounded-2" src="/productImages/<%= data %>" />
             </a>
-          </div>
-          <div class="d-flex justify-content-center mb-3">
+            <% }) %>
+        </div>
+          <!-- <div class="d-flex justify-content-center mb-3" style="cursor: pointer;">
             <% productDetailsData.images.forEach(data => { %>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2"  data-type="image" href="#">
-               <img width="60" height="60" class="rounded-2" src="/productImages/<%= data %>" />
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2"  data-type="image">
+               <img width="60" height="60" class="sub-images  rounded-2" src="/productImages/<%= data %>" />
               </a>
               <% }) %>
-            <!-- <a data-fslightbox="mygalley" class="border mx-1 rounded-2"  data-type="image" href="#" class="item-thumb">
-              <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
-              <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
-              <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a>
-            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
-              <img width="60" height="60" class="rounded-2" src="https://images.pexels.com/photos/4860479/pexels-photo-4860479.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" />
-            </a> -->
-          </div>
+
+          </div> -->
           <!-- thumbs-wrap.// -->
           <!-- gallery-wrap .end// -->
         </aside>
@@ -45,28 +39,14 @@
             <h3 class="title text-dark fw-bold">
               <%= productDetailsData.name %>
             </h3>
-            <div class="d-flex flex-row my-3">
-              <!-- <div class="text-warning mb-1 me-2">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
-                <span class="ms-1">
-                  4.5
-                </span>
-              </div> -->
-              <!-- <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span> -->
-              <!-- <span class="text-success ms-2">In stock</span> -->
-            </div>
   
-            <div class="mb-3">
+            <div class="my-3">
               <span class="h5">MRP: <span> &#8377</span><%= productDetailsData.price %></span>
               <!-- <span class="text-muted">/per box</span> -->
             </div>
   
             <div class="mb-4">
-              <p><%= productDetailsData.description %></p>
+              <p style="font-size: 15px; color: #646464;"><%= productDetailsData.description %></p>
             </div>
   
             <div class="row">
@@ -76,9 +56,6 @@
               <dt class="col-3">Color</dt>
               <dd class="col-9"><%= productDetailsData.color %></dd>
   
-              <!-- <dt class="col-3">Material</dt>
-              <dd class="col-9">Cotton, Jeans</dd> -->
-  
               <dt class="col-3">Brand</dt>
               <dd class="col-9"><%= productDetailsData.brand %></dd>
             </div>
@@ -86,72 +63,266 @@
             <hr />
   
             <div class="row mb-4">
-              <div class="col-md-4 col-6">
-                <label class="mb-2">Size</label>
-                <select class="form-select border border-secondary" style="height: 35px;">
-                  <% productDetailsData.variant.forEach(data => { %>
-                    <option><%= data.size %></option>
-                  <% }) %>
-                </select>
-              </div>
-              <!-- col.// -->
-              <!-- <div class="col-md-4 col-6 mb-3">
-                <label class="mb-2 d-block">Quantity</label>
-                <div class="input-group mb-3" style="width: 170px;">
-                  <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1" data-mdb-ripple-color="dark">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <input type="text" class="form-control text-center border border-secondary" placeholder="14" aria-label="Example text with button addon" aria-describedby="button-addon1" />
-                  <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2" data-mdb-ripple-color="dark">
-                    <i class="fas fa-plus"></i>
-                  </button>
+              <p class="text-danger mb-2" style="font-size: 14px;" id="sizeErrorMessage"></p>
+              <% productDetailsData.variant.sort((a,b)=>a.size-b.size).forEach(data => { %>
+                <div class="col-1">
+                  <div class="size-selector">
+                    <div class="size-box">
+                      <button class="btn btn-size border border-dark" id="sizeButton" data-quantity="<%= data.quantity %>"  data-size="<%= data.size %>" <%= data.quantity < 1 ? 'disabled' : '' %>><%= data.size %></button>
+                    </div>
+                    <p class="text-danger low-stock-message" style="font-size: 12px; margin-top: 5px;"></p>
+                  </div>
                 </div>
-              </div> -->
+                
+              <% }) %>
             </div>
-            <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
-            <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a>
+            
+            <!-- <div class="d-flex"> -->
+              <!-- <a href="#" class="btn btn-dark text-dark shadow-0 buy-now"> BUY NOW </a> -->
+            <!-- <form action="/add-to-Cart/<%= productDetailsData.id %>" class="mx-2" method="post"> -->
+              
+              <button class="btn btn-dark shadow-0" data-item-id="<%= productDetailsData.id %>" style="padding: 12px 30px; font-weight: 600;" id="addtoCart"><i class="me-1 fa fa-shopping-basket"></i> ADD TO CART </button>
+            <!-- </form> -->
             <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i class="me-1 fa fa-heart fa-lg"></i> Save </a>
+            <!-- </div> -->
           </div>
         </main>
       </div>
     </div>
   </section>
-  <!-- content -->
+
   
  
-  <!-- Footer -->
+
+
+
+  <style>
+    .buy-now{
+      padding: 12px 30px;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid #b3b3b3;
+      transition: all 0.3s;
+    }
+    .buy-now:hover{
+      border: 1px solid #000;
+      background: transparent;
+    }
+      .icon-hover:hover {
+    border-color: #3b71ca !important;
+    background-color: white !important;
+    color: #3b71ca !important;
+  }
+  
+  .icon-hover:hover i {
+    color: #3b71ca !important;
+  }
+  </style>
+
+
+  
   
 
 
-  <!-- Footer -->
+
+  <!-- image zoom -->
   
-  
+
+  <script>
+    function changeMainImage(imageUrl) {
+        const mainImage = document.querySelector('.mainImage');
+        mainImage.src = '/productImages/' + imageUrl;
+    }
+
+    const mainImageContainer = document.getElementById('mainImageContainer');
+    mainImageContainer.addEventListener('mousemove', function(event) {
+        const mainImage = document.querySelector('.mainImage');
+        const rect = mainImage.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const ratioX = x / rect.width;
+        const ratioY = y / rect.height;
+        mainImage.style.transformOrigin = `${ratioX * 100}% ${ratioY * 100}%`;
+        mainImage.style.transform = 'scale(1.5)'; // Adjust zoom level as needed
+    });
+
+    mainImageContainer.addEventListener('mouseleave', function() {
+        const mainImage = document.querySelector('.mainImage');
+        mainImage.style.transform = 'none';
+    });
+</script>
+
+
+  <!-- image zoom -->
 
 
 
 
 
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get all buttons with the class 'btn-size'
+      var buttons = document.querySelectorAll('.btn-size');
+
+      // Add click event listeners to the buttons
+      buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          // Remove 'selected' class from all buttons
+          buttons.forEach(function (btn) {
+            btn.classList.remove('selected');
+          });
+
+          // Add 'selected' class to the clicked button
+          button.classList.add('selected');
+
+          // Optionally, you can perform additional actions when a size is selected
+          var selectedSize = button.innerText;
+          console.log('Selected Size:', selectedSize);
+        });
+      });
+    });
+  </script>
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('addtoCart').addEventListener('click', async function() {
+      const selectedSizeElement = document.querySelector('.btn-size.selected');
+      const sizeErrorMessage = document.getElementById('sizeErrorMessage');
 
+      if (!selectedSizeElement) {
+          // No size selected, show an error message
+          sizeErrorMessage.innerHTML = "Please select an available size before adding to cart";
+          return; // Stop execution
+      } else {
+        // Size selected, hide the error message
+      sizeErrorMessage.innerHTML = "";
 
+const selectedSize = selectedSizeElement.getAttribute('data-size');
+const productId = '<%= productDetailsData.id %>';
 
+try {
+    const response = await fetch('/add-to-Cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId: productId, selectedSize: selectedSize })
+    });
 
+    const responseData = await response.json();
+      console.log(responseData,"sssssssssssssssssssssssssssssssssssssssssssssss");
+    if (responseData.success) {
+        console.log('Item added to cart successfully');
 
-<style>
-    .icon-hover:hover {
-  border-color: #3b71ca !important;
-  background-color: white !important;
-  color: #3b71ca !important;
+        // Show success message using SweetAlert
+        await Swal.fire({
+            icon: 'success',
+            title: 'Item added to cart',
+            text: 'The item has been successfully added to your cart.',
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'OK',
+        });
+
+        // Corrected line to use window.location.href for redirection
+        window.location.reload();
+    } else {
+        console.error('Failed to add item to cart. Response:', responseData);
+        // const sizeErrorMessage = document.getElementById('sizeErrorMessage').innerHTML = responseData.quantityCount
+        // You can add more specific error handling or logging here
+    }
+} catch (error) {
+    console.error('Error during fetch:', error);
+    // Handle fetch error, if any
 }
+      }
 
-.icon-hover:hover i {
-  color: #3b71ca !important;
-}
-</style>
+      
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var mainImage = document.querySelector('.mainImage');
+      var subImages = document.querySelectorAll('.sub-images');
+
+      // Set the initial source of mainImage
+      mainImage.src = subImages[0].src;
+
+      subImages.forEach((image, index) => {
+        image.addEventListener('click', function () {
+          // Change the source of mainImage based on the clicked image
+          mainImage.src = this.src;
+        });
+      });
+
+      // Change the mainImage when clicked inside mainImage container
+      mainImage.addEventListener('click', function () {
+        // Increment the current index
+        currentIndex = (currentIndex + 1) % subImages.length;
+
+        // Change the source of mainImage
+        mainImage.src = subImages[currentIndex].src;
+      });
+    });
+</script>
+
+  
+  
+
+
+
+<!-- when button click show the quantity left -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sizeButtons = document.querySelectorAll('.btn-size');
+  
+    sizeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const quantity = parseInt(this.getAttribute('data-quantity'));
+        const lowStockMessage = document.querySelector('.low-stock-message');
+        console.log(quantity,'quantity');
+        // Check if quantity is less than 4
+        if (quantity < 4) {
+          lowStockMessage.textContent = `${quantity} Stock left`;
+        } else if (quantity < 1) {
+          lowStockMessage.textContent = 'Out of stock';
+          return
+        } else {
+          lowStockMessage.textContent = ''; // Clear the message if quantity is sufficient
+        }
+      });
+    });
+  });
+  </script>
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 

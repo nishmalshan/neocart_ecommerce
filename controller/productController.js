@@ -127,7 +127,7 @@ const unblockProduct = async (req,res) => {
         
         const id = req.params.id;
         const unblockProduct = await product.updateOne({_id: id},{$set: { status: true}})
-        console.log(unblockProduct,"uuuuuuuuuuuuuuuuuuuuuuuu");
+        // console.log(unblockProduct,"uuuuuuuuuuuuuuuuuuuuuuuu");
         res.redirect('/admin/product-manage?message=productUnblockedSuccessful')
 
     } catch (error) {
@@ -147,6 +147,7 @@ const editProductGet = async (req,res) => {
     try {
         const id = req.params.id;
         const productData = await product.findOne({_id: id})
+        console.log(productData.images,"ppppppppppppppppppp");
         res.render('./admin/editproduct',{productData, title: 'editProduct'})
     } catch (error) {
         console.error(error);
@@ -167,7 +168,7 @@ const editProductPost = async (req,res) => {
 
         const id = req.params.id;
         const productDetails = req.body;
-        console.log("product Details",productDetails);
+        console.log(productDetails,"product Details");
         const files = req.file;
 
         let obj = [];
@@ -175,16 +176,18 @@ const editProductPost = async (req,res) => {
 
             obj.push({
                 size: req.body.variant.size[i],
-                quantity: req.body.variant.size[i]
+                quantity: req.body.variant.quantity[i]
             })
         }
-
+console.log(obj,'oooooooooooooooooooooooooo');
         const productData = await product.findById(id);
+        console.log(productData,"ppppppppppppppppppppppppppp");
         if (!productData) {
             console.log('data not found');
         }
 
         const oldImages = [...productData.images];
+        // console.log(oldImages,"ooooooooooooooooooooooooooooo");
 
         const updateData = {
             name: req.body.name,
@@ -196,6 +199,7 @@ const editProductPost = async (req,res) => {
             variant: obj,
             images: []
         }
+        // console.log(updateData,"uuuuuuuuuuuuuuuuuuuuuuuuuuu");
 
         if (files && files.mainImage) {
             updateData.images[0] = files.mainImage[0].filename
@@ -215,6 +219,7 @@ const editProductPost = async (req,res) => {
         }
 
         const uploaded = await product.updateOne({_id: id}, { $set: updateData });
+        console.log(uploaded,"upupupupuupupupupupupupupupupup");
 
         if (uploaded) {
             res.redirect('/admin/product-manage?message=successfullyEdited')

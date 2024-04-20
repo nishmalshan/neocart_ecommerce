@@ -1,0 +1,591 @@
+<%-include('./userPartials/header')%>
+
+
+
+<%-include('./userPartials/navbar')%>
+
+       
+<link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
+
+
+
+
+
+
+
+
+<style>
+      
+    .address-container {
+    max-width: 190px; 
+}
+.btn-close{
+    position: absolute;
+    top: 30px;
+    right: 240px;
+    z-index: 1;
+    font-size: 20px;
+}
+
+</style>
+        <!-- address form modal -->
+        
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-lg  ">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 " id="staticBackdropLabel">ADD ADDRESS</h1>
+        </div>
+        <div class="container  mt-5 mb-5 ">
+            <div class="row mx-0 justify-content-center">
+              <div class="col-md-6 col-lg-6">
+                <form
+                  method="POST"
+                  class="w-100 rounded-1 p-4 border bg-white"
+                  action="/user-Newaddress"
+                >
+                  <label class="d-block mb-4">
+                    <span class="form-label d-block">Name</span>
+                    <input  id="addName"
+                      name="name"
+                      type="text"
+                      class="form-control"
+                      placeholder="enter your name" 
+                      onchange="validateAddAddressForm()"
+                    />
+                     <div id="addNameError" style="color: red; font-size: 13px;"></div>
+                  </label>
+                  
+                  <label class="d-block mb-4">
+                    <span class="form-label d-block">Address line </span>
+                    <input id="addAddress"
+                      name="address"
+                      type="text"
+                      class="form-control"
+                      placeholder="Address(Area and Street) " onchange="validateAddAddressForm()"
+                    />
+                    <div id="addAddressError" style="color: red; font-size: 13px;"></div>
+                  </label>
+          
+              
+          
+                  <label class="d-block mb-4">
+                    <span class="form-label d-block">City</span>
+                    <input id="addCity" name="city" type="text" class="form-control" placeholder="City/District/Town"  onchange="validateAddAddressForm()"/>
+                    <div id="addCityError" style="color: red; font-size: 13px;"></div>
+                  </label>
+          
+                  <label class="d-block mb-4">
+                    <span  class="form-label d-block">State/Province</span>
+                    <input id="addState" name="state" type="text" class="form-control" placeholder="State" onchange="validateAddAddressForm()"/>
+                    <div id="addStateError" style="color: red; font-size: 13px;"></div>
+
+                  </label>
+          
+                  <label class="d-block mb-4">
+                    <span class="form-label d-block">Zip/Postal code</span>
+                    <input id="addPincode" name="pincode" type="text" class="form-control" placeholder="Pincode" onchange="validateAddAddressForm()"/>
+                    <div id="addPincodeError" style="color: red; font-size: 13px;"></div>
+                  </label>
+          
+                
+          
+                  <label class="d-block mb-4">
+                    <span class="form-label d-block">Phone</span>
+                    <input
+                    id="addPhone"
+                      name="phone"
+                      type="text"
+                      class="form-control"
+                      placeholder="10-digit mobile number" onchange="validateAddAddressForm()"
+                    />
+                    <div id="addPhoneError" style="color: red; font-size: 13px;"></div>
+
+                  </label>
+          
+                 
+          
+                  <div class="mb-3  ">
+                    <button type="submit" class="btn btn-primary px-4 rounded-3"onclick="return validateAddAddressForm()" >
+                      Save
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 rounded-3" data-bs-dismiss="modal">Close</button>
+
+                  </div>
+          
+                </form>
+              </div>
+            </div>
+          </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Understood</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- address form modal -->
+
+    <section class="bg-white py-5 ">
+
+        <div class="container position-relative">
+            <h4 class="card-title mb-4 ">Checkout
+               <i class="fa-regular fa-money-bill-1  text-dark ms-2 fs-4" style="color: #000000;"></i>
+               <button type="button " class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                ADD ADDRESS
+              </button>
+                                        
+
+                <div id="errorMessage" class="alert alert-danger" style="display: none; font-size: 15px; position: absolute; top: 0; right: 0; width: 70%; z-index: 1;">dsfdsfdsfdsfsdfs</div>
+
+            </h4>
+            <div class="row">
+                <div class="col-xl-8 col-lg-8">
+                    <!-- Checkout -->
+                    <div class="card border rounded shadow">
+                        <div class="p-4">
+                          <form id="checkout-form">
+                            <h5 class="card-title mb-3">Select Address</h5>
+                            <div class="  d-flex justify-content-end">
+                           
+                              <!-- <a href="/user-manageAddress" class="btn btn-secondary " style="margin-left: 10px ;color: #fff; text-decoration: none;"> MANAGE ADDRESS</a> -->
+                             
+                            </div>
+                            <div class="row mb-3 mt-3">
+                                 
+                          <% if (user.address.length > 0) { %>
+                           
+                            <% user.address.forEach(data => { %>
+                                <div class="col-lg-4 mb-3">
+                                    <!-- Address radio -->
+                                    <div class="form-check h-100 border rounded-3 shadow position-relative">
+                                        <div class="p-3" style="height: 290px;">
+                                            <input  class="form-check-input" type="radio"
+                                            name="Address" id="flexRadioDefault" 
+                                            value="<%= data._id %>"/>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Address No: <strong><%= ++i %></strong><br /><br>
+                                                
+                                                <small class="text-muted" >
+                                                    <span style=" color: black;">   <strong>Name: </strong><%= data.name %></span>      
+                                                </small><br>
+                                                <small class="text-muted" >
+                                                    <span style=" color: black;"> <strong>City: </strong> <%= data.city %> </span>     
+                                                </small><br>
+                                                <div class="address-container">
+                                                <small class="text-muted address-text" >
+                                           <span style=" color: black;"> <strong> Address: </strong> <small><%= data.address %></small></span>    
+                                                </small><br>
+                                            </div>
+                                                <small class="text-muted" >
+                                                    <span style=" color: black;"> <strong>State: </strong><%= data.state %></span>  
+                                                </small><br>
+                                                <small class="text-muted" >
+                                                    <span style=" color: black;"> <strong>Pin: </strong><%= data.pincode %></span>  
+                                                </small><br>
+                                                <small class="text-muted" >
+                                                    <span style=" color: black;">  <strong>Phone: </strong><%= data.phone %></span>     
+                                                </small>
+                                                
+                                            </label>
+                                            
+                                        </div>
+                                     <div class="" style="margin-bottom: 6px;margin-left: 180px; position: absolute; bottom: 5px; right: 5px;">
+    
+                                       <button type="button" style="border: none;background-color: white;"><i class="fas fa-trash fa-lg" onclick="deleteAddress('<%= data._id %>')" style="color:red;"></i></button>
+                                    </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+
+                            <% } else { %>
+                             
+                                <h4 style="font-family:sans-serif;color: red;">No address  Added... Add address to place order!!!</h4>
+                          <% } %>
+
+                                       
+
+
+                              
+                            </div>
+                            <hr>
+                            <h5 class="card-title mb-3">Choose PaymentMethod</h5>
+                            <div class="row mb-3">
+                              
+                                
+                                    <div class="col-lg-4 mb-3">
+                                        <div class="form-check h-100 border rounded-3">
+                                            <div class="p-3">
+                                                <input  class="form-check-input" type="radio"
+                                                    name="paymentMethod" id="flexRadioDefault3" 
+                                                    
+                                                    value= COD />
+                                                
+                                                <label class="form-check-label" for="flexRadioDefault3">
+                                                    <strong>
+                                                     COD
+                                                    </strong> <br />
+                                                    <small class="text-muted">Payment: Cash on delivery
+                                                    </small><br>
+                                                    <small class="text-muted">Type: Hand to hand</small>
+                                                </label>
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-lg-4 mb-3">
+                                        <div class="form-check h-100 border rounded-3">
+                                            <div class="p-3">
+                                                <input  class="form-check-input" type="radio"
+                                                    name="paymentMethod" id="flexRadioDefault4" 
+                                                    
+                                                    value= Online />
+                                                    
+                                                <label class="form-check-label" for="flexRadioDefault4">
+                                                    <strong>
+                                                    Online
+                                                    </strong> <br />
+                                                    <small class="text-muted">Payment: Razorpay
+                                                    </small><br>
+                                                    <small class="text-muted">Type: Online Payment</small>
+                                                </label>
+                                            
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+
+
+                                    <!-- <div class="col-lg-4 mb-3">
+                                        <div class="form-check h-100 border rounded-3">
+                                            <div class="p-3">
+                                                <input  class="form-check-input" type="radio"
+                                                    name="paymentMethod"  
+                                                    id="'wallet"
+                                                    value= 'wallet' />
+                                                    
+                                                <label class="form-check-label" for="wallet" data-walletAmount="" id="">
+                                                    <strong>
+                                                    Wallet
+                                                    </strong> <br />
+                                                    <small class="text-muted">Payment: Razorpay
+                                                    </small><br>
+                                                    <small class="text-muted">Type: Online Payment</small>
+                                                    <br>
+                                                    <small class="mb-2" style="font-weight:500;">Balance:</small>
+                                      <small class="mb-2 text-success"  style="font-weight: bold;">₹</small>
+                                                </label>
+                                            
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                      
+                                   
+                            </div>
+                         
+                            <hr>
+                       
+                        </div>
+                    </div>
+
+                </div>
+                <div
+                    class="col-xl-4 col-lg-4 d-flex   border card rounded shadow mb-5">
+                    <div class="container ">
+                        <div class="row pt-3">
+                                <!-- <div class="card mb-3 border shadow-0" style="margin-top: 55px">
+                                  <div class="card-body">
+                                  
+                                      <div class="form-group ">
+                                        <label class="form-label"><strong>Have coupon?</strong></label>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control border" id="couponCode" name="" placeholder="Coupon code" />
+                                          <button type="button" class="btn btn-success  text-white">Apply</button>
+                                        </div>
+                                      </div>
+                                
+                                  </div>
+                                </div> -->
+                                <div class="card shadow-0 border">
+                                  <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                      <p class="mb-2">Subtotal:</p>
+                                      <% if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) { %>
+                                        <p class="mb-2">₹ 0</p>
+                                       <% } else { %>
+                                        <p class="mb-2">₹ <%= totalAmount[0].totalAmount %></p>
+                                      <% } %>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between">
+                                      <!-- <p class="mb-2">Discount:</p> -->
+
+                                        <!-- <p  class="mb-2 text-success">₹</p> -->
+                                       
+
+                                        <!-- <p id="discount" class="mb-2 text-success">No discount</p> -->
+
+                                    </div>
+                                  
+                                    <div class="d-flex justify-content-between">
+                                      <p class="mb-2">Payment Type:</p>
+                                      <p class="mb-2" id="selectedPayment">Not Selected
+                                      </p>
+                                    </div>
+                                 
+                            
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                      <p class="mb-2">Total payable:</p>
+                                        <% if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) { %>
+                                         <% } else { %>
+                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= totalAmount[0].totalAmount %></p>
+                                        <% } %>
+                                        
+                                        
+
+                                        <!-- <p id="grandTotal" class="mb-2 fw-bold">₹
+                                        </p> -->
+
+                                    </div>
+                        
+                                    <div class="mt-3">
+                                      <button type="submit" class="btn btn-success w-100 shadow-0 mb-2">
+                                        Confirm Order </button>
+                                        <a href="/add-to-Cart" class="btn btn-light w-100 border mt-2"> Back to Cart </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                                <hr />
+
+                                <!-- <h6 class="text-dark my-4">Items in cart</h6>
+                              
+                                 
+                                    <div class="row">
+
+                                            <div class="d-flex align-items-center  col-md-4 col-4 mb-4">
+                                                <div class="me-3 position-relative">
+                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary bg-danger">
+                                                        
+                                                    </span>
+                                                    <a href="">
+                                                        <img src=""
+                                                        style="height: 96px; width: 96px;"
+                                                        class="img-sm rounded border" />
+                                                    </a>
+                                                </div>
+                                                
+                                            </div>
+
+                                    </div> -->
+                                        
+                                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+
+
+
+
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const selectedAddress = document.querySelector('input[name="Address"]:checked');
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (selectedAddress && selectedPaymentMethod) {
+                const selectedAddressValue = selectedAddress.value;
+                const selectedPaymentMethodValue = selectedPaymentMethod.value;
+                
+                sendDataToBackend(selectedAddressValue, selectedPaymentMethodValue);
+            } else {
+                errorMessage.innerHTML = 'Please select both Address and payment method';
+                errorMessage.style.display = 'block';
+
+                setTimeout(() => {
+                    errorMessage.style.display = 'none'
+                }, 3000);
+                console.error('Please select both Address and payment method')
+            }
+        })
+
+
+        function sendDataToBackend(addressValue, paymentMethodValue) {
+            const data = {
+                address: addressValue,
+                paymentMethod: paymentMethodValue
+            };
+
+            fetch('/placeOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data,'Data sent successfully');
+                window.location.href = '/orderConfirmation'
+            })
+            .catch(error => {
+                console.log(error,'Error sending data to backend');
+            })
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+        function deleteAddress(addressId) {
+            console.log(addressId);
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this address!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            fetch(`/user-deleteAddress/${addressId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then((data) => {
+                if (data.success) {
+                    swal("Address deleted successfully!", { icon: "success" });
+                    console.log("success");
+                    window.location.reload()
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting address', error);
+                swal("Error!", "An error occurred while deleting the address.", "error");
+            });
+        }
+    });
+}
+
+    </script>
+
+
+
+
+
+
+
+<script>
+    function validateAddAddressForm() {
+        const name = document.getElementById('addName').value.trim();
+        const address = document.getElementById('addAddress').value.trim();
+        const city = document.getElementById('addCity').value.trim();
+        const state = document.getElementById('addState').value.trim();
+        const pincode = document.getElementById('addPincode').value.trim();
+        const phone = document.getElementById('addPhone').value.trim();
+
+        // Clear previous error messages
+        clearAddAddressFormErrors();
+
+        let isValid = true;
+
+        // validata name 
+        if (name === '') {
+            displayAddAddressErrors('Name is required!', 'addNameError');
+            isValid = false;
+        }
+
+        if (address === '') {
+            displayAddAddressErrors('Address is required!', 'addAddressError');
+            isValid = false;
+        }
+
+        if (city === '') {
+            displayAddAddressErrors('City is required', 'addCityError');
+            isValid = false;
+        }
+
+        if (state === '') {
+            displayAddAddressErrors('State is required', 'addStateError');
+            isValid = false;
+        }
+
+        if (pincode === '') {
+            displayAddAddressErrors('Pincode is required', 'addPincodeError')
+        } else if (!/^\d{6}$/.test(pincode)) {
+            displayAddAddressErrors('Pincode must be 6 digits!', 'addPincodeError');
+            isValid = false;
+        }
+
+        if (phone === '') {
+            displayAddAddressErrors('Phone number is required', 'addPhoneError');
+            isValid = false;
+        } else if (!/^\d{10}$/.test(phone)) {
+            displayAddAddressErrors('Phone number is must be 10 digits!', 'addPhoneError')
+        } else if (/^0+$/.test(phone)) {
+            displayAddAddressErrors('All digits connot be zero!', 'addPhoneError');
+            isValid = false;
+        }
+
+        return isValid;
+
+    }
+
+
+    // Function to display error messages for Add Address form
+    function displayAddAddressErrors(message, errorContainerId) {
+        const errorContainer = document.getElementById(errorContainerId);
+        errorContainer.innerHTML = message;
+    }
+
+
+    function clearAddAddressFormErrors() {
+        const errorContainers = ['addNameError', 'addAddressError', 'addCityError', 'addStateError', 'addPincodeError', 'addPhoneError'];
+        errorContainers.forEach(containerId => {
+            const errorContainer = document.getElementById(containerId);
+            errorContainer.innerHTML = '';
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <%-include('./userPartials/footer')%>

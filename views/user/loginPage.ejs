@@ -9,7 +9,11 @@
 
         <div class="wrapper">
             <div class="container main">
-                <div class="row">
+                <div class="row position-relative">
+                    <% if (passwordMessage) { %>
+                        <p class="text-danger text-center" id="passwordMessage" style="font-size: 13px; transition: all 0.5s ease-out; position: absolute; top: 20px; right: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;"> 
+                            <%= passwordMessage %> </p>
+                      <% } %>
                     <div class="col-md-6 side-image">
                         
                     </div>
@@ -23,12 +27,12 @@
                                 <header>Log In</header>
                                 <form action="/logintohome" method="post" id="login">
                                     <div class="input-field">
-                                        <input type="text" name="email" class="input" id="email" required>
+                                        <input type="text" name="email" class="input" id="email" value="nishmalshan12345@gmail.com" required>
                                         <p id="emailError" class="text-danger mb-3" style="font-size: 13px;"></p>
                                         <label for="email">Email</label>
                                     </div>
                                     <div class="input-field">
-                                        <input type="password" name="password" class="input" id="password" required >
+                                        <input type="password" name="password" class="input" id="password" value="Nishmal@123" required >
                                         <p id="passwordError" class="text-danger mb-3" style="font-size: 13px;"></p>
                                         <label for="password">Password</label>
                                         <span class="password-toggle" id="togglePassword" style="position: absolute; top: 10px; right: 15px;">
@@ -39,7 +43,7 @@
                                         <input type="submit" class="submit" value="Log In">
                                     </div>
                                     <div class="forgot-password">
-                                        <span><a href="">Forgot password?</a></span>
+                                        <span><a href="/forgetPassword">Forgot password?</a></span>
                                     </div>
                                     <div class="signin">
                                         <span>Don't have an account? <a href="/usersignup">Sign Up</a></span>
@@ -59,10 +63,17 @@
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 var blockMessage = document.getElementById("block-message");
+                var passwordMessage = document.getElementById("passwordMessage")
                 if (blockMessage) {
                     blockMessage.style.opacity = "0";
                     setTimeout(function() {
                         blockMessage.style.display = "none";
+                    }, 1000); // Wait for the transition to complete before hiding
+                }
+                if (passwordMessage) {
+                    passwordMessage.style.opacity = "0";
+                    setTimeout(function() {
+                        passwordMessage.style.display = "none";
                     }, 1000); // Wait for the transition to complete before hiding
                 }
             }, 5000);

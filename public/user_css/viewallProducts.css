@@ -7,9 +7,9 @@
 .sidebar{
 	/* float:left; */
 	background:#fff;
-    background-color: #B05574;
+    /* background-color: #B05574; */
 	width:20%;	
-	padding:13px 0 0 45px;
+	padding:13px 0 0 20px;
 	height:100vh;
 	border-right:1px solid #c4c4c4;
     position: sticky;
@@ -19,7 +19,7 @@
 .sidebar h3{
 	color:#262626;
 	text-transform:uppercase;
-	font-size:18px;
+	font-size:24px;
 	font-weight:700;
 	padding:35px 0 10px 0;
 	letter-spacing:1px;

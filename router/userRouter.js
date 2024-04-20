@@ -1,38 +1,189 @@
 const express = require("express");
 
-const user = express.Router()
+const user = express.Router();
 
 const userController = require("../controller/userController");
+const cartController = require("../controller/cartController");
 const userAuthentication = require("../middleware/userAuth");
+const orderController = require("../controller/orderController");
+const profileUpload = require("../middleware/profile-multer");
+const multer = require("multer");
 
-user.get('/',userAuthentication.existUser,userController.toGuestPageGet);
-user.get('/userlogin',userController.toLoginPageGet);
-user.post('/logintohome',userAuthentication.existUser,userController.toLoginPost);
-user.post('/userlogout',userController.userLogOutPost);
-user.get('/usersignup',userAuthentication.existUser,userController.toSignUpPageGet);
-user.post('/register',userAuthentication.existUser,userController.toSignupPost);
-user.get('/home',userAuthentication.verifyingUser,userController.homePageGet);
+// Multer storage configuration
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }); // Create a Multer instance
+
+user.get("/", userAuthentication.existUser, userController.toGuestPageGet);
+user.get("/userlogin", userController.toLoginPageGet);
+user.post(
+  "/logintohome",
+  userAuthentication.existUser,
+  userController.toLoginPost
+);
+user.get(
+  "/usersignup",
+  userAuthentication.existUser,
+  userController.toSignUpPageGet
+);
+user.post(
+  "/register",
+  userAuthentication.existUser,
+  userController.toSignupPost
+);
+user.get(
+  "/home",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  userController.homePageGet
+);
+user.post(
+  "/userlogout",
+  userAuthentication.verifyingUser,
+  userController.userLogOutPost
+);
+
+// routes for otp
+user.get("/otp", userAuthentication.existUser, userController.toGetOtpPage);
+user.get(
+  "/otpSending",
+  userAuthentication.existUser,
+  userController.otpSending
+);
+user.post("/otpconfirmation", userController.otpConfirmation);
+user.get("/resendOtp", userController.otpSending);
+
+// route for forget password
+user.get(
+  "/forgetPassword",
+  userAuthentication.existUser,
+  userController.toGetForgetPassword
+);
+user.post("/forgetPassword", userController.forgetPassword);
+user.post("/resetPassword", userController.resetPassword);
+
+// routes for products
+user.get(
+  "/allproducts",
+  userAuthentication.userBlockOrUnblock,
+  userController.viewAllProducts
+);
+user.get(
+  "/productdetails/:id",
+  userAuthentication.userBlockOrUnblock,
+  userController.productDetails
+);
+
+// routes for cart
+
+user.post(
+  "/add-to-Cart",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  cartController.postaddToCart
+);
+user.get(
+  "/add-to-Cart",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  cartController.getaddToCart
+);
+user.delete(
+  "/deleteCart/:productId",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  cartController.deleteCartItem
+);
+user.post(
+  "/change-quantity",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  cartController.changeQuantity
+);
+
+// route for checkout
+user.get(
+  "/checkout",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  cartController.checkout
+);
+user.post(
+  "/user-Newaddress",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  userController.addNewAddress
+);
+user.post(
+  "/user-deleteAddress/:addressId",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  userController.deleteUserAddress
+);
+
+// route for order
+
+user.post(
+  "/placeOrder",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  orderController.placeOrder
+);
+user.get(
+  "/orderConfirmation",
+  userAuthentication.verifyingUser,
+  orderController.orderConfirmation
+);
+
+user.get('/order-Details',userAuthentication.verifyingUser,orderController.orderDetails);
+user.post('/cancelOrder',userAuthentication.verifyingUser,orderController.cancelOrder);
 
 
 
-
-
-// route for otp
-user.get('/otp',userAuthentication.existUser,userController.toGetOtpPage);
-user.get('/otpSending',userAuthentication.existUser,userController.otpSending);
-user.post('/otpconfirmation',userController.otpConfirmation)
-user.get('/resendOtp',userController.otpSending)
+user.get('/products/search',userAuthentication.verifyingUser,userController.searchProducts)
+user.post('/filter-products',userAuthentication.verifyingUser,userController.filterProducts)
 
 
 
-
-// route for products
-user.get('/allproducts',userAuthentication.verifyingUser,userController.viewAllProducts);
-user.get('/productdetails/:id',userAuthentication.verifyingUser,userController.productDetails);
+// ----------------------------------------------------------------------------------------------//
 
 
 
+// route for get userprofile
 
+user.get(
+  "/user-profile",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  userController.getUserProfile
+);
+user.put(
+  "/updateUserName",
+  userAuthentication.verifyingUser,
+  userController.updateUserName
+);
+user.get(
+  "/manageAddress",
+  userAuthentication.verifyingUser,
+  userAuthentication.userBlockOrUnblock,
+  userController.manageAddress
+);
+user.post(
+  "/user-addAddress",
+  userAuthentication.verifyingUser,
+  userController.addAddress
+);
+user.post(
+  "/user-editAddress/:id",
+  userAuthentication.verifyingUser,
+  userController.editAddress
+);
+user.post(
+  "/edit-profileImage",
+  profileUpload.single("imageData"),
+  userController.editProfileImage
+);
+user.patch('/change-Password', userAuthentication.verifyingUser, userController.changePassword);
 
+// user.get('/product/searchProduct',userController.searchProducts);
 
-module.exports = user
+module.exports = user;
