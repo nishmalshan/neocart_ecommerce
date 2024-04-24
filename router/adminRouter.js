@@ -144,6 +144,7 @@ admin.post(
 
 
 admin.get('/order-manage',adminAuthentication.verifyingAdmin,orderController.getOrderManagement);
+admin.post('/change-orderStatus/:orderId', adminAuthentication.verifyingAdmin,orderController.updateUserOrderStatus);
 
 
 

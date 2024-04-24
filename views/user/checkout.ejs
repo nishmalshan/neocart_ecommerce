@@ -339,9 +339,9 @@
                                     <hr>
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">Total payable:</p>
-                                        <% if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) { %>
+                                        <% if (!grandTotal || grandTotal.length === 0 || grandTotal === undefined) { %>
                                          <% } else { %>
-                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= totalAmount[0].totalAmount %></p>
+                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= grandTotal %></p>
                                         <% } %>
                                         
                                         

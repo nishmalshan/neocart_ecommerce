@@ -78,7 +78,6 @@ user.get(
 user.post(
   "/add-to-Cart",
   userAuthentication.verifyingUser,
-  userAuthentication.userBlockOrUnblock,
   cartController.postaddToCart
 );
 user.get(

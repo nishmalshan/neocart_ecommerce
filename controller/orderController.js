@@ -33,39 +33,41 @@ const orderConfirmation = (req, res) => {
 
 const placeOrder = async (req, res) => {
     try {
+        console.log(req.session,'sssssssssssssssssss');
         const user = await users.findOne({ email: req.session.email });
-        // console.log(user,"uuuuuuuuuuuuuuuuuuuuuuuuuuuu");
         const userId = user._id;
-        const selectedAddressId = req.body.address
-        // console.log(selectedAddressId,"sssssssssssssssssssss");
-        const paymentMethod = req.body.paymentMethod
-        // console.log(paymentMethod,"ppppppppppppppppppppppppppppppp");
-        const selectedAddress = user.address.find((x) => x._id == selectedAddressId)
-        // console.log(selectedAddress,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        const selectedAddressId = req.body.address;
+        const paymentMethod = req.body.paymentMethod;
+        const selectedAddress = user.address.find((x) => x._id == selectedAddressId);
 
+        console.log(req.session.totalAmount,'tttttttttttttttttttttt');
         const totalAmount = req.session.totalAmount;
-// console.log(totalAmount,"tttttttttttttttttttttttttttttttttttt");
-        const grandTotal = Math.round((totalAmount[0].totalAmount * 18) / 100)
-        // console.log(grandTotal,"gggggggggggggggggggggggggg");
+        console.log(totalAmount,'ttttttttttttttooooooooooo');
+        // Check if totalAmount is not defined, empty, or undefined
+        if (totalAmount < 0) {
+            console.log('mmmmmmmmmmkmkmkkmmkkmkkm')
+        }
+
+        console.log('hhhhhhhhhhhhhhhhhhhh');
+       
+        const grandTotal = totalAmount;
+        console.log(grandTotal,'gggggggggggggggggggggg');
         const products = await helpers.getProductData(userId);
-        // console.log(products,"ppppppppppppppppppppppppppppppp");
         const orderDate = new Date();
         const arrivingDate = new Date(orderDate);
-        arrivingDate.setDate(orderDate.getDate() + 4)
+        arrivingDate.setDate(orderDate.getDate() + 4);
 
         const items = [];
 
         for (let i = 0; i < products.length; i++) {
             const product = products[i].product;
-            // console.log(product,'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
             const item = {
                 productId: products[i].item,
                 name: product.name,
                 size: products[i].size,
                 quantity: products[i].quantity
             }
-            // console.log(item,"iiiiiiiiiiiiiiiiiiiiiiii");
-            items.push(item)
+            items.push(item);
         }
 
         const newOrder = new orders({
@@ -84,13 +86,12 @@ const placeOrder = async (req, res) => {
             totalPrice: grandTotal,
             orderDate,
             arrivingDate
-        })
+        });
 
         const saveOrder = await newOrder.save();
 
         if (saveOrder) {
-            // console.log(saveOrder,'ssssssssssssssssssssssssssss');
-            await cart.findOneAndDelete({ userId })
+            await cart.findOneAndDelete({ userId });
 
             for (const item of products) {
                 const productId = item.item;
@@ -98,19 +99,18 @@ const placeOrder = async (req, res) => {
                 const purchasedQuantity = item.quantity;
                 const result = await product.updateOne(
                     { _id: productId, 'variant.size': size },
-                    { $inc: { 'variant.$.quantity': -purchasedQuantity } } // Decrement the quantity by purchasedQuantity
+                    { $inc: { 'variant.$.quantity': -purchasedQuantity } }
                 );         
-                // console.log(result,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-            }
             }
 
-        if (paymentMethod == 'COD') {
-            console.log('payment is cod');
-            res.json({ codeSuccess: true, message: 'order success'})
+            if (paymentMethod == 'COD') {
+                res.json({ codeSuccess: true, message: 'order success' });
+            }
         }
     } catch (error) {
+        // Handle the error
         console.error(error);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
+        res.status(500).json({ success: false, error: error.message });
     }
 }
 
@@ -153,7 +153,7 @@ const cancelOrder = async (req,res) => {
 
         const orderData = await orders.findById(id);
 
-        if (orderData.status !== 'Order Delivered') {
+        if (orderData.status !== 'Delivered') {
             orderData.status = 'Cancelled';
             orderData.reason = req.body.cancellationReason;
 
@@ -195,7 +195,7 @@ const cancelOrder = async (req,res) => {
 
 const getOrderManagement = async (req, res) => {
     try {
-        console.log('||||||||||||||');
+        // console.log('||||||||||||||');
             let i = 0;
             const orderedDetails = await orders.find().sort({ orderDate: -1 })
             console.log(orderedDetails,'ooooooooooooorrrrrrrrrrrrrr');
@@ -207,6 +207,30 @@ const getOrderManagement = async (req, res) => {
     }
 }
  
+
+
+
+const updateUserOrderStatus = async (req, res) => {
+    try {
+        const newStatus = req.body.status;
+        console.log('newStatus', newStatus);
+        const orderId = req.params.orderId;
+        console.log('orderId',orderId);
+
+        const updateStatus = await orders.findByIdAndUpdate(orderId, { status: newStatus });
+        console.log('updateStatus',updateStatus);
+
+        if (updateStatus) {
+            res.json({ success: true, message: 'Order status updated successfully' })
+        } else {
+            res.json({ success: false, message: 'Failed to update order status' })
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
 
 
 
@@ -226,5 +250,6 @@ module.exports = {
     orderConfirmation,
     orderDetails,
     cancelOrder,
-    getOrderManagement
+    getOrderManagement,
+    updateUserOrderStatus
 }

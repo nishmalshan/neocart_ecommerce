@@ -1,9 +1,6 @@
 <%-include('./adminPartials/sidebar')%> 
 
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
-</head>
+
 
 <style>
     /* .col-sm-12{
@@ -47,8 +44,13 @@
                 <% orderedDetails.forEach((order, index) => { %>
                     <tr>
                         <td><%= index + 1 %></td>
-                        <td><%= order._id %></td>
-                        <td><%= order.totalPrice %></td>
+                        <td><%= order._id %>
+                            <br>
+                            <% if (order.status === 'Cancelled') { %>
+                                <p style="font-size: 13px; color: red;">Order was cancelled</p>
+                            <% } %>
+                        </td>
+                        <td><span>&#8377</span><%= order.totalPrice %></td>
                         <td><%= order.paymentMethod %></td>
                         <% order.items.forEach(item => { %>
                             <td><%= item.name %></td>
@@ -56,14 +58,15 @@
                         <% }) %>
                         <td><%= order.orderDate.toLocaleString() %></td>
                         <td>
-                            <select name="orderStatus" id="orderStatus" class="custom-select">
-                                <option value="" selected disabled>Select Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="processing">Processing</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
+                            <select name="orderStatus" data-order-id="<%= order._id %>" class="custom-select orderStatus">
+                                <option value="" disabled>Select Status</option>
+                                <option value="Pending" <% if (order.status === 'Pending') { %> selected <% } %>>Pending</option>
+                                <option value="Processing" <% if (order.status === 'Processing') { %> selected <% } %>>Processing</option>
+                                <option value="Shipped" <% if (order.status === 'Shipped') { %> selected <% } %>>Shipped</option>
+                                <option value="Delivered" <% if (order.status === 'Delivered') { %> selected <% } %>>Delivered</option>
                             </select>
                             
+                            <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateOrderStatus(this)">Update</button>
                         </td>
                     </tr>
                 <% }) %>
@@ -81,7 +84,7 @@
 
 
 
-
+<!-- data table link -->
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
@@ -92,5 +95,41 @@
         $('#usersTable').DataTable();
     });
 </script>
+
+
+<script>
+    function updateOrderStatus(button) {
+        var row = button.closest('tr'); // Get the closest row of the button clicked
+        var selectedStatus = row.querySelector('.orderStatus').value; // Get the selected status within the row
+        var orderId = row.querySelector('.orderStatus').getAttribute('data-order-id'); // Get the order ID within the row
+
+        var requestBody = JSON.stringify({
+            status: selectedStatus,
+            orderId: orderId
+        });
+
+        fetch(`/admin/change-orderStatus/${orderId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: requestBody
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+                console.log('Order status updated successfully.');
+            } else {
+                console.error('Failed to update order status.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+
 
 <%-include('./adminPartials/footer')%>

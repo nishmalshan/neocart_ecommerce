@@ -229,9 +229,19 @@ const checkout = async (req, res) => {
         console.log(cartProductData,"CPCPPCPCPCPCPCPCPCPCPCPCPCP");
         let i=0;
         const totalAmount = await helpers.totalAmount(userId);
-        console.log(totalAmount,"ttttttttttttttttttttttttt");
-        req.session.totalAmount = totalAmount;
-        res.render('./user/checkout',{title: 'checkout', totalAmount, user, cartCount, i})
+        if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) {
+            // console.log('Error: Total amount is undefined or empty.');
+            // Handle the error condition here, e.g., redirect to an error page
+            return res.render('./user/cart', { cartCount, totalAmount });
+        } else {
+            const taxAmount = Math.round(((totalAmount[0].totalAmount * 18) / 100));
+            // console.log(taxAmount,"taatatatatatatatatatatat");
+            // console.log(total[0].totalAmount,"ttttttttttttttttttttttttttttttt");
+            const grandTotal = totalAmount[0].totalAmount + taxAmount;
+            req.session.totalAmount = grandTotal;
+            console.log(req.session.totalAmount,'fdsfsdfsdfsdsd');
+            res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, user, cartCount, i})
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
