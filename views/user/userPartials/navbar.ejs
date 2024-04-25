@@ -56,6 +56,8 @@
                         
                     <div class="">
                         <a href="/user-profile" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>My profile</p></div></a>
+                        <a href="/order-Details" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>My order</p></div></a>
+                        <a href="" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>Wishlist</p></div></a>
                         <div class="drop-list">
                             <form action="/userlogout" method="post">
                             <button class="logout text-start bg-transparent">Logout</button>
@@ -155,7 +157,8 @@ document.addEventListener('click', function (event) {
 <script>
     function searchProducts() {
         const searchInput = document.getElementById('searchInput').value;
-        fetch(`/products/search?q=${searchInput}`)
+        if (searchInput.length > 0) {
+            fetch(`/products/search?q=${searchInput}`)
         .then(response => response.json())
         .then(data => {
             displaySearchResult(data)
@@ -164,6 +167,7 @@ document.addEventListener('click', function (event) {
             console.error('Error searching products:', error);
             alert('An error occurred while searching products. Please try again.');
         })
+        }
     }
 
     function displaySearchResult(result) {

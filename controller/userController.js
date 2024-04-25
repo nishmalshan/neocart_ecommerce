@@ -52,7 +52,10 @@ const homePageGet = async (req, res) => {
     const cartCount = await helpers.getCartCount(req.session.email)
     // console.log(cartCount,"cccccccccaaaaaaarrrrrrrrtttttttttt");
     const categoryData = await category.find({status: true});
-    const productData = await products.find({status: true}).limit(4);
+    const productData = await products.find({status: true});
+
+    // data retriving for new arrivals
+    // const productDatas = await products.find({status: true,}).sort({ createdAt: 1 }).limit(4);
     // console.log(categoryData);
     res.render("./user/homePage",{cartCount, productData, categoryData, title: "home"});
   } catch (error) {

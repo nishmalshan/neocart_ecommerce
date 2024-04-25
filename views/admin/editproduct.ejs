@@ -298,10 +298,10 @@ function validateImage (inputId,errorId) {
   errorMessage.textContent = '';
 
 
-  if (imageInput.value === '') {
-        errorMessage.textContent = "image field is required";
-        return false;
-      }
+   // Skip validation if the image input is empty
+   if (filePath === '') {
+        return true;
+    }
       
   
   if (!regex.exec(filePath)) {

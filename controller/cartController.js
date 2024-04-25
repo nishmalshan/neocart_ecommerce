@@ -27,7 +27,7 @@ const postaddToCart = async (req, res) => {
             const existingProductIndex = cartData.products.findIndex(
                 (product) => product.productId == productId && product.size == selectedSize
             );
-            console.log(existingProductIndex,'eeeeeeeeeeeeeeeeeeeeeeeeee');
+
 
             if (existingProductIndex !== -1) {
                 // If the product already exists, increment the quantity
@@ -72,7 +72,7 @@ const postaddToCart = async (req, res) => {
 const getaddToCart = async (req, res) => {
     try {
         const cartCount = await helpers.getCartCount(req.session.email);
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
         if (cartCount === 0) {
             res.render('./user/cart', { cartCount });
             console.log('cart is empty');
@@ -82,18 +82,16 @@ const getaddToCart = async (req, res) => {
 
             // Fetch the cart data for the user
             const cartData = await helpers.getProductData(userId);
-            // console.log(cartData,"cccccccccccccccccccccccccccccccc");
+
             const total = await helpers.totalAmount(userId);
-            // console.log(total[0],"total");
-            // console.log(typeof(total),"ttttttttttttttt");
+
             if (!total || total.length === 0 || total[0] === undefined) {
                 // console.log('Error: Total amount is undefined or empty.');
                 // Handle the error condition here, e.g., redirect to an error page
                 return res.render('./user/cart', { cartCount, total });
             } else {
                 const taxAmount = Math.round(((total[0].totalAmount * 18) / 100));
-                // console.log(taxAmount,"taatatatatatatatatatatat");
-                // console.log(total[0].totalAmount,"ttttttttttttttttttttttttttttttt");
+
                 const grandTotal = total[0].totalAmount + taxAmount;
                 const eachProductPrice = await helpers.eachProductPrice(userId);
         
@@ -147,14 +145,14 @@ const deleteCartItem = async (req, res) => {
 const changeQuantity = async (req, res) => {
     try {
         const { userId, productId, quantity, action } = req.body;
-console.log(quantity,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+
         // Find the user's cart using the email stored in the session
         const userData = await users.findOne({ email: req.session.email });
         const userid = userData._id;
 
         // Find the cart corresponding to the user
         const cartData = await cart.findOne({ userId: userid });
-        // console.log(cartData.products, "cccccccccccccccccccccccccccccccccccccc");
+
 
         if (!cartData) {
             return res.status(404).json({ success: false, error: "Cart not found" });
@@ -162,20 +160,21 @@ console.log(quantity,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
 
         // Find the product in the cart
         const productInCart = cartData.products.find(product => product.productId.toString() === productId.toString());
-        console.log(productInCart, "Product in cart");
-console.log(productInCart.size,'cart product size');
+
         // If product not found, handle the error
         if (!productInCart) {
             return res.status(404).json({ success: false, error: "Product not found in the cart" });
         }
+        console.log(productInCart,'ppppppppiiiiiiiiiiiicccccccccc');
 
         if (action === 'increase') {
             // Update quantity and check maximum stock
             const productData = await product.findById(productId);
-            console.log(productData.variant,'dddddddddddddddddddddddddddd');
+            console.log(productData,'ppppppppppdddddddddd');
+
             const matchSize = productData.variant.find((variant) => variant.size === productInCart.size)
             if (matchSize) {
-                console.log(matchSize,'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+                console.log(matchSize,'matchSize');
             }
             const updatedQuantity = productInCart.quantity + quantity;
             console.log(updatedQuantity,'UUUUUUUUUUUUUUUUUUUUUUUUUUUU');

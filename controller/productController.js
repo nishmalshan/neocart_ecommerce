@@ -47,7 +47,7 @@ const addProductPage = (req,res) => {
 const addProductPost = async (req,res) => {
 
     try {
-        
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         const {name, description, brand, category, color, price} = req.body
 
         const existProduct = await product.findOne({ name: name});

@@ -552,7 +552,7 @@ function previousSlide() {
 <section  style="margin: 100px 0; margin-top: 0;">
     <div class="container">
         <div class="row">
-            <% productData.forEach(data => { %>
+            <% productData.slice(0, 4).forEach(data => { %>
                 <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
                     <div class="product position-relative p-0">
                         <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
@@ -680,73 +680,40 @@ function previousSlide() {
 
 
 <!-- New arrival section start -->
-
-<div class="best-seller-header"  style="margin: 100px 0; margin-bottom: 0;">
+<div class="all-products-header" style="margin: 100px 0; margin-bottom: 0;">
     <div class="container header-mark my-5 py-4 d-flex justify-content-start align-items-center">
         <span></span>
         <h2 class="mb-0 ms-2">New Arrival</h2>
     </div>
 </div>
-
 <section style="margin: 100px 0; margin-top: 0;">
     <div class="container">
         <div class="row">
-            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
-                <div class="new-arrival position-relative">
-                    <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
-                    <img src="images/best_selling_image.jpeg" alt="">
-                    <div class="new-arrival-btn">
-                        <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
-                        <p class="">Nike</p>
-                        <p class="">Nike Air Max Pulse</p>
-                        <p class="">Black</p>
-                        <p class=""><span>&#8377</span>8299</p>
+            <% productData.slice(-4).forEach(data => { %>
+                <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
+                    <div class="product position-relative p-0">
+                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                        <a href="/productdetails/<%= data.id %>" class="text-decoration-none text-dark">
+                            <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
+                            <div class="product-btn">
+                                <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
+                                <p class=""><%= data.brand %></p>
+                                <p class=""><%= data.name %></p>
+                                <p class=""><%= data.color %></p>
+                                <p class="">MRP: <span> &#8377</span><%= data.price %></p>
+                            </div>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
-                <div class="new-arrival position-relative">
-                    <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
-                    <img src="images/best_selling_image.jpeg" alt="">
-                    <div class="new-arrival-btn">
-                        <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
-                        <p class="">Nike</p>
-                        <p class="">Nike Air Max Pulse</p>
-                        <p class="">Black</p>
-                        <p class=""><span>&#8377</span>8299</p>
-                    </div>
-                </div>
-            </div>
-            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
-                <div class="new-arrival position-relative">
-                    <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
-                    <img src="images/best_selling_image.jpeg" alt="">
-                    <div class="new-arrival-btn">
-                        <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
-                        <p class="">Nike</p>
-                        <p class="">Nike Air Max Pulse</p>
-                        <p class="">Black</p>
-                        <p class=""><span>&#8377</span>8299</p>
-                    </div>
-                </div>
-            </div>
-            <div class="new-arrivalling col-lg-3 col-md-3 col-6 px-3">
-                <div class="new-arrival position-relative">
-                    <a href="" class="new-arrival-fvrte-btn"><i class="bi bi-heart"></i></a>
-                    <img src="images/best_selling_image.jpeg" alt="">
-                    <div class="new-arrival-btn">
-                        <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
-                        <p class="">Nike</p>
-                        <p class="">Nike Air Max Pulse</p>
-                        <p class="">Black</p>
-                        <p class=""><span>&#8377</span>8299</p>
-                    </div>
-                </div>
-            </div>
-            
+            <% }) %>
+
         </div>
     </div>
+    <div class="viewAllBtn my-5 text-center ">
+        <a href="/allproducts" class="btn btn-success">View All</a>
+    </div>
 </section>
+
 
 
 

@@ -17,7 +17,7 @@ const sendOtp = async (email) => {
         await OTP.deleteOne({email})
 
         const generatedOTP = await generateOTP();
-        console.log(generateOTP,"otpotpotpotpotp");
+        console.log(generatedOTP,"otpotpotpotpotp");
 
         const hashedOtp = await bcrypt.hash(generatedOTP, 10)
 console.log(hashedOtp,"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
