@@ -13,14 +13,8 @@ const user = require('../router/userRouter');
 // post method for add to cart
 const postaddToCart = async (req, res) => {
     try {
-        const user = await users.findOne({ email: req.session.email });
-        if (!user) {
-            return res.status(404).json({ success: false, error: 'User not found' });
-        }
-
         const { productId, selectedSize } = req.body;
-        const userId = user._id;
-        const cartData = await cart.findOne({ userId: userId });
+        const cartData = await cart.findOne({ userId : req.session.userId });
 
         if (cartData) {
             // Check if the product with the same size already exists in the cart
@@ -46,7 +40,7 @@ const postaddToCart = async (req, res) => {
         } else {
             // If the cart does not exist, create a new cart
             const newCart = await cart.create({
-                userId: userId,
+                userId: req.session.userId,
                 products: [{
                     productId: productId,
                     quantity: 1,
@@ -72,34 +66,43 @@ const postaddToCart = async (req, res) => {
 const getaddToCart = async (req, res) => {
     try {
         const cartCount = await helpers.getCartCount(req.session.email);
+        const cartData = await helpers.getProductData(req.session.userId);
+        const total = await helpers.totalAmount(req.session.userId);
+        const taxAmount = Math.round(((total[0]?.totalAmount * 18) / 100));
+        const grandTotal = total[0]?.totalAmount + taxAmount;
+        const eachProductPrice = await helpers.eachProductPrice(req.session.userId);
+        let i = 0;
+        // console.log(
+        //     total , 'total',
+        //     cartCount , 'cartCount',
+        //     taxAmount , 'taxAmount',
+        //     grandTotal , 'grandTotal',
+        //     cartData , 'cartData',
+        //     eachProductPrice , 'eachProductPrice',
+        // )
+        console.log(cartData , 'cartData')
 
-        if (cartCount === 0) {
-            res.render('./user/cart', { cartCount });
-            console.log('cart is empty');
-        } else {
-            const user = await users.findOne({ email: req.session.email });
-            const userId = user._id;
+        res.render('./user/cart', { title: 'Shopping cart', total, cartCount, taxAmount, grandTotal, cartData , eachProductPrice, i });
 
-            // Fetch the cart data for the user
-            const cartData = await helpers.getProductData(userId);
+        // if (cartCount === 0) {
+        //     res.render('./user/cart', { cartCount });
+        //     console.log('cart is empty');
+        // } else {
+        //     // Fetch the cart data for the user
+        //     console.log(total, 'from getaddToCart');
 
-            const total = await helpers.totalAmount(userId);
+        //     if (!total || total.length === 0 || total[0] === undefined) {
+        //         // console.log('Error: Total amount is undefined or empty.');
+        //         // Handle the error condition here, e.g., redirect to an error page
+        //         console.log('one worked');
+        //         return res.render('./user/cart', { cartCount, total });
+        //     } else {
 
-            if (!total || total.length === 0 || total[0] === undefined) {
-                // console.log('Error: Total amount is undefined or empty.');
-                // Handle the error condition here, e.g., redirect to an error page
-                return res.render('./user/cart', { cartCount, total });
-            } else {
-                const taxAmount = Math.round(((total[0].totalAmount * 18) / 100));
-
-                const grandTotal = total[0].totalAmount + taxAmount;
-                const eachProductPrice = await helpers.eachProductPrice(userId);
-        
-                let i = 0;
-                // Pass the cart data, eachProductPrice, and other necessary data to the rendering of the cart page
-                res.render('./user/cart', { title: 'Shopping cart', total, cartCount, taxAmount, grandTotal, cartData, eachProductPrice, i });
-            }
-        }
+        //         console.log('two worked');
+        //         // Pass the cart data, eachProductPrice, and other necessary data to the rendering of the cart page
+        //         res.render('./user/cart', { title: 'Shopping cart', total, cartCount, taxAmount, grandTotal, cartData, eachProductPrice, i });
+        //     }
+        // }
     } catch (error) {
         console.log('Error:', error.message);
         // Handle other errors here, e.g., redirect to an error page
@@ -223,15 +226,13 @@ const checkout = async (req, res) => {
         const userId = user._id;
 
         const cartCount = await helpers.getCartCount(req.session.email);
-        console.log(cartCount,"ccccccccccccccccccccc");
         const cartProductData = await helpers.getProductData(userId)
-        console.log(cartProductData,"CPCPPCPCPCPCPCPCPCPCPCPCPCP");
         let i=0;
         const totalAmount = await helpers.totalAmount(userId);
         if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) {
             // console.log('Error: Total amount is undefined or empty.');
             // Handle the error condition here, e.g., redirect to an error page
-            return res.render('./user/cart', { cartCount, totalAmount });
+            return res.redirect('/add-to-Cart');
         } else {
             const taxAmount = Math.round(((totalAmount[0].totalAmount * 18) / 100));
             // console.log(taxAmount,"taatatatatatatatatatatat");

@@ -9,7 +9,6 @@ const storage=multer.diskStorage({
         cb(null,'./public/categoryImages')
     },
     filename:(req,file,cb)=>{
-        // console.log(file,"fffffffffffffffffff");
         cb(null,Date.now()+'-'+file.originalname)
     }
     

@@ -1,16 +1,11 @@
-const { name } = require("ejs");
-const dbConnection = require("../config/connection");
 const user = require("../model/user");
 const OTP = require('../model/otpSchema');
 const bcrypt = require("bcrypt");
-const session = require("express-session");
 const category = require("../model/categorySchema");
 const products = require('../model/productSchema');
 const sendOTP = require('../controller/otpcontroller');
 const helpers = require('../controller/helpers');
-const sharp = require('sharp');
-const path = require('path');
-const fs = require('fs');
+const { ObjectId } = require("mongodb");
 
 
 const toGuestPageGet = async (req, res) => {
@@ -178,7 +173,10 @@ const otpConfirmation = async (req,res) => {
           
           console.log(newUser,"new user");
           req.session.userlogged = true;
+          req.session.userId = newUser._id
           req.session.signOtp = false;
+          console.log(req.session,"new user session");
+
           res.redirect('/home')
         }else{
           req.session.err = "Invalid OTP"
@@ -327,8 +325,9 @@ const toLoginPost = async (req, res) => {
         // console.log(passmatch,"abcfds");
         if (isUser.status == true) {
           req.session.email = req.body.email;
+          req.session.userId = isUser._id
           req.session.userlogged = true;
-          // console.log(req.session,"asaafdfda");
+          console.log(req.session.userlogged,"asaafdfda");
 
           res.redirect("/home");
         } else {
@@ -408,6 +407,9 @@ const productDetails = async (req,res) => {
   try {
     const cartCount = await helpers.getCartCount(req.session.email);
     const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).render('user/404')
+  }
     const productDetailsData = await products.findOne({ _id: id})
     // console.log(productDetailsData,"dddddddddddd");
     res.render('./user/productdetails',{cartCount, productDetailsData, title: 'productDetails'})
@@ -434,7 +436,10 @@ const getUserProfile = async (req, res) => {
   try {
     const email = req.session.email
     const userData = await user.findOne({ email })
-    // console.log(userData,"uuuuuuuuuuuuuuuuuuuuuuu");
+    console.log(userData,"uuuuuuuuuuuuuuuuuuuuuuu");
+    if (!userData || userData === null) {
+      res.redirect("/userlogin")
+    }
 
     const cartCount = await helpers.getCartCount(req.session.email)
 
@@ -496,8 +501,9 @@ const manageAddress = async (req, res) => {
 
 const addNewAddress = async (req, res) => {
   try {
-      const  { name, address, city, state, pincode, phone } = req.body;
+      const { name, address, city, state, pincode, phone } = req.body;
       let email = req.session.email;
+
       const addressData = {
           name,
           address,
@@ -507,21 +513,26 @@ const addNewAddress = async (req, res) => {
           phone
       }
 
-      const user = await user.findOne({ email })
-      if (user.address.length >= 3) {
+      const User = await user.findOne({ email });
+      if (!User) {
+          return res.status(404).json({ success: false, error: 'User not found' });
+      }
+
+      if (User.address.length >= 3) {
           req.flash('success', "Max Address limit reached!!! please delete existing address to add more");
-          res.redirect('/checkout')
+          res.redirect('/checkout');
       } else {
-          user.address.push(addressData);
-          await user.save();
-          console.log("address addred succesfulllllly");
-          res.redirect('/checkout')
+        User.address.push(addressData);
+          await User.save();
+          console.log("Address added successfully");
+          res.redirect('/checkout');
       }
   } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 }
+
 
 
 

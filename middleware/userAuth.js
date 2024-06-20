@@ -1,6 +1,7 @@
 const user = require('../model/user');
 
 const verifyingUser = (req,res,next) => {
+    
     if(req.session.userlogged){
 
         next()

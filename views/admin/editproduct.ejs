@@ -3,125 +3,137 @@
 
 
 
-    <div class="container d-flex justify-content-center align-items-center h-100">
-        <div class="category-add w-100 rounded shadow p-3 my-5 bg-body rounded border border-dark-subtle">
-            <div class="p-4">
-                <h2 class="mb-5 fw-bold text-center">Edit Product</h2>
-                <form action="/admin/edit-product/<%= productData.id %>" method="post" onchange="return validateForm()"  enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-                            <label class="fw-bold mb-2" for="productName">Product Name</label> <br>
-                            <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" value="<%= productData.name %>" name="name" id="productName" placeholder="Enter Product name" required>
-                            <p id="productNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
+<div class="container d-flex justify-content-center align-items-center h-100">
+    <div class="category-add w-100 rounded shadow p-3 my-5 bg-body rounded border border-dark-subtle">
+        <div class="p-4">
+            <h2 class="mb-5 fw-bold text-center">Edit Product</h2>
+            <form action="/admin/edit-product/<%= productData.id %>" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productName">Product Name</label>
+                        <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" value="<%= productData.name %>" name="name" id="productName" placeholder="Enter Product name" required>
+                        <p id="productNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productDescription">Product Description</label>
+                        <textarea class="form-control w-75 px-1 py-2 border rounded-2" id="productDescription" name="description" placeholder="Product description" rows="3" required><%= productData.description %></textarea>
+                        <p id="productDescriptionError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productBrand">Brand Name</label>
+                        <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="brand" value="<%= productData.brand %>" id="brandName" placeholder="Enter brand name" required>
+                        <p id="brandNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productCategory">Category</label>
+                        <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="category" value="<%= productData.category %>" id="productCategory" placeholder="Enter category" required>
+                        <p id="categoryNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productColor">Color</label>
+                        <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="color" value="<%= productData.color %>" id="productColor" required>
+                        <p id="colorError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                        <label class="fw-bold mb-2" for="productPrice">Price</label>
+                        <input class="form-control w-75 px-1 py-2 border rounded-2" type="number" name="price" value="<%= productData.price %>" id="productPrice" placeholder="Enter price" required>
+                        <p id="priceError" class="text-danger mb-3" style="font-size: 13px;"></p>
+                    </div>
+                </div> <!-- row end -->
+
+                <!-- Variant section -->
+                <div class="col-lg-6 col-md-6 col-sm-6 my-3">
+                    <!-- Add Variant Button -->
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary" id="addVariant">Add Variant</button>
+                    </div>
+                    <p style="color: rgb(252, 56, 56); text-align: center;" id="variantError"></p>
+
+                    <div id="variantSection" class="rounded border border-dark-subtle p-3 me-5">
+                        <% productData.variant.forEach((variant, index) => { %>
+                        <!-- Variant Template -->
+                        <div class="variant-row row mb-4" data-variant-index="<%= index %>">
+                            <!-- Remove Variant Icon -->
+                            <div class="col-md-12 mt-2 d-flex justify-content-end">
+                                <button type="button" onclick="removeVariant(this)" class="btn btn-danger px-2 py-1"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-                                <label class="fw-bold mb-2" for="productDescription">Product Description</label> <br>
-                                <textarea class="form-control w-75 px-1 py-2 border rounded-2" id="productDescription" name="description" placeholder="Product description" rows="3" required><%= productData.description %></textarea>
-                                <p id="productDescriptionError" class="text-danger mb-3" style="font-size: 13px;"></p>
-                                </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 p-2">
-                                <label class="fw-bold mb-2" for="productBrand">Brand Name</label> <br>
-                                <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="brand" value="<%= productData.brand %>" id="brandName" placeholder="Enter brand name" required>
-                                <p id="brandNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-                                    <label class="fw-bold mb-2" for="productCategory">Category</label> <br>
-                                    <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="category" value="<%= productData.category %>" id="productCategory" placeholder="Enter category" required>
-                                    <p id="categoryNameError" class="text-danger mb-3" style="font-size: 13px;"></p>
-                                    </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-                                            <label class="fw-bold mb-2" for="productColor">Color</label> <br>
-                                            <input class="form-control w-75 px-1 py-2 border rounded-2" type="text" name="color" value="<%= productData.color %>" id="productColor"  required>
-                                            <p id="colorError" class="text-danger mb-3" style="font-size: 13px;"></p>
-                                            </div>
-
-                                                <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-                                                    <label class="fw-bold mb-2" for="productPrice">Price</label> <br>
-                                                    <input class="form-control w-75 px-1 py-2 border rounded-2" type="number" name="price" value="<%= productData.price %>" id="productPrice" placeholder="Enter price" required>
-                                                    <p id="priceError" class="text-danger mb-3" style="font-size: 13px;"></p>
-                                                    </div>
-        
-                    </div> <!-- row end -->
-                    
-
-                    
-                    <!-- variant section -->
-
-                    <div class="col-lg-6 col-md-6 col-sm-6 my-3">
-                        <!-- Add Variant Button -->
-                        <div class="col-md-12 d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary" id="addVariant">Add Variant</button>
-                        </div>
-                        <p style="color: rgb(252, 56, 56); text-align: center;" id="variantError"></p>
-
-
-                        <div id="variantSection" class="rounded border border-dark-subtle p-3 me-5">
-                          
-                          <% productData.variant.forEach((variant,index) => { %>
-                            <!-- Variant Template -->
-                            <div class="variant-row row mb-4" data-variant-index="<%= index %>">
-                                <!-- Remove Variant Icon -->
-                              <div class="col-md-12 mt-2 d-flex justify-content-end">
-                                <!-- Ensure at least one variant is always present -->
-                                <button type="button" onclick="removeVariant(this)" class="btn btn-danger px-2 py-1" disabled><i class="fa-solid fa-xmark"></i></button>
-                              </div>
-                              <div class="col-md-6">
+                            <div class="col-md-6">
                                 <label for="productSize" class="form-label fw-bold mb-2">Size</label>
-                                <input type="number" class="form-control w-75 px-1 py-2 border rounded-2" value="<%= variant.size %>" name="variant[size][]"  placeholder="Size">
-                              </div>
-                              <div class="col-md-6">
+                                <input type="number" class="form-control w-75 px-1 py-2 border rounded-2" value="<%= variant.size %>" name="variant[size][]" placeholder="Size">
+                            </div>
+                            <div class="col-md-6">
                                 <label for="productStock" class="form-label fw-bold mb-2">Stock Quantity</label>
                                 <input type="number" class="form-control w-75 px-1 py-2 border rounded-2" value="<%= variant.quantity %>" name="variant[quantity][]" placeholder="Stock" required>
-                              </div>
-                              
                             </div>
-                            
-                            <% }) %>
-                          </div>
-
+                        </div>
+                        <% }) %>
                     </div>
+                </div>
 
-
-
-
-
-                    <!-- Image Upload Section -->
-
-                    <div class="row mb-4">
-                      <% for(let i = 0; i < productData.images.length; i++) { %>
-                      <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                <!-- Image Upload Section -->
+                <div class="row mb-4">
+                    <% for(let i = 0; i < productData.images.length; i++) { %>
+                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
                         <label for="imageInput<%= i + 1 %>" class="form-label fw-bold mb-2">Image <%= i + 1 %></label>
-                        <!-- Ensure that the "name" attribute matches the Multer field names -->
-                        <input type="file" class="form-control w-75" id="imageInput<%= i + 1 %>" value="<%= productData.images[i] %>" name="image<%= i + 1 %>" required>
-                        <!-- Optionally, you can show a preview of the image -->
-                        <!-- If you have stored image URLs, you can display them using <img> tag -->
+                        <!-- File input and image preview -->
+                        <input type="file" class="form-control w-75" id="imageInput<%= i + 1 %>" name="image<%= i + 1 %>" accept="image/*">
+                        <!-- Display the current image name -->
+                        <!-- <small class="form-text text-muted">Current image: <%= productData.images[i] %></small> -->
+                        <!-- Image preview -->
                         <img id="imagePreview<%= i + 1 %>" src="/productImages/<%= productData.images[i] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
-                      </div>
-                      <% } %>
                     </div>
-                    
+                    <% } %>
+                </div>
 
-        <!-- <div class="col-lg-6 col-md-6 col-sm-6 p-2 ">
-          <label for="imageInput5" class="form-label fw-bold mb-2">Product Image:</label>
-          <input type="file" class="form-control w-75" id="imageInput5" value="<%= productData.images[4] %>" name="image4" accept="image/*">
-          <p id="image5Error" class="text-danger mb-3" style="font-size: 13px;"></p>
-          <img id="imagePreview5" src="/productImages/<%= productData.images[4] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
-          <button class="btn btn-danger mt-2 delete-button" id="deleteButton5"><i class="fa-solid fa-xmark"></i></button>
-        </div> -->
-
-
-
-                    <div class="buttons mt-2">
-                        
-                            <button id="submitButton" type="submit" onclick="return validateImages()" class="btn btn-success">Save changes</button>
-                        
-                        <a href="/admin/product-manage"><button type="button" class="btn btn-outline-dark">Cancel</button></a>
-                    </div>
-
-                </form>
-            </div>
+                <div class="buttons mt-2">
+                    <button id="submitButton" type="submit" class="btn btn-success">Save changes</button>
+                    <a href="/admin/product-manage"><button type="button" class="btn btn-outline-dark">Cancel</button></a>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<script>
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const fileName = this.files[0]?.name;
+            const smallText = this.nextElementSibling;
+            if (fileName) {
+                smallText.textContent = 'Selected image: ' + fileName;
+            }
+        });
+    });
+
+    function removeVariant(button) {
+        const variantRow = button.closest('.variant-row');
+        variantRow.remove();
+    }
+
+    document.getElementById('addVariant').addEventListener('click', () => {
+        const variantSection = document.getElementById('variantSection');
+        const variantIndex = variantSection.querySelectorAll('.variant-row').length;
+        
+        const newVariant = document.createElement('div');
+        newVariant.className = 'variant-row row mb-4';
+        newVariant.dataset.variantIndex = variantIndex;
+        newVariant.innerHTML = `
+            <div class="col-md-12 mt-2 d-flex justify-content-end">
+                <button type="button" onclick="removeVariant(this)" class="btn btn-danger px-2 py-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="col-md-6">
+                <label for="productSize" class="form-label fw-bold mb-2">Size</label>
+                <input type="number" class="form-control w-75 px-1 py-2 border rounded-2" name="variant[size][]" placeholder="Size">
+            </div>
+            <div class="col-md-6">
+                <label for="productStock" class="form-label fw-bold mb-2">Stock Quantity</label>
+                <input type="number" class="form-control w-75 px-1 py-2 border rounded-2" name="variant[quantity][]" placeholder="Stock" required>
+            </div>
+        `;
+        variantSection.appendChild(newVariant);
+    });
+</script>
+
 
 
 
