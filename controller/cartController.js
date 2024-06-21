@@ -149,12 +149,9 @@ const changeQuantity = async (req, res) => {
     try {
         const { userId, productId, quantity, action } = req.body;
 
-        // Find the user's cart using the email stored in the session
-        const userData = await users.findOne({ email: req.session.email });
-        const userid = userData._id;
 
         // Find the cart corresponding to the user
-        const cartData = await cart.findOne({ userId: userid });
+        const cartData = await cart.findOne({ userId: req.session.userId });
 
 
         if (!cartData) {

@@ -5,6 +5,7 @@ const category = require("../model/categorySchema");
 const products = require('../model/productSchema');
 const sendOTP = require('../controller/otpcontroller');
 const helpers = require('../controller/helpers');
+const crypto = require('crypto')
 const { ObjectId } = require("mongodb");
 
 
@@ -39,6 +40,79 @@ const toSignUpPageGet = (req, res) => {
     console.log(error);
   }
 };
+
+
+// Google authentication functions
+
+// random password for creating new user with google
+
+function generateRandomPassword(length) {
+  return crypto.randomBytes(length).toString('hex');
+}
+
+const successGoogleLogin = async (req, res) => {
+  try {
+    console.log('successsssssssssssssssssssssssss');
+    if (!req.user) {
+      return res.redirect('/failure');
+    }
+    console.log(req.user);
+    const googleEmail = req.user.email;
+    console.log(googleEmail, 'emailllllllllllllllllllll');
+
+    const existUser = await user.findOne({ email: googleEmail });
+    console.log(existUser, 'existUser');
+    if (!existUser) {
+      console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+      const randomPassword = generateRandomPassword(8);
+      console.log(randomPassword,'rrrrrrrppppppppppp');
+      const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the password
+      console.log(hashedPassword,'hhhhhhhhhhhhhpppppppppppp');
+
+      const newUser = await new user({
+        name: req.user.displayName,
+        email: req.user.email,
+        mobile: '',
+        password: hashedPassword // Save the hashed password
+      }).save();
+      
+      console.log(newUser, 'newuserrrrrrrrrrrrr');
+
+      req.session.name = req.user.displayName;
+      req.session.email = req.user.email;
+      req.session.userId = newUser._id;
+      req.session.userlogged = true;
+      res.redirect('/home');
+    } else {
+      const googleEmail = req.user.email
+      console.log(googleEmail,'ggggggggggggeeeeeeeeeeeeeeeeeeee');
+      const isUser = await user.findOne({ email: googleEmail })
+      if (isUser) {
+        console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+        req.session.name = req.user.displayName;
+        req.session.email = req.user.email;
+        req.session.userId = isUser._id
+        req.session.userlogged = true;
+        console.log('ttttttttttttttttttttttttttttttt');
+        res.redirect('/home');
+      }
+    }
+  } catch (error) {
+    console.error('Error during Google login:', error);
+    res.redirect('/failure');
+  }
+}
+
+
+const failureGoogleLogin = (req, res) => {
+  console.log('failureeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+  res.send('Error')
+}
+
+
+
+
+
 
 // User home page get
 
@@ -825,6 +899,8 @@ module.exports = {
   toGuestPageGet,
   toLoginPageGet,
   toSignUpPageGet,
+  successGoogleLogin,
+  failureGoogleLogin,
   toSignupPost,
   homePageGet,
   toLoginPost,

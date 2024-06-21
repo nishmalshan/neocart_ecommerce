@@ -17,6 +17,7 @@ const user = require('../router/userRouter');
 
 const orderConfirmation = (req, res) => {
     try {
+        console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv');
         res.render('./user/orderConfirmation')
     } catch (error) {
         console.error(error);

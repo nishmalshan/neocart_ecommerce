@@ -7,11 +7,35 @@ const cartController = require("../controller/cartController");
 const userAuthentication = require("../middleware/userAuth");
 const orderController = require("../controller/orderController");
 const profileUpload = require("../middleware/profile-multer");
+const passport = require('passport');
+require('../middleware/passport');
+user.use(passport.initialize());
+user.use(passport.session())
+
 const multer = require("multer");
 
 // Multer storage configuration
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }); // Create a Multer instance
+
+
+// route for google authentication
+
+user.get('/auth/google', passport.authenticate('google',{ scope:
+  [ 'email', 'profile' ]
+}));
+
+user.get('/auth/google/callback', 
+  passport.authenticate( 'google', {
+  successRedirect: '/auth/success',
+  failureRedirect: '/auth/failure'
+}))
+
+user.get('/auth/success', userController.successGoogleLogin);
+user.get('/auth/failure', userController.failureGoogleLogin);
+
+
+
 
 user.get("/", userAuthentication.existUser, userController.toGuestPageGet);
 user.get("/userlogin", userController.toLoginPageGet);

@@ -4,7 +4,60 @@
 
 <link rel="stylesheet" type="text/css" href="user_css/loginPage.css">
 
+<style>
+    .google-btn {
+  margin: auto;
+  width: 100%;
+}
 
+
+/* Google Button */
+
+.google-btn {
+  /* width: 200px; */
+  height: 40px;
+  background-color: #4285f4;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+  -webkit-transition: background-color 0.218s, border-color 0.218s,
+    box-shadow 0.218s;
+  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
+}
+.google-btn .google-icon-wrapper {
+  position: absolute;
+  margin-top: 1px;
+  margin-left: 1px;
+  width: 38px;
+  height: 38px;
+  border-radius: 2px;
+  background-color: #fff;
+}
+.google-btn .google-icon {
+  position: absolute;
+  margin-top: 11px;
+  margin-left: 11px;
+  width: 18px;
+  height: 18px;
+}
+.google-btn .btn-text {
+  /* float: right; */
+  /* margin: 11px 18px 0 0; */
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  font-family: "Roboto";
+  font-weight: 500;
+  text-align: center;
+  padding: 10px;
+}
+.google-btn:hover {
+  box-shadow: 0 0 6px #4285f4;
+  cursor: pointer;
+}
+.google-btn:active {
+  background: #1669f2;
+}
+</style>
             
 
         <div class="wrapper">
@@ -41,6 +94,16 @@
                                     </div>
                                     <div class="input-field">
                                         <input type="submit" class="submit" value="Log In">
+                                    </div>
+                                    <div class="input-field mt-2">
+                                        <a href="/auth/google">
+                                            <div class="google-btn">
+                                              <div class="google-icon-wrapper">
+                                                <img class="google-icon" src="https://i.ibb.co/ydLySMx/google.png" />
+                                              </div>
+                                              <p class="btn-text">Sign up with Google</p>
+                                            </div>
+                                          </a>
                                     </div>
                                     <div class="forgot-password">
                                         <span><a href="/forgetPassword">Forgot password?</a></span>
