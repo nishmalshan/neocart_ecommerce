@@ -10,7 +10,7 @@
        
 <link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
 
-<div id="searchResults" style="display: none;"></div>
+
 
 <!-- header carousel start -->
 
@@ -297,9 +297,7 @@
                 containerWidth = $("#cards-container").width();
                 updateSliderArrowsStatus(div, containerWidth, cardCount, cardWidth);
             } catch (error) {
-                console.log(
-                    `Error occurred while trying to get updated slider container width: 
-                    ${error}`
+                console.log(`Error occurred while trying to get updated slider container width: ${error}`
                 );
             }
         });
@@ -324,7 +322,7 @@
                 <div class="row">
                     <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
-                            <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
+                            <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
                                 <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
@@ -337,7 +335,7 @@
                     </div>
                     <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
-                            <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
+                            <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
                                 <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
@@ -350,7 +348,7 @@
                     </div>
                     <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
-                            <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
+                            <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
                                 <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
@@ -363,7 +361,7 @@
                     </div>
                     <div class="best-selling col-lg-3 col-md-3 col-6 px-3">
                         <div class="best-seller position-relative">
-                            <a href="" class="best-seller-fvrte-btn"><i class="bi bi-heart"></i></a>
+                            <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
                                 <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
@@ -484,7 +482,6 @@ function nextSlide() {
     document.querySelector("#previous-arrow i").style.color = "#212529";
     document.querySelector("#previous-arrow").classList.replace("bg-disabled", "bg-white");
     const elements = document.querySelectorAll('.slide-card');
-    console.log(document.querySelector('.slider-wrap').children);
     for (let index = 0; index <= count; index++) {
         let valueIndex = null;
         if (elements[index].classList.contains('active')) {
@@ -555,7 +552,7 @@ function previousSlide() {
             <% productData.slice(0, 4).forEach(data => { %>
                 <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
                     <div class="product position-relative p-0">
-                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                        <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                         <a href="/productdetails/<%= data.id %>" class="text-decoration-none text-dark">
                             <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
                         <div class="product-btn">
@@ -599,7 +596,7 @@ function previousSlide() {
         width: 100%;
         border-radius: 5px 5px 0px 0px;
     }
-    .product-fvrte-btn{
+    .wishlist-fvrte-btn{
         text-decoration: none;
         color: #11101b;
         position: absolute;
@@ -692,7 +689,7 @@ function previousSlide() {
             <% productData.slice(-4).forEach(data => { %>
                 <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
                     <div class="product position-relative p-0">
-                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                        <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                         <a href="/productdetails/<%= data.id %>" class="text-decoration-none text-dark">
                             <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
                             <div class="product-btn">

@@ -20,7 +20,7 @@ const sendOtp = async (email) => {
         console.log(generatedOTP,"otpotpotpotpotp");
 
         const hashedOtp = await bcrypt.hash(generatedOTP, 10)
-console.log(hashedOtp,"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+
         const mailOptions = {
             from: AUTH_MAIL,
             to: email,
@@ -28,7 +28,7 @@ console.log(hashedOtp,"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
             html: `<p>Hello user use the this otp to verify your email to continue </p> <p style="color:#0b57d0;font-size:25px;letter-spacing:2px;">
             <b>${generatedOTP}</b></p><p>OTP will expire in<b> 10 minute(s)</b>.</p>`
         }
-console.log(mailOptions,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+
         await mail(mailOptions)
 
         function addMinutesToDate(date, minutes) {
@@ -43,9 +43,9 @@ console.log(mailOptions,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
             otpAdded: Date.now(),
             expireAt: newDate
         })
-console.log(newOtp,"newnewnewnewnewnewnewnewenw");
+
         const createdOtp = await newOtp.save()
-        console.log('otp is ',createdOtp);
+
         return createdOtp
     } catch (error) {
         console.log(error);

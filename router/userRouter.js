@@ -19,7 +19,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }); // Create a Multer instance
 
 
-// route for google authentication
+// ----------------------- route for google authentication -------------------------------------
 
 user.get('/auth/google', passport.authenticate('google',{ scope:
   [ 'email', 'profile' ]
@@ -36,8 +36,9 @@ user.get('/auth/failure', userController.failureGoogleLogin);
 
 
 
+// ----------------------------- route for signup & login -----------------------------------------
 
-user.get("/", userAuthentication.existUser, userController.toGuestPageGet);
+user.get("/", userController.homePageGet);
 user.get("/userlogin", userController.toLoginPageGet);
 user.post(
   "/logintohome",
@@ -54,19 +55,14 @@ user.post(
   userAuthentication.existUser,
   userController.toSignupPost
 );
-user.get(
-  "/home",
-  userAuthentication.verifyingUser,
-  userAuthentication.userBlockOrUnblock,
-  userController.homePageGet
-);
 user.post(
   "/userlogout",
   userAuthentication.verifyingUser,
   userController.userLogOutPost
 );
 
-// routes for otp
+// --------------------------------- routes for otp --------------------------------------
+
 user.get("/otp", userAuthentication.existUser, userController.toGetOtpPage);
 user.get(
   "/otpSending",
@@ -76,7 +72,7 @@ user.get(
 user.post("/otpconfirmation", userController.otpConfirmation);
 user.get("/resendOtp", userController.otpSending);
 
-// route for forget password
+// ---------------------------- route for forget password ------------------------------------
 user.get(
   "/forgetPassword",
   userAuthentication.existUser,
@@ -85,7 +81,7 @@ user.get(
 user.post("/forgetPassword", userController.forgetPassword);
 user.post("/resetPassword", userController.resetPassword);
 
-// routes for products
+// ------------------------------- routes for products -----------------------------------------
 user.get(
   "/allproducts",
   userAuthentication.userBlockOrUnblock,
@@ -97,7 +93,7 @@ user.get(
   userController.productDetails
 );
 
-// routes for cart
+// -------------------------------- routes for cart ---------------------------------------------
 
 user.post(
   "/add-to-Cart",
@@ -123,7 +119,7 @@ user.post(
   cartController.changeQuantity
 );
 
-// route for checkout
+// ------------------------------- route for checkout ------------------------------------------
 user.get(
   "/checkout",
   userAuthentication.verifyingUser,
@@ -143,7 +139,7 @@ user.post(
   userController.deleteUserAddress
 );
 
-// route for order
+// ------------------------------ route for order -------------------------------------------
 
 user.post(
   "/placeOrder",
@@ -157,21 +153,19 @@ user.get(
   orderController.orderConfirmation
 );
 
-user.get('/order-Details',userAuthentication.verifyingUser,orderController.orderDetails);
+user.get('/order-List',userAuthentication.verifyingUser,orderController.orderList);
+user.get('/orderDetails/:id', userAuthentication.verifyingUser, orderController.orderDetails)
 user.post('/cancelOrder',userAuthentication.verifyingUser,orderController.cancelOrder);
 
 
+// ---------------------------- route for searche products & filter products ------------------------------
 
-user.get('/products/search',userAuthentication.verifyingUser,userController.searchProducts)
+user.get('/products/search',userController.searchProducts)
 user.post('/filter-products',userAuthentication.verifyingUser,userController.filterProducts)
 
 
 
-// ----------------------------------------------------------------------------------------------//
-
-
-
-// route for get userprofile
+// ----------------------------- route for get userprofile ---------------------------------------
 
 user.get(
   "/user-profile",
@@ -207,6 +201,15 @@ user.post(
 );
 user.patch('/change-Password', userAuthentication.verifyingUser, userController.changePassword);
 
-// user.get('/product/searchProduct',userController.searchProducts);
+
+
+// ---------------------------------- route for wishlist page ------------------------------------
+
+user.get('/user-wishlist', userAuthentication.verifyingUser, userController.GetWishlist);
+user.post('/user-addToWishlist',userAuthentication.verifyingUser, userController.addWishlist);
+user.delete('/user-deleteWishlist/:id', userAuthentication.verifyingUser, userController.removeFromWishlist)
+
+
+
 
 module.exports = user;

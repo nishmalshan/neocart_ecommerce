@@ -23,7 +23,6 @@ const adminLoginPageGet = (req, res) => {
 const adminLoginPost = (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body, "hhhhhhhhhhhh");
     if (credential.email === email && credential.password === password) {
       req.session.email = req.body.email;
       req.session.adminlogged = true;
@@ -54,7 +53,7 @@ const userManagement = async (req, res) => {
   try {
     let i = 0;
     const userData = await user.find();
-    // console.log(userData);
+
     res.render("./admin/usermanagement", {
       title: "usermanagement",
       userData,
@@ -71,12 +70,12 @@ const userManagement = async (req, res) => {
 const blockUser = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
+
     const block = await user.updateOne(
       { _id: id },
       { $set: { status: false } }
     );
-    console.log(block, "blblbblblblblbbl");
+
     res.redirect("/admin/userList");
   } catch (error) {
     console.error(error);
@@ -89,7 +88,7 @@ const blockUser = async (req, res) => {
 const unblockUser = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
+
     const unblock = await user.updateOne(
       { _id: id },
       { $set: { status: true } }
@@ -107,7 +106,7 @@ const adminLogoutPost = (req, res) => {
   try {
     req.session.destroy();
     res.redirect("/admin");
-    console.log("////////////////////////////////");
+
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");

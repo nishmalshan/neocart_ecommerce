@@ -55,7 +55,7 @@
                 border: 0;
                 background-color: transparent;
                 color: #fff;
-                width: 300px;
+                width: 200px;
                 transition: 0.5s;
                 outline: none;
                 }
@@ -75,16 +75,16 @@
             
             
             .nav-bar ul{
-                display: none;
-                /* display: flex; */
+                /* display: none; */
+                display: flex;
                 margin-bottom: 0;
                 padding: 0;
             }
             .nav-bar ul li{
-                display: block;
+                /* display: block; */
                 color: #fefefe;
                 font-size: 15px;
-                padding: 10px 20px;
+                padding: 10px 13px;
                 border-radius: 50px;
                 transition: 0.5s;
                 margin: 0 5px;
@@ -104,11 +104,11 @@
                 align-items: center;
                 width: 15%;
             }
-            .nav-btns a{
+            .cart-btn{
                 font-size: 22px;
                 color: #fff;
             }
-            .nav-btns a .down-btn{
+            .down-btn{
                 font-size: 14px;
             }
 
@@ -149,6 +149,21 @@
             }
             .drop-list:hover button{
                 color: #fff;
+            }
+            .login-trigger {
+                font-size: 15px;
+                font-weight: 600;
+                color: #fff;
+                text-decoration: none;
+                background: linear-gradient(to bottom right, #B05574, #F87E7B);
+                padding: 10px 13px;
+                border-radius: 30px;
+                position: relative;
+            }
+            .profile-btn{
+                text-decoration: none;
+                color: #fff;
+                font-size: 22px;
             }
 
 

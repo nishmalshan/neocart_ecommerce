@@ -114,15 +114,7 @@
                 color: #11101b;
                 background-color: #fefefe;
             } */
-            .login-trigger {
-                font-weight: 600;
-                color: #fff;
-                text-decoration: none;
-                background: linear-gradient(to bottom right, #B05574, #F87E7B);
-                padding: 10px 13px;
-                border-radius: 30px;
-                position: relative;
-            }
+            
 
 
         /* media query */

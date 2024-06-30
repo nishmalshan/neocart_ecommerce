@@ -16,7 +16,7 @@ const existUser = (req,res,next) => {
     
     if(req.session.userlogged) {
         
-        res.redirect('/home');
+        res.redirect('/');
 
     }else{
         

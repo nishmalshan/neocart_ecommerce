@@ -72,18 +72,15 @@
 
                 <!-- Image Upload Section -->
                 <div class="row mb-4">
-                    <% for(let i = 0; i < productData.images.length; i++) { %>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-2">
-                        <label for="imageInput<%= i + 1 %>" class="form-label fw-bold mb-2">Image <%= i + 1 %></label>
-                        <!-- File input and image preview -->
-                        <input type="file" class="form-control w-75" id="imageInput<%= i + 1 %>" name="image<%= i + 1 %>" accept="image/*">
-                        <!-- Display the current image name -->
-                        <!-- <small class="form-text text-muted">Current image: <%= productData.images[i] %></small> -->
-                        <!-- Image preview -->
-                        <img id="imagePreview<%= i + 1 %>" src="/productImages/<%= productData.images[i] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
-                    </div>
-                    <% } %>
-                </div>
+                  <% for(let i = 0; i < productData.images.length; i++) { %>
+                  <div class="col-lg-6 col-md-6 col-sm-6 p-2">
+                      <label for="imageInput<%= i + 1 %>" class="form-label fw-bold mb-2">Image <%= i + 1 %></label>
+                      <input type="file" class="form-control w-75" id="imageInput<%= i + 1 %>" name="image<%= i + 1 %>" accept="image/*">
+                      <img id="imagePreview<%= i + 1 %>" src="/productImages/<%= productData.images[i] %>" class="img-thumbnail mt-2" alt="Preview" style="width: 150px; height: 150px;">
+                  </div>
+                  <% } %>
+              </div>
+              
 
                 <div class="buttons mt-2">
                     <button id="submitButton" type="submit" class="btn btn-success">Save changes</button>

@@ -69,7 +69,7 @@
 
                                 <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3 mb-5">
                                     <div class="product position-relative">
-                                        <a href="#" class="product-fvrte-btn"><i class="bi bi-heart"></i></a>
+                                        <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                                         
                                         <a href="/productdetails/<%= data.id %>">
                                             <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
@@ -128,14 +128,15 @@
 
         <!-- Filter products -->
         <script>
-console.log('111111111111111111111111111111111');
+
            function applyFilter() {
+            console.log('123333');
             const priceLowToHigh = document.getElementById('priceLowToHigh').checked;
             const priceHighToLow = document.getElementById('priceLowToHigh').checked;
             const category = document.getElementById('categorySelect').value;
             const brand = document.getElementById('brandSelect').value;
 
-            console.log('222222222222222222222222222222222222222');
+
             fetch('/filter-products', {
                 method: 'POST',
                 headers: {
@@ -146,14 +147,13 @@ console.log('111111111111111111111111111111111');
             .then(response => response.json())
             .then(data => {
                 displayFilteredProducts(data)
-                console.log(data);
             })
             .catch(error => {
                 console.error('Error applying filter:', error);
             })
-            console.log(priceLowToHigh, priceHighToLow, category, brand,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+
            }
-           console.log('333333333333333333333333333333333333333333');
+
 
            function displayFilteredProducts(data) {
             const filteredProducts = data.data;

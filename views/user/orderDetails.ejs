@@ -1,0 +1,170 @@
+<%- include('./userPartials/header') %>
+
+<%- include('./userPartials/navbar') %>
+
+<link rel="stylesheet" type="text/css" href="/user_css/homePage.css">
+
+
+
+
+
+        <style>
+            .main{
+                width: 100%;
+                height: fit-content;
+                padding: 20px 0px;
+                background: rgb(11,39,43);
+                background: linear-gradient(90deg, rgba(11,39,43,1) 0%, rgba(15,105,120,1) 79%, rgba(1,100,114,1) 100%);
+            }
+            .details h5{
+                margin-bottom: 0;
+                font-weight: 600;
+            }
+            .details p{
+                margin-bottom: 2px;
+                font-size: 14px;
+                color: #707070;
+                font-weight: 500;
+            }
+            .details span{
+                font-weight: 600;
+                color: #2b2b2b;
+            }
+            .icon i{
+                padding: 10px;
+                background-color: #e3e3e3;
+                border-radius: 50px;
+            }
+            .status p{
+                margin-bottom: 0;
+                font-size: 14px;
+            }
+            .table td, th{
+                vertical-align: middle;
+                text-align: center;
+            }
+        </style>
+    
+
+
+
+
+
+<main class="main">
+    <div class="container">
+        <h2 class="pt-3 text-white fw-bold">Order Details</h2>
+    <div class="container bg-white rounded-3 pb-4">
+        <div class="row pt-4 justify-content-center align-items-center">
+            <div class="orderid col-8">
+                <h6 class="fw-bold">Order ID: <span><%= orderDetails._id %></span></h6>
+            </div>
+            <div class="col-4 row">
+                <div class="status col-8 pe-0">
+                    <% if (orderDetails.status === 'Pending') { %>
+                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #ffc107; font-weight: 600; padding: 2px 10px; background-color: #ffc10721; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #ffc107; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                        <% } else if (orderDetails.status === 'Cancelled') { %>
+                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #d11326; font-weight: 600; padding: 2px 10px; background-color: #d1132614; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #d11326; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                        <% } else if (orderDetails.status === 'Processing') { %>
+                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #FF4500; font-weight: 600; padding: 2px 10px; background-color: #ff45001a; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #FF4500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                         <% } else if (orderDetails.status === 'Shipped') { %>
+                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #055C9D; font-weight: 600; padding: 2px 10px; background-color: #055c9d17; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #055C9D; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                            <% } else if (orderDetails.status === 'Delivered') { %>
+                                <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #00b500; font-weight: 600; padding: 2px 10px; background-color: #00b5001c; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #00b500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                        <% } %>
+                </div>
+                <div class="invoice col-4">
+                    <!-- <p class="mb-0">invoice</p> -->
+                </div>
+            </div>
+        </div>
+        <div class="row p-4">
+            <div class="col-6 p-4 my-3">
+                <div class="row d-flex justify-content-center">
+                    <div class="icon col-1">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="details col-10">
+                        <h5>Customer</h5>
+                        <p class="mt-2">Name: <span><%= orderDetails.address[0].name %></span></p>
+                        <p>Email: <span><%= email %></span></p>
+                        <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 p-4 my-3">
+                <div class="row d-flex justify-content-center">
+                    <div class="icon col-1">
+                        <i class="bi bi-cart3"></i>
+                    </div>
+                    <div class="details col-10">
+                        <h5>Order info</h5>
+                        <p class="mt-2">Product name: <span><%= orderDetails.items[0].name %></span></p>
+                        <p>Order date: <span><%= orderDetails.orderDate.toISOString().substring(0, 10) %></span></p>
+                        <p>Delivery date: <span><%= orderDetails.arrivingDate.toISOString().substring(0, 10) %></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 p-4 my-3">
+                <div class="row d-flex justify-content-center">
+                    <div class="icon col-1">
+                        <i class="bi bi-credit-card-2-back"></i>
+                    </div>
+                    <div class="details col-10">
+                        <h5>Payment</h5>
+                        <p class="mt-2">Payment type: <span><%= orderDetails.paymentMethod %></span></p>
+                        <p>Name: <span><%= orderDetails.address[0].name %></span></p>
+                        <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 p-4 my-3">
+                <div class="row d-flex justify-content-center">
+                    <div class="icon col-1">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div class="details col-10">
+                        <h5>Delivery Address</h5>
+                        <p class="mt-2">Name: <span><%= orderDetails.address[0].name %></span></p>
+                        <p>Address: <span><%= orderDetails.address[0].address %></span></p>
+                        <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-details px-4 bg-white">
+            <h6 class="fw-bold text-black">Products</h6>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orderDetails.items.forEach((data, index) => { %>
+                        <tr class="align-middle bg-success">
+                            <td><%= index + 1 %></th>
+                            <td><img src="/productImages/<%= data.image %>" class="img-fluid rounded-3" width="50px" alt=""></td>
+                            <td><%= data.name %></td>
+                            <td><%= data.size %></td>
+                            <td><%= data.quantity %></td>
+                            <td><span> &#8377</span> <%= orderDetails.totalPrice %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+    </div>
+
+</main>
+
+
+
+
+<%- include('./userPartials/footer') %>

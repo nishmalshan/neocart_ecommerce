@@ -13,7 +13,7 @@ const categoryPageGet = async (req, res) => {
     let i=0;
     const categoryData = await category.find().sort({ name: 1})
     res.render("./admin/categorymanage", {categoryData,i, title: 'categoryManagement'});
-    // console.log(categoryData);
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -41,15 +41,15 @@ const addCategoryPageGet = (req, res) => {
 
 const addCategoryPost = async (req, res) => {
     try {
-        // console.log(req.body,"gggggggggggggg");
+
         const { categoryName } = req.body;
         const image = req.file ? req.file.filename : null;
-    // console.log(req.body);
+
     const lowerCaseName = categoryName.toLowerCase()
-console.log(lowerCaseName,"llllllllllllllllllllllllllllll");
+
     const existCategory = await category.findOne({ name: lowerCaseName });
     
-    console.log(existCategory,"eeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
     
         if (existCategory) {
             req.flash("success", "Category with the same name already exists");
@@ -83,9 +83,9 @@ const editCategory = async (req,res) => {
   try {
 
     const id = req.params.id;
-    // console.log(id, "ididididididididididid");
+
     const categoryData = await category.findOne({ _id: id })
-    // console.log(categoryData,"cacacacacacaca");
+
     res.render('./admin/editcategory',{categoryData, title: 'editCategory'})
   } catch (error) {
     console.error(error);
@@ -102,14 +102,12 @@ const editCategoryPost = async (req,res) =>{
   try {
     
     const id = req.params.id;
-    console.log(req.params.id,"ididididididid");
+
   const name = req.body.categoryName;
   const lowerCaseName = name.toLowerCase();
 
-  console.log(name,"namenamenamenamenamename");
   const newImage = req.file?req.file.filename:undefined;
   
-console.log(newImage,"imimimimimimimimimim");
   const updatedCategory = await category.findByIdAndUpdate(id,{
     
     $set: {
@@ -117,7 +115,7 @@ console.log(newImage,"imimimimimimimimimim");
     image: newImage
   }
 })
-console.log(updatedCategory);
+
 
 res.redirect('/admin/category');
 
@@ -137,9 +135,9 @@ const blockCategory = async (req,res) => {
   try {
     
     const id = req.params.id;
-    console.log(id,"idididididididid");
+
     const block = await category.updateOne({ _id:id }, {$set: { status: false }});
-    console.log(block,"blblblblblblblbl");
+
     res.redirect("/admin/category?message=Category successfully blocked")
 
   } catch (error) {
@@ -160,9 +158,9 @@ const unblockCategory = async (req,res) => {
   try {
     
     const id = req.params.id;
-    console.log(id,"idididididididid");
+
     const unblock = await category.updateOne({ _id:id }, {$set: { status: true }});
-    console.log(unblock,"ununununununun");
+
     res.redirect("/admin/category?message=Category successfully unblocked")
 
   } catch (error) {
@@ -180,9 +178,9 @@ const deleteCategory = async (req,res) => {
   try {
     
     const id = req.params.id;
-    console.log(id,"idididididididi");
+
     const deleteCategory = await category.deleteOne({ _id: id });
-    console.log(deleteCategory,"deldeldeldeldeldel");
+
     // res.redirect('/admin/category?message=Category successfully deleted');
     res.json({ success: true, message: 'Item deleted successfully' });
 

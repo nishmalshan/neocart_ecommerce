@@ -144,7 +144,7 @@ const eachProductPrice = async (userId) => {
         
         if (eachAmount.length > 0) {
             // const eachProductPrices = eachAmount.map(product => product.totalProductPrice);
-            // console.log(eachProductPrices, "eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
             return eachAmount;
         } else {
             return []; // If the cart is empty or no matching user found

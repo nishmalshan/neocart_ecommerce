@@ -47,7 +47,7 @@
                         <td><%= order._id %>
                             <br>
                             <% if (order.status === 'Cancelled') { %>
-                                <p style="font-size: 13px; color: red;">Order was cancelled</p>
+                                <p style="font-size: 13px; color: red;">Order was cancelled by user</p>
                             <% } %>
                         </td>
                         <td><span>&#8377</span><%= order.totalPrice %></td>
@@ -118,7 +118,6 @@
         .then(response => {
             if (response.ok) {
                 window.location.reload();
-                console.log('Order status updated successfully.');
             } else {
                 console.error('Failed to update order status.');
             }

@@ -520,7 +520,7 @@ function nextSlide() {
     document.querySelector("#previous-arrow i").style.color = "#212529";
     document.querySelector("#previous-arrow").classList.replace("bg-disabled", "bg-white");
     const elements = document.querySelectorAll('.slide-card');
-    console.log(document.querySelector('.slider-wrap').children);
+
     for (let index = 0; index <= count; index++) {
         let valueIndex = null;
         if (elements[index].classList.contains('active')) {

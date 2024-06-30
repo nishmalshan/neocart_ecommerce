@@ -47,7 +47,7 @@ const addProductPage = (req,res) => {
 const addProductPost = async (req,res) => {
 
     try {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
         const {name, description, brand, category, color, price} = req.body
 
         const existProduct = await product.findOne({ name: name});
@@ -65,10 +65,10 @@ const addProductPost = async (req,res) => {
             }
 
             const images = req.files;
-            console.log(images,"ffffffffffffffffffffffffffff");
+
 
             const allImages = [].concat(...Object.values(images).map(arr => arr.map(file => file.filename)));
-            console.log(allImages,"alalalalalalalalalalalal");
+
 
             const newProduct = await product.create({
                 name,
@@ -80,9 +80,8 @@ const addProductPost = async (req,res) => {
                 images: allImages,
                 variant: obj
             })
-            console.log(newProduct);
+
             if(newProduct) {
-                console.log('Product added');
                 res.redirect('/admin/product-manage')
             }
         }
@@ -105,7 +104,7 @@ const blockProduct = async(req,res) => {
 
         const id = req.params.id;
         const blockProduct = await product.updateOne({_id: id},{$set:{status : false }});
-        console.log(blockProduct,"bbbbbbbbbbbbbbbbbbbbbbbbbb");
+
         res.redirect('/admin/product-manage?message=productBlockedSuccessful')
 
     } catch (error) {
@@ -127,7 +126,6 @@ const unblockProduct = async (req,res) => {
         
         const id = req.params.id;
         const unblockProduct = await product.updateOne({_id: id},{$set: { status: true}})
-        // console.log(unblockProduct,"uuuuuuuuuuuuuuuuuuuuuuuu");
         res.redirect('/admin/product-manage?message=productUnblockedSuccessful')
 
     } catch (error) {
@@ -147,7 +145,7 @@ const editProductGet = async (req,res) => {
     try {
         const id = req.params.id;
         const productData = await product.findOne({_id: id})
-        console.log(productData.images,"ppppppppppppppppppp");
+
         res.render('./admin/editproduct',{productData, title: 'editProduct'})
     } catch (error) {
         console.error(error);
@@ -162,32 +160,30 @@ const editProductGet = async (req,res) => {
 
 // post method for edit product
 
-const editProductPost = async (req,res) => {
-
+const editProductPost = async (req, res) => {
     try {
-
         const id = req.params.id;
         const productDetails = req.body;
-        console.log(productDetails,"product Details");
-        const files = req.file;
+        const files = req.files;
+
+        console.log("Received files:", files);
 
         let obj = [];
-        for(let i=0; i<req.body.variant.size.length; i++) {
-
+        for (let i = 0; i < req.body.variant.size.length; i++) {
             obj.push({
                 size: req.body.variant.size[i],
                 quantity: req.body.variant.quantity[i]
-            })
-        }
-console.log(obj,'oooooooooooooooooooooooooo');
-        const productData = await product.findById(id);
-        console.log(productData,"ppppppppppppppppppppppppppp");
-        if (!productData) {
-            console.log('data not found');
+            });
         }
 
-        const oldImages = [...productData.images];
-        // console.log(oldImages,"ooooooooooooooooooooooooooooo");
+        const productData = await product.findById(id);
+        console.log(productData.images,'pppppppppppppppppiiiiiiiiiiiiiiiiiiii');
+
+        if (!productData) {
+            console.log('data not found');
+            res.status(404).send("Product not found");
+            return;
+        }
 
         const updateData = {
             name: req.body.name,
@@ -197,42 +193,50 @@ console.log(obj,'oooooooooooooooooooooooooo');
             category: req.body.category,
             color: req.body.color,
             variant: obj,
-            images: []
-        }
-        // console.log(updateData,"uuuuuuuuuuuuuuuuuuuuuuuuuuu");
+            images: productData.images.slice()  // Clone the existing images array
+        };
 
-        if (files && files.mainImage) {
-            updateData.images[0] = files.mainImage[0].filename
-        }else{
-            updateData.images[0] = productData.images[0]
-        }
+        console.log("Initial updateData.images:", updateData.images);
 
-        for(let i=1; i<=4; i++) {
+        // Update the main image (index 0)
+        // if (files && files.image1) {
+        //     updateData.images[0] = files.image1[0].filename;
+        // } else {
+        //     updateData.images[0] = productData.images[0] || null;
+        // }
+
+        // Update the other images (indices 1 to 4)
+        let j =0;
+        for (let i = 1; i <= 5; i++) {
             const imageName = `image${i}`;
-            console.log(imageName,"imagename");
-
-            if(files && files[imageName]) {
-                updateData.images[i] = files[imageName][0].filename;
-            }else{
-                updateData.images[i] = productData.images[i]
+            console.log(`Processing ${imageName}`);
+            if (files && files[imageName]) {
+                console.log(`Updating image ${i} with file ${files[imageName][0].filename}`);
+                updateData.images[j] = files[imageName][0].filename;
+                j++
+            } else {
+                console.log(`Keeping existing image ${i}: ${productData.images[i]}`);
+                updateData.images[j] = productData.images[j] || null;
+                j++
             }
         }
 
-        const uploaded = await product.updateOne({_id: id}, { $set: updateData });
-        console.log(uploaded,"upupupupuupupupupupupupupupupup");
+        console.log("Final updateData.images:", updateData.images);
+
+        const uploaded = await product.updateOne({ _id: id }, { $set: updateData });
 
         if (uploaded) {
-            res.redirect('/admin/product-manage?message=successfullyEdited')
-        }else{
+            res.redirect('/admin/product-manage?message=successfullyEdited');
+        } else {
             console.log('Failed to update product');
+            res.status(500).send("Failed to update product");
         }
-        
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
+};
 
-}
 
 
 

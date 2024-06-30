@@ -81,14 +81,13 @@
                 const confirmPasswordInput = document.getElementById("confirmPassword");
 
                 const nameError = document.getElementById("nameError");
-                // console.log(nameError,"nmaaaaaaaaaaaaaaaa");
+
                 const emailError = document.getElementById("emailError");
                 const mobileError = document.getElementById("mobileError");
                 const passwordError = document.getElementById("passwordError");
                 
-
                 signUpForm.addEventListener("submit", function (event) {
-                    // console.log("tttttttttttttttttttt");
+    
                     //resetting previous error message
                     nameError.innerHTML = "";
                     emailError.innerHTML = "";
@@ -163,7 +162,6 @@
                         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
                         return regex.test(password)
                     }
-                    console.log(emailValue,passwordValue);
 
                     function isvalidEmail(email) {
                         return /^[A-Za-z0-9._%+-]+@gmail\.com$/.test(email);

@@ -154,9 +154,9 @@
                             </div>
                             <div class="row mb-3 mt-3">
                                  
-                          <% if (user.address.length > 0) { %>
+                          <% if (User.address.length > 0) { %>
                            
-                            <% user.address.forEach(data => { %>
+                            <% User.address.forEach(data => { %>
                                 <div class="col-lg-4 mb-3">
                                     <!-- Address radio -->
                                     <div class="form-check h-100 border rounded-3 shadow position-relative">
@@ -234,7 +234,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-lg-4 mb-3">
+                                    <div class="col-lg-4 mb-3">
                                         <div class="form-check h-100 border rounded-3">
                                             <div class="p-3">
                                                 <input  class="form-check-input" type="radio"
@@ -253,11 +253,11 @@
                                             
                                             </div>
                                         </div>
-                                    </div> -->
+                                    </div>
 
 
 
-                                    <!-- <div class="col-lg-4 mb-3">
+                                    <div class="col-lg-4 mb-3">
                                         <div class="form-check h-100 border rounded-3">
                                             <div class="p-3">
                                                 <input  class="form-check-input" type="radio"
@@ -279,7 +279,7 @@
                                             
                                             </div>
                                         </div>
-                                    </div> -->
+                                    </div>
 
                       
                                    
@@ -444,7 +444,6 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data,'Data sent successfully');
                 window.location.href = '/orderConfirmation'
             })
             .catch(error => {
@@ -466,7 +465,7 @@
 
     <script>
         function deleteAddress(addressId) {
-            console.log(addressId);
+
     swal({
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover this address!",
@@ -482,7 +481,6 @@
             .then((data) => {
                 if (data.success) {
                     swal("Address deleted successfully!", { icon: "success" });
-                    console.log("success");
                     window.location.reload()
                 }
             })

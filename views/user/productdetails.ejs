@@ -81,9 +81,10 @@
               <!-- <a href="#" class="btn btn-dark text-dark shadow-0 buy-now"> BUY NOW </a> -->
             <!-- <form action="/add-to-Cart/<%= productDetailsData.id %>" class="mx-2" method="post"> -->
               
-              <button class="btn btn-dark shadow-0" data-item-id="<%= productDetailsData.id %>" style="padding: 12px 30px; font-weight: 600;" id="addtoCart"><i class="me-1 fa fa-shopping-basket"></i> ADD TO CART </button>
+              <button class="btn btn-dark shadow-0" data-item-id="<%= productDetailsData.id %>" style="padding: 5px 20px; font-weight: 600;" id="addtoCart"><i class="bi bi-cart3 fs-4"></i> ADD TO CART </button>
+
             <!-- </form> -->
-            <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i class="me-1 fa fa-heart fa-lg"></i> Save </a>
+            <a href="/user-addToWishlist" class="wishlist-fvrte-btn text-decoration-none fs-3 ms-3 shadow-sm mb-5 bg-body rounded-circle" data-item-id="<%= productDetailsData.id %>" id="addToWishlist" ><i class="bi bi-heart"></i></a>
             <!-- </div> -->
           </div>
         </main>
@@ -109,13 +110,17 @@
       background: transparent;
     }
       .icon-hover:hover {
-    border-color: #3b71ca !important;
+    border-color: #d80000 !important;
     background-color: white !important;
-    color: #3b71ca !important;
+    color: #d80000 !important;
   }
   
   .icon-hover:hover i {
-    color: #3b71ca !important;
+    color: #d80000 !important;
+  }
+  .wishlist-fvrte-btn{
+    padding: 7px 10px;
+    border-radius: 50px;
   }
   </style>
 
@@ -178,7 +183,6 @@
 
           // Optionally, you can perform additional actions when a size is selected
           var selectedSize = button.innerText;
-          console.log('Selected Size:', selectedSize);
         });
       });
     });
@@ -215,9 +219,8 @@ try {
     });
 
     const responseData = await response.json();
-      console.log(responseData,"sssssssssssssssssssssssssssssssssssssssssssssss");
+
     if (responseData.success) {
-        console.log('Item added to cart successfully');
 
         // Show success message using SweetAlert
         await Swal.fire({
@@ -245,6 +248,144 @@ try {
     });
   });
 </script>
+
+
+
+
+<script>
+  $(document).ready(function() {
+    // Check if the wishlist icon state is stored in localStorage
+    // var wishlistIconState = localStorage.getItem('wishlistIconState');
+
+    // // Restore the wishlist button state if it was previously set
+    // if (wishlistIconState === 'filled') {
+    //   $('#addToWishlist').html('<i class="bi bi-heart-fill"></i>').css('color', 'red').animate({
+    //     fontSize: '30px'
+    //   }, 'slow');
+    // }
+
+    $('#addToWishlist').on('click', function(e) {
+      e.preventDefault();
+
+      var productId = $(this).data('item-id');
+      console.log(productId, 'pppppppppppppp');
+      $.ajax({
+        url: '/user-addToWishlist',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ productId: productId }),
+        success: function(response) {
+          if (response.success) {
+
+            // Create the success message element and animation using response message and icon
+            var message = $('<div>')
+                  .attr('id', 'wishlistSuccessMessage')
+                  .html('<i class="fa-solid fa-circle-check" style="color: #0cb800; margin-right: 10px"></i> ' + response.message)  // Use the response message with icon
+                  .css({
+                    'width': 'max-content',
+                    'position': 'fixed',
+                    'top': '50px', // Start above the viewport
+                    'right': '50%',
+                    'left': '50%',
+                    'transform': 'translate(-50%, -50%)',
+                    'background': '#212121',
+                    'color': 'white',
+                    'padding': '10px',
+                    'border-radius': '5px',
+                    'border': '#212121',
+                    'box-shadow': '#1px 0 2px 0 rgba(0,0,0,.2)',
+                    'z-index': '1000',
+                    'display': 'none' // Initially hidden
+                  });
+
+              // Append the message to the body
+              $('body').append(message);
+
+              // Animate the message
+              message.slideDown(300).animate({ top: '120px' }, { duration: 500 });
+
+              // Remove the message after 3 seconds
+              setTimeout(function() {
+                message.fadeOut(300, function() {
+                  message.remove();
+                });
+              }, 3000);
+
+            // Check if the action was to add or remove the product from the wishlist
+            // if (response.action === 'added') {
+            //   // Change icon to filled heart and animate
+            //   $('#addToWishlist').html('<i class="bi bi-heart-fill"></i>').css('color', 'red').animate({
+            //     fontSize: '30px'
+            //   }, 'slow');
+
+            //   // Store the icon state in localStorage
+            //   localStorage.setItem('wishlistIconState', 'filled');
+
+              
+            // } else if (response.action === 'removed') {
+            //   // If the product was removed from the wishlist, revert to original icon (empty heart) and color (black)
+            //   $('#addToWishlist').html('<i class="bi bi-heart"></i>').css('color', 'black');
+            //   // Remove the filled state from localStorage
+            //   localStorage.removeItem('wishlistIconState');
+            // }
+          } else {
+            // If response is false, revert to original icon (empty heart) and color (black)
+            // $('#addToWishlist').html('<i class="bi bi-heart"></i>').css('color', 'black');
+            // // Remove the filled state from localStorage
+            // localStorage.removeItem('wishlistIconState');
+
+            var message = $('<div>')
+                  .attr('id', 'wishlistSuccessMessage')
+                  .html(response.message)  // Use the response message with icon
+                  .css({
+                    'width': 'max-content',
+                    'position': 'fixed',
+                    'top': '50px', // Start above the viewport
+                    'right': '50%',
+                    'left': '50%',
+                    'transform': 'translate(-50%, -50%)',
+                    'background': '#D10000',
+                    'color': 'white',
+                    'padding': '10px',
+                    'border-radius': '5px',
+                    'border': '#D10000',
+                    'box-shadow': '#1px 0 2px 0 rgba(0,0,0,.2)',
+                    'z-index': '1000',
+                    'display': 'none' // Initially hidden
+                  });
+
+              // Append the message to the body
+              $('body').append(message);
+
+              // Animate the message
+              message.slideDown(300).animate({ top: '120px' }, { duration: 500 });
+
+              // Remove the message after 3 seconds
+              setTimeout(function() {
+                message.fadeOut(300, function() {
+                  message.remove();
+                });
+              }, 3000);
+
+              
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -297,7 +438,6 @@ try {
       button.addEventListener('click', function() {
         const quantity = parseInt(this.getAttribute('data-quantity'));
         const lowStockMessage = document.querySelector('.low-stock-message');
-        console.log(quantity,'quantity');
         // Check if quantity is less than 4
         if (quantity < 4) {
           lowStockMessage.textContent = `${quantity} Stock left`;

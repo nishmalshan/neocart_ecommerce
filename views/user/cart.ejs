@@ -49,7 +49,7 @@
                                         title="Remove item">
                                         <i class="fas fa-trash"></i>
                                       </button>
-                                      <button type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
+                                      <button type="button" class="wishlist-fvrte-btn btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
                                         title="Move to the wish list">
                                         <i class="fas fa-heart"></i>
                                       </button>
@@ -175,7 +175,6 @@
       });
 
       if (response.ok) {
-        console.log('success');
         window.location.reload();
       }else{
         console.error('Failed to delete cart item')
@@ -201,9 +200,7 @@
       }).then(response => response.json())
       .then(data => {
     if (data.success) {
-        console.log(data.message); // Log the success message
         window.location.reload();
-        console.log('success');
     } else {
 
       document.getElementById('errorMessage').innerText = data.error;
