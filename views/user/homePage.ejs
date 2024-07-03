@@ -311,7 +311,7 @@
 
         <!-- best selling section start -->
 
-        <div class="best-seller-header"  style="margin: 100px 0; margin-bottom: 0;">
+        <!-- <div class="best-seller-header"  style="margin: 100px 0; margin-bottom: 0;">
             <div class="container header-mark my-5 py-4 d-flex justify-content-start align-items-center">
                 <span></span>
                 <h2 class="mb-0 ms-2">Best Selling</h2>
@@ -325,7 +325,6 @@
                             <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
-                                <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                 <p class="">Nike</p>
                                 <p class="">Nike Air Max Pulse</p>
                                 <p class="">Black</p>
@@ -338,7 +337,6 @@
                             <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
-                                <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                 <p class="">Nike</p>
                                 <p class="">Nike Air Max Pulse</p>
                                 <p class="">Black</p>
@@ -351,7 +349,6 @@
                             <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
-                                <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                 <p class="">Nike</p>
                                 <p class="">Nike Air Max Pulse</p>
                                 <p class="">Black</p>
@@ -364,7 +361,6 @@
                             <a href="" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
                             <img src="images/best_selling_image.jpeg" alt="">
                             <div class="best-seller-btn">
-                                <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                 <p class="">Nike</p>
                                 <p class="">Nike Air Max Pulse</p>
                                 <p class="">Black</p>
@@ -375,7 +371,7 @@
                     
                 </div>
             </div>
-        </section>
+        </section> -->
 
 
 <!-- best selling section end -->
@@ -552,13 +548,13 @@ function previousSlide() {
             <% productData.slice(0, 4).forEach(data => { %>
                 <div class="all-products best col-lg-3 col-md-3 col-6 px-3">
                     <div class="product position-relative p-0">
-                        <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a>
+                        <!-- <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a> -->
                         <a href="/productdetails/<%= data.id %>" class="text-decoration-none text-dark">
                             <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
                         <div class="product-btn">
                             <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                             <p class=""><%= data.brand %></p>
-                            <p class=""><%= data.name %></p>
+                            <p class="text-truncate"><%= data.name %></p>
                             <p class=""><%= data.color %></p>
                             <p class="">MRP: <span> &#8377</span><%= data.price %></p>
                         </div>
@@ -695,7 +691,7 @@ function previousSlide() {
                             <div class="product-btn">
                                 <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                 <p class=""><%= data.brand %></p>
-                                <p class=""><%= data.name %></p>
+                                <p class="text-truncate"><%= data.name %></p>
                                 <p class=""><%= data.color %></p>
                                 <p class="">MRP: <span> &#8377</span><%= data.price %></p>
                             </div>
@@ -777,7 +773,7 @@ function previousSlide() {
 
 
 <!--Start of Tawk.to Script-->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     (function(){
     var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
@@ -787,7 +783,7 @@ function previousSlide() {
     s1.setAttribute('crossorigin','*');
     s0.parentNode.insertBefore(s1,s0);
     })();
-    </script>
+    </script> -->
     <!--End of Tawk.to Script-->
 
 

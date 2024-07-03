@@ -4,7 +4,7 @@
 
 <!-- Nav-bar -->
 <header class="nav-menu">
-    <div class="logo"><a href="/home"><img src="images/Neo_icon.png" alt="logo"></a></div>
+    <div class="logo"><a href="/"><img src="images/Neo_icon.png" alt="logo"></a></div>
     <div class="hamburger">
         <div class="line"></div>
         <div class="line"></div>
@@ -56,8 +56,9 @@
                                 
                             <div class="">
                                 <a href="/user-profile" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>My profile</p></div></a>
-                                <a href="/order-List" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>My order</p></div></a>
                                 <a href="/user-wishlist" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>Wishlist</p></div></a>
+                                <a href="/order-List" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>My order</p></div></a>
+                                <a href="/user-wallet" style="font-size: unset; color: #000; text-decoration: none;"><div class="profile drop-list"><p>Wallet</p></div></a>
                                 <div class="drop-list">
                                     <form action="/userlogout" method="post">
                                     <button class="logout text-start bg-transparent">Logout</button>
@@ -199,7 +200,10 @@ document.addEventListener('click', function (event) {
                 searchResultDiv.appendChild(productDiv);
             });
         } else {
-            searchResultsDiv.textContent = 'No products found.';
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('no-product', 'text-center');
+                productDiv.innerHTML = `<p class="fw-bold">No products found</p>`;
+                searchResultDiv.appendChild(productDiv);
         }
 
     }

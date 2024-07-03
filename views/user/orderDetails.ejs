@@ -31,8 +31,8 @@
                 color: #2b2b2b;
             }
             .icon i{
-                padding: 10px;
-                background-color: #e3e3e3;
+                padding: 9px 10px;
+                /* background-color: #e3e3e3; */
                 border-radius: 50px;
             }
             .status p{
@@ -61,15 +61,15 @@
             <div class="col-4 row">
                 <div class="status col-8 pe-0">
                     <% if (orderDetails.status === 'Pending') { %>
-                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #ffc107; font-weight: 600; padding: 2px 10px; background-color: #ffc10721; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #ffc107; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #ffc107; font-weight: 600; padding: 2px 10px; background-color: #ffc10721; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #ffc107; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } else if (orderDetails.status === 'Cancelled') { %>
-                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #d11326; font-weight: 600; padding: 2px 10px; background-color: #d1132614; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #d11326; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                        <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #d11326; font-weight: 600; padding: 2px 10px; background-color: #d1132614; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #d11326; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } else if (orderDetails.status === 'Processing') { %>
-                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #FF4500; font-weight: 600; padding: 2px 10px; background-color: #ff45001a; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #FF4500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #FF4500; font-weight: 600; padding: 2px 10px; background-color: #ff45001a; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #FF4500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                          <% } else if (orderDetails.status === 'Shipped') { %>
-                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #055C9D; font-weight: 600; padding: 2px 10px; background-color: #055c9d17; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #055C9D; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                            <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #055C9D; font-weight: 600; padding: 2px 10px; background-color: #055c9d17; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #055C9D; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                             <% } else if (orderDetails.status === 'Delivered') { %>
-                                <p>Order status: <span class="d-inline-flex justify-content-center align-items-center" style="color: #00b500; font-weight: 600; padding: 2px 10px; background-color: #00b5001c; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #00b500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
+                                <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #00b500; font-weight: 600; padding: 2px 10px; background-color: #00b5001c; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #00b500; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } %>
                 </div>
                 <div class="invoice col-4">
@@ -81,7 +81,7 @@
             <div class="col-6 p-4 my-3">
                 <div class="row d-flex justify-content-center">
                     <div class="icon col-1">
-                        <i class="fa-regular fa-user"></i>
+                        <i class="fa-regular fa-user shadow-sm" style="background-color: #ef000024;"></i>
                     </div>
                     <div class="details col-10">
                         <h5>Customer</h5>
@@ -94,7 +94,7 @@
             <div class="col-6 p-4 my-3">
                 <div class="row d-flex justify-content-center">
                     <div class="icon col-1">
-                        <i class="bi bi-cart3"></i>
+                        <i class="bi bi-cart3 shadow-sm" style="background-color: #00ff0029;"></i>
                     </div>
                     <div class="details col-10">
                         <h5>Order info</h5>
@@ -107,11 +107,12 @@
             <div class="col-6 p-4 my-3">
                 <div class="row d-flex justify-content-center">
                     <div class="icon col-1">
-                        <i class="bi bi-credit-card-2-back"></i>
+                        <i class="bi bi-credit-card-2-back shadow-sm" style="background-color: #eded004a;"></i>
                     </div>
                     <div class="details col-10">
                         <h5>Payment</h5>
                         <p class="mt-2">Payment type: <span><%= orderDetails.paymentMethod %></span></p>
+                        <!-- <p>Payment status: <span class="text-success"><%= orderDetails.paymentStatus %></span></p> -->
                         <p>Name: <span><%= orderDetails.address[0].name %></span></p>
                         <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
                     </div>
@@ -120,7 +121,7 @@
             <div class="col-6 p-4 my-3">
                 <div class="row d-flex justify-content-center">
                     <div class="icon col-1">
-                        <i class="bi bi-geo-alt"></i>
+                        <i class="bi bi-geo-alt shadow-sm" style="background-color: #0000ff1f;"></i>
                     </div>
                     <div class="details col-10">
                         <h5>Delivery Address</h5>
@@ -133,7 +134,7 @@
         </div>
         <div class="product-details px-4 bg-white">
             <h6 class="fw-bold text-black">Products</h6>
-            <table class="table table-hover">
+            <table class="table table-hover shadow">
                 <thead>
                     <tr>
                         <th scope="col">No</th>

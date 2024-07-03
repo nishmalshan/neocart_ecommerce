@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title><%-locals.title%></title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport"bcontent="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+        <link rel="icon" type="/public/images/Neo_icon.png" href="/images/favicon.ico">
+
+        <!-- image slider ajax link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+        <!-- Bootstrap CSS v5.3.2 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+        <!-- Bootstrap icon link -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+        <!-- Inter google font link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+
+        <!-- Include jQuery library for category slider -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- cloudflare ajax library for nav scroll function -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
+
+
+        <!-- Include jQuery (required for AJAX method) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        
+
+    </head>
+
+    <body>
+
+        <style>
+            *{
+                font-family: "Inter", sans-serif;
+            }
+            /* Josh Channin 
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto:300,400');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: rgba(54, 0, 153, 0.233);
+}
+
+.container {
+  width: 100%;
+  padding: 40px 0px 40px 0px;
+}
+
+.wallet {
+  margin: 0 auto;
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  padding-bottom: 20px;
+  max-width: 900px;
+  min-width: 800px;
+}
+
+
+.right-trans {
+  background-color: #FFFFFF;
+  width: 100%;
+  height: initial;
+  padding: 25px 40px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: end;
+}
+
+h1 {
+  color: #7d818e;
+  margin-right: 20px;
+  font-weight: 400;
+  font-size: 25px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h4 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.right-trans h1,
+.right-trans #balance {
+  font-family: 'Open Sans', sans-serif;
+  display: inline-block;
+}
+
+#balance {
+  line-height: 34px;
+  font-size: 30px;
+  font-weight: 600;
+  color: green;
+}
+
+        </style>
+    
+
+
+
+
+
+
+<body>
+    <div class="container">
+      <h2 style="margin: 0.5em 4em; color: #000; font-weight: bold;">My Wallet</h2>
+      <% if (User && User.wallet) { %>
+      <div class="wallet  bg-light">
+        <content class="right-trans bg-white">
+          <h1> Current Balance: </h1>
+          <h4 id="balance"><span>&#8377 </span><%= User.wallet.balanceAmount.toLocaleString('en-US') %></h4>
+        </content>
+        <hr style="width: 90%; border: 1px solid #000; margin: auto;">
+        <!-- <h5 class="mx-5 mt-2 fw-bold">History</h5> -->
+        <div class="row header mt-3">
+          <div class="col-sm-5"><p class="fw-bold text-center">Description</p></div>
+          <div class="col-sm-3"><P class="fw-bold text-center">Date</P></div>
+          <div class="col-sm-2"><p class="fw-bold text-center">Payment type</p></div>
+          <div class="col-sm-2"><p class="fw-bold text-center">Amount</p></div>
+        </div>
+        <div class="wallet-history mt-4">
+           <% User.wallet.transaction.forEach(data => { %>
+            <div class="row my-3">
+              <div class="col-sm-5">
+                <p class="mb-0 text-center"><%= data.description %></p>
+              </div>
+              <div class="col-sm-3">
+                <p class="mb-0 text-center"><%= data.timestamp.toISOString().substring(0, 10) %></p>
+              </div>
+              <% if (data.transactionType === "credit") { %>
+                <div class="col-sm-2 text-success">
+                  <p class="mb-0 text-center"><%= data.transactionType %></p>
+                </div>
+               <div class="col-sm-2 text-secondary text-success">
+                <p class="text-center"><span>&#8377</span><%= data.amount.toLocaleString('en-US') %></p>
+              </div>
+              <% } else { %>
+                <div class="col-sm-2 text-danger">
+                  <p class="mb-0 text-center"><%= data.transactionType %></p>
+                </div>
+                <div class="col-sm-2 text-secondary text-danger">
+                  <p class="text-center"><span>&#8377</span><%= data.amount.toLocaleString('en-US') %></p>
+                </div>
+              <% } %>
+            </div>
+            <hr>
+           <% }) %>
+          </div>
+        </div>
+        <% } %>
+    </div>
+  
+    
+  </body>
+
+
+
+
+
+  
+
+
+<!-- Include jQuery library for navbar scroll function -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<!-- fontawesome cdn   -->
+<script src="https://kit.fontawesome.com/9564e7a316.js" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JavaScript Libraries  -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

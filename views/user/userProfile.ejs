@@ -229,8 +229,27 @@
                   <% } %>
                 </div>
               </div>
-
+              <!-- Wallet section -->
+              <h5>Wallet</h5>
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <% if (User.wallet) { %>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-6 text-secondary text-success">
+                          <span> &#8377</span><%= User.wallet.balanceAmount %>
+                        </div>
+                        <div class="col-sm-3">
+                          <a href="/user-wallet" class="text-primary text-decoration-none">View history</a>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
             </div>
+      
           </div>
 
         </div>

@@ -147,6 +147,7 @@ user.post(
   userAuthentication.userBlockOrUnblock,
   orderController.placeOrder
 );
+user.post('/verify-payment', userAuthentication.verifyingUser, orderController.verifyPayment);
 user.get(
   "/orderConfirmation",
   userAuthentication.verifyingUser,
@@ -154,8 +155,9 @@ user.get(
 );
 
 user.get('/order-List',userAuthentication.verifyingUser,orderController.orderList);
-user.get('/orderDetails/:id', userAuthentication.verifyingUser, orderController.orderDetails)
+user.get('/orderDetails/:id', userAuthentication.verifyingUser, orderController.orderDetails);
 user.post('/cancelOrder',userAuthentication.verifyingUser,orderController.cancelOrder);
+user.patch('/returnOrder', userAuthentication.verifyingUser, orderController.returnOrder);
 
 
 // ---------------------------- route for searche products & filter products ------------------------------
@@ -200,12 +202,13 @@ user.post(
   userController.editProfileImage
 );
 user.patch('/change-Password', userAuthentication.verifyingUser, userController.changePassword);
+user.get('/user-wallet', userAuthentication.verifyingUser, userController.getWallet)
 
 
 
 // ---------------------------------- route for wishlist page ------------------------------------
 
-user.get('/user-wishlist', userAuthentication.verifyingUser, userController.GetWishlist);
+user.get('/user-wishlist', userAuthentication.verifyingUser, userController.getWishlist);
 user.post('/user-addToWishlist',userAuthentication.verifyingUser, userController.addWishlist);
 user.delete('/user-deleteWishlist/:id', userAuthentication.verifyingUser, userController.removeFromWishlist)
 

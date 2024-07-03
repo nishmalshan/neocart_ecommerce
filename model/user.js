@@ -10,6 +10,15 @@ const userSchema = new mongoose.Schema({
     confirmPassword:{ type: String },
     status: { type:Boolean, default: true },
     profilePhoto: { type: Object },
+    wallet: {
+        balanceAmount: { type: Number, default: 0},
+        transaction: [{
+            amount: { type: Number },
+            transactionType: { type: String, enum: ['debit', 'credit']},
+            timestamp: { type: Date, default: Date.now },
+            description: { type: String }
+        }]
+    },
     address: [{
         name: { type: String },
         address: {type: String },

@@ -9,7 +9,6 @@ const helpers = require('../controller/helpers');
 const crypto = require('crypto')
 const { ObjectId } = require("mongodb");
 const { error } = require("console");
-const cart = require("../model/cartSchema");
 const product = require("../model/productSchema");
 
 
@@ -768,6 +767,24 @@ const changePassword = async (req, res) => {
 
 
 
+// get method for user wallet history
+
+const getWallet = async (req, res) => {
+  try {
+    const User = await user.findOne({ email: req.session.email });
+    if (!User) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.render('./user/wallet', {title: "user-wallet", User})
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+}
+
+
+
+
 
 // get method for product search
 
@@ -840,7 +857,7 @@ const filterProducts = async (req, res) => {
 
 // get method for wishlist page
 
-const GetWishlist = async (req, res) => {
+const getWishlist = async (req, res) => {
   try {
     const User = await user.findOne({ email: req.session.email })
     const cartCount = await helpers.getCartCount(req.session.email)
@@ -919,9 +936,9 @@ const removeFromWishlist = async (req, res) => {
   try {
 
     const productId = req.params.id
-    console.log(productId,'iiiiiiiiiiiiii');
+    // console.log(productId,'iiiiiiiiiiiiii');
     const userId = req.session.userId;
-    console.log(userId,'uuuuuuuuuuuuuuuuuuuuuuuu');
+    // console.log(userId,'uuuuuuuuuuuuuuuuuuuuuuuu');
     await wishlist.findOneAndDelete({ userId, productId })
 
     res.status(200).json({ success: true, message: 'Product removed from wishlist' });
@@ -983,9 +1000,10 @@ module.exports = {
   editAddress,
   editProfileImage,
   changePassword,
+  getWallet,
   searchProducts,
   filterProducts,
-  GetWishlist,
+  getWishlist,
   addWishlist,
   removeFromWishlist
 };

@@ -260,22 +260,43 @@
                                     <div class="col-lg-4 mb-3">
                                         <div class="form-check h-100 border rounded-3">
                                             <div class="p-3">
-                                                <input  class="form-check-input" type="radio"
+                                                <% if (User.wallet.balanceAmount < totalAmount[0].totalAmount) { %>
+                                                    <input disabled class="form-check-input" type="radio"
                                                     name="paymentMethod"  
                                                     id="'wallet"
-                                                    value= 'wallet' />
+                                                    value= 'Wallet' />
+                                                    <label class="form-check-label" for="wallet" data-walletAmount="" id="">
+                                                        <strong>
+                                                        Wallet
+                                                        </strong> <br />
+                                                        <small class="text-muted">Payment: Wallet</small>
+                                                        <br>
+                                                        <small class="text-muted">Type: Online Payment</small>
+                                                        <br>
+                                                        <small class="mb-2" style="font-weight:500;">Balance:</small>
+                                          <small class="mb-2 text-danger"  style="font-weight: bold;"><span>&#8377 </span><%= User.wallet.balanceAmount.toLocaleString('en-US') %></small>
+                                          <small class="mb-2 text-danger"  style="font-weight: bold;">Insufficient balance</small>
+                                                    </label>
+                                                    <% } else { %>
+
+                                                        <input class="form-check-input" type="radio"
+                                                    name="paymentMethod"  
+                                                    id="'wallet"
+                                                    value= 'Wallet' />
+                                                     
+                                                        <label class="form-check-label" for="wallet" data-walletAmount="" id="">
+                                                            <strong>
+                                                            Wallet
+                                                            </strong> <br />
+                                                            <small class="text-muted">Payment: Wallet</small>
+                                                            <br>
+                                                            <small class="text-muted">Type: Online Payment</small>
+                                                            <br>
+                                                            <small class="mb-2" style="font-weight:500;">Balance:</small>
+                                              <small class="mb-2 text-success"  style="font-weight: bold;"><span>&#8377 </span><%= User.wallet.balanceAmount.toLocaleString('en-US') %></small>
+                                                        </label>
+                                                    <% } %>
                                                     
-                                                <label class="form-check-label" for="wallet" data-walletAmount="" id="">
-                                                    <strong>
-                                                    Wallet
-                                                    </strong> <br />
-                                                    <small class="text-muted">Payment: Razorpay
-                                                    </small><br>
-                                                    <small class="text-muted">Type: Online Payment</small>
-                                                    <br>
-                                                    <small class="mb-2" style="font-weight:500;">Balance:</small>
-                                      <small class="mb-2 text-success"  style="font-weight: bold;">₹</small>
-                                                </label>
                                             
                                             </div>
                                         </div>
@@ -315,7 +336,7 @@
                                       <% if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) { %>
                                         <p class="mb-2">₹ 0</p>
                                        <% } else { %>
-                                        <p class="mb-2">₹ <%= totalAmount[0].totalAmount %></p>
+                                        <p class="mb-2">₹ <%= totalAmount[0].totalAmount.toLocaleString('en-US') %></p>
                                       <% } %>
                                     </div>
                                     
@@ -341,7 +362,7 @@
                                       <p class="mb-2">Total payable:</p>
                                         <% if (!grandTotal || grandTotal.length === 0 || grandTotal === undefined) { %>
                                          <% } else { %>
-                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= grandTotal %></p>
+                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= grandTotal.toLocaleString('en-US') %></p>
                                         <% } %>
                                         
                                         
@@ -396,17 +417,17 @@
 
 
 
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
         document.getElementById('checkout-form').addEventListener('submit', function (event) {
             event.preventDefault();
-
+    
             const selectedAddress = document.querySelector('input[name="Address"]:checked');
             const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-
+    
             const errorMessage = document.getElementById('errorMessage');
-
+    
             if (selectedAddress && selectedPaymentMethod) {
                 const selectedAddressValue = selectedAddress.value;
                 const selectedPaymentMethodValue = selectedPaymentMethod.value;
@@ -415,42 +436,107 @@
             } else {
                 errorMessage.innerHTML = 'Please select both Address and payment method';
                 errorMessage.style.display = 'block';
-
+    
                 setTimeout(() => {
-                    errorMessage.style.display = 'none'
+                    errorMessage.style.display = 'none';
                 }, 3000);
-                console.error('Please select both Address and payment method')
+                console.error('Please select both Address and payment method');
             }
-        })
-
-
-        function sendDataToBackend(addressValue, paymentMethodValue) {
+        });
+    
+        async function sendDataToBackend(addressValue, paymentMethodValue) {
             const data = {
                 address: addressValue,
                 paymentMethod: paymentMethodValue
             };
-
-            fetch('/placeOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok')
+    
+            try {
+                const response = await fetch('/placeOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.codSuccess) {
+                    window.location.href = '/orderConfirmation';
+                } else if (result.online) {
+                    console.log('2222222222222222222222222222222222222222');
+                    initiateRazorpayPayment(result);
+                } else if (result.walletSuccess) {
+                    window.location.href = '/orderConfirmation';
                 }
-                return response.json();
-            })
-            .then(data => {
-                window.location.href = '/orderConfirmation'
-            })
-            .catch(error => {
-                console.log(error,'Error sending data to backend');
-            })
+            } catch (error) {
+                console.log(error, 'Error sending data to backend');
+            }
         }
+    
+        function initiateRazorpayPayment(orderDetails) {
+    console.log('33333333333333333333333333333333333333');
+    const options = {
+        key: orderDetails.key_id,
+        amount: orderDetails.amount,
+        currency: 'INR',
+        name: orderDetails.name,
+        description: 'Order Payment',
+        image: '<%= logoUrl %>',
+        order_id: orderDetails.order_id,
+        handler: function (response) {
+            console.log('444444444444444444444444444444444');
+            verifyPayment(response);
+        },
+        prefill: {
+            name: orderDetails.name,
+            email: orderDetails.email,
+            contact: orderDetails.contact
+        },
+        theme: {
+            color: '#F37254'
+        }
+    };
+
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+
+
+
+        async function verifyPayment(response) {
+    console.log('5555555555555555555555555555555555555555');
+    console.log(response, 'rrrrrrrrrrrrrrrrrrrrr');
+    const paymentData = {
+        order_id: response.razorpay_order_id,
+        payment_id: response.razorpay_payment_id,
+        signature: response.razorpay_signature
+    };
+    
+    fetch('/verify-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('999999999999999999999999999999999999999999999999');
+            window.location = '/orderConfirmation';
+        } else {
+            console.error('Payment verification failed');
+            alert('Payment verification failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error verifying payment', error);
+    });
+}
+
     </script>
+    
 
 
 

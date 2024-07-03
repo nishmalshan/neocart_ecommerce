@@ -59,20 +59,24 @@
                       <div class="row no-gutters mt-4">
                         <div class="col-1">
                           <div>
-                            <a href=""><img class="rounded-3" src="/productImages/<%= data.items[0].image %>" width="100px" alt=""></a>
+                            <% if (data.items && data.items[0]) { %>
+                              <a href=""><img class="rounded-3" src="/productImages/<%= data.items[0].image %>" width="100px" alt=""></a>
+                              <% } %>
                           </div>
                         </div>
                           <div class="col-10 pr-0 pr-md-3 ms-4">
                               <ul class="list-unstyled text-pebble mb-2 small order-status">
                                   
                                   <li class="mt-2">
-                                    <b class="fs-6">Name: </b> <a href="" class="text-charcoal"><%= data.items[0].name %></a>
+                                    <% if (data.items && data.items[0]) { %>
+                                      <b class="fs-6">Name: </b> <a href="" class="text-charcoal"><%= data.items[0].name %></a>
+                                      <% } %>
                                   </li>
                                   <!-- <li class="mt-2">
-                                      <b class="fs-6">Size: </b> <%= data.items[0].size %>
+                                      <b class="fs-6">Size: </b> %= data.items[0].size %>
                                   </li> -->
                                   <!-- <li class="mt-2">
-                                      <b class="fs-6">Quantity: </b> <%= data.items[0].quantity %>
+                                      <b class="fs-6">Quantity: </b> %= data.items[0].quantity %>
                                   </li> -->
                                   <li class="mt-2">
                                       <b class="fs-6">Total: </b> <span>&#8377</span><%= data.totalPrice %>
@@ -148,12 +152,12 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <textarea name="Reason" id="Reason<%= data._id %>" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
+            <textarea name="Reason" id="Reason" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
         </div>
-        <p id="cancellationReasonErrorMessage" class="mb-3 text-center" style="font-size: 13px; color: red;"></p>
+        <p id="returnOrderReasonErrorMessage" class="mb-3 text-center" style="font-size: 13px; color: red;"></p>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCancellationReason('<%= data._id %>')">Close</button>
-              <button type="button" class="btn btn-success" onclick="submitCancellationReason('<%= data._id %>')">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearReturnReason('<%= data._id %>')">Close</button>
+              <button type="button" class="btn btn-success" onclick="submitReturnReason('<%= data._id %>', '<%= data.items[0]._id %>')">Submit</button>
             </div>
       </div>
   </div>
@@ -266,6 +270,66 @@ function submitCancellationReason(orderId) {
     }
 
   </script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+
+
+  function submitReturnReason(orderId, itemId) {
+    let reason = $('#Reason').val();
+console.log(reason,'rrrrrrrrrrrrrr');
+console.log(orderId,'ooooooooooiiiiiiiiiiiiii');
+console.log(itemId,'iiiiiiiiiiiiiiiiii');
+    if (reason.trim() === '') {
+      $('#returnOrderReasonErrorMessage').text('Reason cannot be empty');
+      return;
+    }
+    
+    $('#returnOrderReasonErrorMessage').text('');
+
+
+    // Send an AJAX request to the server
+    $.ajax({
+        url: '/returnOrder', // Your server-side endpoint for handling returns
+        method: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            orderId: orderId,
+            itemId: itemId,
+            reason: reason
+        }),
+        success: function(response) {
+            if (response.success) {
+              Swal.fire({
+              title: 'Success',
+              text: 'Order cancelled successfully!',
+              icon: 'success'
+            })
+                $('#returnOrderModal' + orderId).modal('hide');
+                // Optionally, update the UI to reflect the returned status
+            } else {
+                $('#returnOrderReasonErrorMessage').text(response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+            $('#cancellationReasonErrorMessage').text('An error occurred while submitting the return request. Please try again.');
+        }
+    });
+
+  }
+
+
+
+  function clearReturnReason(orderId) {
+    $('#Reason' + orderId).val('');
+    $('#returnOrderReasonErrorMessage').text('');
+  }
+</script>
 
 
 

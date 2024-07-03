@@ -217,7 +217,7 @@ const checkout = async (req, res) => {
 
             const grandTotal = totalAmount[0].totalAmount + taxAmount;
             req.session.totalAmount = grandTotal;
-            res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, User, cartCount, i})
+            res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, User, cartCount, i, logoUrl: '/images/Neo_icon.png'})
         }
     } catch (error) {
         console.error(error);
