@@ -10,6 +10,7 @@ const crypto = require('crypto')
 const { ObjectId } = require("mongodb");
 const { error } = require("console");
 const product = require("../model/productSchema");
+const offers = require('../model/productOfferSchema');
 
 
 // const toGuestPageGet = async (req, res) => {
@@ -418,22 +419,53 @@ const userLogOutPost = (req, res) => {
 
 // get method for view all products page get
 
-
-const viewAllProducts = async (req,res) => {
-
+const viewAllProducts = async (req, res) => {
   try {
-    const User = await user.findOne({ email: req.session.email })
-    const cartCount = await helpers.getCartCount(req.session.email)
-    const allProducts = await products.find({ status: true })
-    const productCategory = await products.distinct('category')
-    const productBrand = await products.distinct('brand')
+    const User = await user.findOne({ email: req.session.email });
+    const cartCount = await helpers.getCartCount(req.session.email);
+    const productCategory = await products.distinct('category');
+    const productBrand = await products.distinct('brand');
 
-    res.render('./user/viewallProducts',{User, cartCount, allProducts, productCategory, productBrand, title: 'all products'})
+    // Pagination logic
+    const limit = 8; // Number of products per page
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const skip = (page - 1) * limit; // Calculate how many products to skip
+
+    const totalProducts = await products.countDocuments({ status: true });
+    const allProducts = await products.find({ status: true }).skip(skip).limit(limit);
+    const offerProducts = await offers.find();
+
+    // Apply offers to products
+    allProducts.forEach(product => {
+      const offer = offerProducts.find(offer => offer.product.equals(product._id));
+      if (offer) {
+        const discountAmount = parseInt((product.price * offer.discountPrecentage) / 100);
+        product.discountAmount = discountAmount;
+        product.discountedPrice = product.price - discountAmount;
+      }
+    });
+
+    console.log('allProducts', allProducts);
+    console.log('offerProducts', offerProducts);
+
+    res.render('./user/viewallProducts', {
+      User,
+      cartCount,
+      allProducts,
+      productCategory,
+      productBrand,
+      offerProducts,
+      title: 'All-Products',
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / limit)
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
+
+
 
 
 
@@ -444,24 +476,37 @@ const viewAllProducts = async (req,res) => {
 // get method for product details page
 
 
-const productDetails = async (req,res) => {
-
+const productDetails = async (req, res) => {
   try {
-    const User  = await user.findOne({ email: req.session.email } )
+    const User = await user.findOne({ email: req.session.email });
     const cartCount = await helpers.getCartCount(req.session.email);
     const id = req.params.id;
+
     if (!ObjectId.isValid(id)) {
-      return res.status(400).render('user/404')
-  }
-    const productDetailsData = await products.findOne({ _id: id })
+      return res.status(400).render('user/404');
+    }
 
-    res.render('./user/productdetails',{User, cartCount, productDetailsData, title: 'productDetails'})
+    const productDetailsData = await products.findOne({ _id: id, status: true });
+    const offer = await offers.findOne({ product: id });
 
+    if (offer) {
+      const discountAmount = parseInt((productDetailsData.price * offer.discountPrecentage) / 100);
+      productDetailsData.discountAmount = discountAmount;
+      productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
+    }
+
+    res.render('./user/productdetails', {
+      User,
+      cartCount,
+      productDetailsData,
+      title: 'Product Details'
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
+
 
 
 
@@ -775,7 +820,8 @@ const getWallet = async (req, res) => {
     if (!User) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-    res.render('./user/wallet', {title: "user-wallet", User})
+    const cartCount = await helpers.getCartCount(req.session.email);
+    res.render('./user/wallet', {title: "user-wallet", User, cartCount})
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
@@ -891,7 +937,7 @@ const addWishlist = async (req, res) => {
     // Find the user by their email in the session
     const User = await user.findOne({ email: req.session.email });
     if (!User) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.json({ userlogged: false, message: 'User not found' });
     }
 
     const userId = User._id;

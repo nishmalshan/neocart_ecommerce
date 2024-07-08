@@ -13,11 +13,12 @@ const orderSchema = new mongoose.Schema({
         ref: 'user'
     },
     items: [{
-        status: { 
+        status: {
             type: String,
             default: 'Ordered'
         },
-        Returnreason: { type: String, default: "Not Returned" },
+        returnReason: { type: String, default: "Not Returned" },
+        returnStatus: { type: String },
         image: { type: String },
         name: { type: String },
         price: { type: Number },

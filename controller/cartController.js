@@ -214,10 +214,10 @@ const checkout = async (req, res) => {
             return res.redirect('/add-to-Cart');
         } else {
             const taxAmount = Math.round(((totalAmount[0].totalAmount * 18) / 100));
-
+            
             const grandTotal = totalAmount[0].totalAmount + taxAmount;
             req.session.totalAmount = grandTotal;
-            res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, User, cartCount, i, logoUrl: '/images/Neo_icon.png'})
+            res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, taxAmount, User, cartCount, i, logoUrl: '/images/Neo_icon.png'})
         }
     } catch (error) {
         console.error(error);

@@ -143,9 +143,21 @@ admin.post(
 
 
 
-admin.get('/order-manage',adminAuthentication.verifyingAdmin,orderController.getOrderManagement);
-admin.post('/change-orderStatus/:orderId', adminAuthentication.verifyingAdmin,orderController.updateUserOrderStatus);
+admin.get('/order-manage',adminAuthentication.verifyingAdmin,adminController.getOrderManagement);
+admin.post('/change-orderStatus/:orderId', adminAuthentication.verifyingAdmin,adminController.updateUserOrderStatus);
 
+// route for return management
+
+admin.get('/return-manage', adminAuthentication.verifyingAdmin, adminController.getReturnManagement)
+admin.post('/change-returnStatus', adminAuthentication.verifyingAdmin, adminController.updateReaturnOrderStatus)
+
+
+// ------------------------------------- routes for product offer -----------------------------------------
+
+
+admin.get('/offer-product', adminAuthentication.verifyingAdmin, productController.getOfferPage);
+admin.post('/create-offer', adminAuthentication.verifyingAdmin, productController.createOffer);
+admin.delete('/delete-offer/:productId', adminAuthentication.verifyingAdmin, productController.deleteOffer)
 
 
 

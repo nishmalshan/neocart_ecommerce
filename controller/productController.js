@@ -1,5 +1,5 @@
 const product = require("../model/productSchema")
-
+const offers = require("../model/productOfferSchema");
 
 
 
@@ -262,6 +262,94 @@ const deleteProduct = async (req,res) => {
 
 
 
+// get method for offer product page
+
+const getOfferPage = async (req, res) => {
+    try {
+        const productsData = await product.find();
+        // console.log(productsData,'ppppppppppppppppdddddddddddddddddddd');
+        const offerData = await offers.find()
+        
+
+        res.render('./admin/productOfferManage', { title: 'offer-product', productsData, offerData })
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+
+
+// post method for create offer
+
+const createOffer = async (req, res) => {
+    try {
+        const { discount, startDate, endDate, productId } = req.body;
+
+        const existProductOffer = await offers.findOne({ product: productId });
+
+        if (existProductOffer) {
+            existProductOffer.discountPrecentage = discount
+            existProductOffer.startDate = startDate
+            existProductOffer.expiryDate = endDate
+            console.log('offer updated');
+            await existProductOffer.save()
+            return res.json({ success: true, message: 'Offer updated succesfully' });
+        } else {
+            console.log('fffffffffffffffffffffff');
+            
+            const newOffer = new offers({
+                product: productId,
+                discountPrecentage: discount,
+                startDate: startDate,
+                expiryDate: endDate
+            });
+
+            await newOffer.save();
+
+            res.json({ success: true, message: 'Offer created successfully' });
+        }
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+
+
+
+
+
+// delete method for delete offer
+
+const deleteOffer = async (req, res) => {
+    try {
+        const productId = req.params.productId;
+        console.log(productId,'ooooooooooooooofffffffffffffffffffff');
+
+        const offer = await offers.findOne({product: productId});
+        if (offer) {
+            const deleteOffer = await offers.findByIdAndDelete(offer.id)
+
+            if (deleteOffer) {
+                console.log('success');
+                res.json({ success: true, message: 'Offer deleted successfully' });
+              } else {
+                res.json({ success: false, message: 'Offer not found' });
+              }
+        }
+        // const deleteOffer = await offers.findByIdAndDelete(offerId)
+        
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
+
+
+
+
 
 
 
@@ -287,5 +375,8 @@ module.exports = {
     unblockProduct,
     editProductGet,
     editProductPost,
-    deleteProduct
+    deleteProduct,
+    getOfferPage,
+    createOffer,
+    deleteOffer
 }

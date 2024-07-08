@@ -17,7 +17,7 @@
 <section class="" style="background-color: #deedf0; width: 100%; height: fit-content;">
   <div class="container pt-3 pt-md-5">
       <% if (orderDetails.length < 1) { %>
-      <div class="w-100">
+      <div class="w-100 vh-100">
           <img src="/images/no-order.png" width="30%" alt="no order image" class="img-fluid d-block m-auto" />
       </div>
       <% } else { %>
@@ -107,9 +107,15 @@
                        <% } else { %>
                         <% if (data.status === 'Delivered') { %>
                           <div class="col-2 hidden-sm-down">
-                            <!-- <button disabled class="btn btn-danger mb-2 cancel-button">Cancel Order</button> -->
-                            <button id="returnButton" class="btn btn-info  mb-2 return-button" data-bs-toggle="modal" data-bs-target="#returnOrderModal<%= data._id %>">Return Order</button>
-                          </div>
+                            <button id="returnButton" class="btn btn-info mb-2 return-button" data-bs-toggle="modal" 
+                                <% if (data.items[0].status === 'Requested for return' || data.items[0].status === 'Accepted') { %>
+                                    disabled
+                                <% } %>
+                                data-bs-target="#returnOrderModal<%= data._id %>">
+                                Return Order
+                            </button>
+                        </div>
+                        
                           <% } else { %>
                            
                             <div class="col-2 hidden-sm-down">
@@ -131,7 +137,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <textarea name="Reason" id="Reason<%= data._id %>" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
+            <textarea name="cancelReason" id="cancelReason<%= data._id %>" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
         </div>
         <p id="cancellationReasonErrorMessage" class="mb-3 text-center" style="font-size: 13px; color: red;"></p>
           <div class="modal-footer">
@@ -152,7 +158,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <textarea name="Reason" id="Reason" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
+            <textarea name="returnReason" id="returnReason<%= data._id %>" class="w-100 rounded-2 ps-2 form-control" rows="5" placeholder="Enter your reason..."></textarea>
         </div>
         <p id="returnOrderReasonErrorMessage" class="mb-3 text-center" style="font-size: 13px; color: red;"></p>
           <div class="modal-footer">
@@ -162,6 +168,7 @@
       </div>
   </div>
 </div>
+
 
 
           <% }) %>
@@ -194,7 +201,7 @@
     
 // Function to submit cancellation reason
 function submitCancellationReason(orderId) {
-  const reason = document.getElementById('Reason' + orderId).value.trim();
+  const reason = document.getElementById('cancelReason' + orderId).value.trim();
   const cancellationReasonErrorMessage = document.getElementById('cancellationReasonErrorMessage');
   const cancelButton = document.getElementById('cancelButton' + orderId);
 
@@ -265,7 +272,7 @@ function submitCancellationReason(orderId) {
 
 
     function clearCancellationReason(orderId) {
-      document.getElementById('Reason' + orderId).value = ''; // Clear textarea value
+      document.getElementById('cancelReason' + orderId).value = ''; // Clear textarea value
       document.getElementById('cancellationReasonErrorMessage').textContent = '';
     }
 
@@ -279,18 +286,16 @@ function submitCancellationReason(orderId) {
 <script>
 
 
-  function submitReturnReason(orderId, itemId) {
-    let reason = $('#Reason').val();
-console.log(reason,'rrrrrrrrrrrrrr');
-console.log(orderId,'ooooooooooiiiiiiiiiiiiii');
-console.log(itemId,'iiiiiiiiiiiiiiiiii');
-    if (reason.trim() === '') {
-      $('#returnOrderReasonErrorMessage').text('Reason cannot be empty');
-      return;
+function submitReturnReason(orderId, itemId) {
+    let reason = $('#returnReason' + orderId).val().trim();
+    const returnOrderReasonErrorMessage = $('#returnOrderReasonErrorMessage');
+    
+    if (reason === '') {
+        returnOrderReasonErrorMessage.text('Reason cannot be empty');
+        return;
     }
     
-    $('#returnOrderReasonErrorMessage').text('');
-
+    returnOrderReasonErrorMessage.text('');
 
     // Send an AJAX request to the server
     $.ajax({
@@ -304,31 +309,30 @@ console.log(itemId,'iiiiiiiiiiiiiiiiii');
         }),
         success: function(response) {
             if (response.success) {
-              Swal.fire({
-              title: 'Success',
-              text: 'Order cancelled successfully!',
-              icon: 'success'
-            })
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Order return request sent successfully!',
+                    icon: 'success'
+                }).then(() => {
+                    location.reload(); // Refresh the page to reflect changes
+                });
                 $('#returnOrderModal' + orderId).modal('hide');
-                // Optionally, update the UI to reflect the returned status
             } else {
-                $('#returnOrderReasonErrorMessage').text(response.message);
+                returnOrderReasonErrorMessage.text(response.message);
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error:', textStatus, errorThrown);
-            $('#cancellationReasonErrorMessage').text('An error occurred while submitting the return request. Please try again.');
+            returnOrderReasonErrorMessage.text('An error occurred while submitting the return request. Please try again.');
         }
     });
+}
 
-  }
-
-
-
-  function clearReturnReason(orderId) {
-    $('#Reason' + orderId).val('');
+function clearReturnReason(orderId) {
+    $('#returnReason' + orderId).val('');
     $('#returnOrderReasonErrorMessage').text('');
-  }
+}
+
 </script>
 
 

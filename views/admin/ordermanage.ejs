@@ -51,16 +51,17 @@
                     <tr>
                         <td><%= index + 1 %></td>
                         <td><%= order._id %>
-                            <% order.items.forEach(item => { %>
-                                <td><%= item.name %></td>
-                                <td><%= item.size %></td>
-                                <td><%= item.quantity %></td>
-                            <% }) %>
                             <br>
                             <% if (order.status === 'Cancelled') { %>
                                 <p style="font-size: 13px; color: red;">Order was cancelled by user</p>
                             <% } %>
                         </td>
+                            <% order.items.forEach(item => { %>
+                                <td><%= item.name %></td>
+                                <td><%= item.size %></td>
+                                <td><%= item.quantity %></td>
+                            <% }) %>
+                        
                         <td><span>&#8377</span><%= order.totalPrice %></td>
                         <td><%= order.paymentMethod %></td>
                         <td><%= order.paymentStatus %></td>
@@ -78,7 +79,7 @@
                                 <option value="Delivered" <% if (order.status === 'Delivered') { %> selected <% } %>>Delivered</option>
                             </select>
                             
-                            <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateOrderStatus(this)">Update</button>
+                            <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateReaturnOrderStatus(this)">Update</button>
                         </td>
                     </tr>
                 <% }) %>
