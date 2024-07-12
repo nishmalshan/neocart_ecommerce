@@ -3,6 +3,7 @@ const product = require('../model/productSchema');
 const user = require('../model/user');
 const helpers = require('../controller/helpers');
 const { ObjectId } = require('mongodb');
+const offers = require('../model/productOfferSchema');
 
 
 
@@ -12,7 +13,7 @@ const { ObjectId } = require('mongodb');
 // post method for add to cart
 const postaddToCart = async (req, res) => {
     try {
-        const { productId, selectedSize } = req.body;
+        const { productId, selectedSize, price } = req.body;
         const cartData = await cart.findOne({ userId : req.session.userId });
 
         if (cartData) {
@@ -31,6 +32,7 @@ const postaddToCart = async (req, res) => {
                     productId: productId,
                     quantity: 1,
                     size: selectedSize,
+                    price: price
                 });
             }
 
@@ -44,8 +46,10 @@ const postaddToCart = async (req, res) => {
                     productId: productId,
                     quantity: 1,
                     size: selectedSize,
+                    price: price
                 }],
             });
+            await newCart.save()
             return res.status(200).json({ success: true, message: "Updated cart item." });
         }
     } catch (error) {
@@ -68,10 +72,16 @@ const getaddToCart = async (req, res) => {
         const cartCount = await helpers.getCartCount(req.session.email);
         const cartData = await helpers.getProductData(req.session.userId);
         const total = await helpers.totalAmount(req.session.userId);
-        const taxAmount = Math.round(((total[0]?.totalAmount * 18) / 100));
-        const grandTotal = total[0]?.totalAmount + taxAmount;
+        const taxAmount = Math.round(((total * 18) / 100));
+        const grandTotal = total + taxAmount;
         const eachProductPrice = await helpers.eachProductPrice(req.session.userId);
+        const cartProduct = await cart.find({ userId: req.session.userId })
         let i = 0;
+        // console.log('CART DATA',cartData);
+        // console.log('eachProductPrice',eachProductPrice);
+        // console.log(total,'total');
+    
+
 
         res.render('./user/cart', { title: 'Shopping cart', User, total, cartCount, taxAmount, grandTotal, cartData , eachProductPrice, i });
 
@@ -209,13 +219,13 @@ const checkout = async (req, res) => {
         const cartProductData = await helpers.getProductData(userId)
         let i=0;
         const totalAmount = await helpers.totalAmount(userId);
-        if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) {
+        if (!totalAmount || totalAmount.length === 0 || totalAmount === undefined) {
             // Handle the error condition here, e.g., redirect to an error page
             return res.redirect('/add-to-Cart');
         } else {
-            const taxAmount = Math.round(((totalAmount[0].totalAmount * 18) / 100));
+            const taxAmount = Math.round(((totalAmount * 18) / 100));
             
-            const grandTotal = totalAmount[0].totalAmount + taxAmount;
+            const grandTotal = totalAmount + taxAmount;
             req.session.totalAmount = grandTotal;
             res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, taxAmount, User, cartCount, i, logoUrl: '/images/Neo_icon.png'})
         }

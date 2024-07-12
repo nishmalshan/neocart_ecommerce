@@ -269,6 +269,7 @@ const getOfferPage = async (req, res) => {
         const productsData = await product.find();
         // console.log(productsData,'ppppppppppppppppdddddddddddddddddddd');
         const offerData = await offers.find()
+        console.log(offerData,'oooooooooooofffffffffffff');
         
 
         res.render('./admin/productOfferManage', { title: 'offer-product', productsData, offerData })
@@ -294,7 +295,7 @@ const createOffer = async (req, res) => {
             existProductOffer.expiryDate = endDate
             console.log('offer updated');
             await existProductOffer.save()
-            return res.json({ success: true, message: 'Offer updated succesfully' });
+            return res.json({ success: true, message: 'Offer Updated Succesfully' });
         } else {
             console.log('fffffffffffffffffffffff');
             
@@ -307,7 +308,7 @@ const createOffer = async (req, res) => {
 
             await newOffer.save();
 
-            res.json({ success: true, message: 'Offer created successfully' });
+            res.json({ success: true, message: 'Offer Created Successfully' });
         }
         
     } catch (error) {
@@ -333,7 +334,7 @@ const deleteOffer = async (req, res) => {
 
             if (deleteOffer) {
                 console.log('success');
-                res.json({ success: true, message: 'Offer deleted successfully' });
+                res.json({ success: true, message: 'Offer Deleted Successfully' });
               } else {
                 res.json({ success: false, message: 'Offer not found' });
               }

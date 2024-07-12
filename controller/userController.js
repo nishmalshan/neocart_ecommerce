@@ -48,12 +48,6 @@ const toSignUpPageGet = (req, res) => {
 
 // Google authentication functions
 
-// random password for creating new user with google
-
-function generateRandomPassword(length) {
-  return crypto.randomBytes(length).toString('hex');
-}
-
 const successGoogleLogin = async (req, res) => {
   try {
 
@@ -68,12 +62,11 @@ const successGoogleLogin = async (req, res) => {
     if (!existUser) {
       const randomPassword = generateRandomPassword(8);
       const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the password
-
       const newUser = await new user({
         name: req.user.displayName,
         email: req.user.email,
         mobile: '',
-        password: hashedPassword // Save the hashed password
+        password: hashedPassword
       }).save();
       
       req.session.name = req.user.displayName;
@@ -128,7 +121,7 @@ const homePageGet = async (req, res) => {
 
 const toSignupPost = async (req, res) => {
   try {
-    const { username, email, mobile, password } = req.body;
+    const { username, email, mobile, password, referral } = req.body;
     const existUser = await user.findOne({ email: email });
 
     if (existUser) {
@@ -146,11 +139,13 @@ const toSignupPost = async (req, res) => {
     //   password: hashpass,
     // });
     // await newUser.save();
+    
     let userData = {
       username: username,
       email: email,
       mobile: mobile,
-      password: hashpass
+      password: hashpass,
+      referral: referral
     }
 
     req.session.data = userData;
@@ -225,16 +220,31 @@ const otpConfirmation = async (req,res) => {
         const compareOtp = await bcrypt.compare(userEnteredOtp, hashedOtp);
         req.session.email = data.email;
         if(compareOtp) {
+          const referralCode = helpers.generateReferralCode()
           const newUser = await new user({
             name: data.username,
             email: data.email,
             mobile: data.mobile,
-            password: data.password
+            password: data.password,
+            referralCode: referralCode
           }).save()
           
           req.session.userlogged = true;
           req.session.userId = newUser._id
           req.session.signOtp = false;
+
+          const checkExistReferral = await user.findOne({ referralCode: data.referral })
+          console.log('checkExistReferral',checkExistReferral);
+          if (checkExistReferral) {
+            checkExistReferral.wallet.balanceAmount += 100
+            checkExistReferral.wallet.transaction.push({
+              amount: 100,
+              transactionType: 'credit',
+              timestamp: new Date(),
+              description: 'Referral bonus'
+            })
+            await checkExistReferral.save();
+          }
 
           res.redirect('/')
         }else{
@@ -445,8 +455,8 @@ const viewAllProducts = async (req, res) => {
       }
     });
 
-    console.log('allProducts', allProducts);
-    console.log('offerProducts', offerProducts);
+    // console.log('allProducts', allProducts);
+    // console.log('offerProducts', offerProducts);
 
     res.render('./user/viewallProducts', {
       User,
@@ -491,10 +501,18 @@ const productDetails = async (req, res) => {
 
     if (offer) {
       const discountAmount = parseInt((productDetailsData.price * offer.discountPrecentage) / 100);
-      productDetailsData.discountAmount = discountAmount;
-      productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
-    }
+      console.log(discountAmount,'dissssssssssssssssssssssss');
+      productDetailsData.discountAmount = productDetailsData.price - discountAmount;
+      // productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
+console.log('productDetailsData.discountAmoun',productDetailsData.discountAmount);
 
+    }else{
+      const discountAmount = 0
+      // productDetailsData.discountAmount = discountAmount;
+      productDetailsData.discountAmount = discountAmount ? discountAmount : 0;
+console.log('productDetailsData.discountAmoun',productDetailsData.discountAmount);
+    }
+await productDetailsData.save()
     res.render('./user/productdetails', {
       User,
       cartCount,

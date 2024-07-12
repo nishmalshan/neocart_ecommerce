@@ -1,6 +1,28 @@
 const {ObjectId} = require('mongodb');
 const cart = require('../model/cartSchema');
 const user = require('../model/user');
+const offer=require('../model/productOfferSchema')
+const crypto = require('crypto');
+
+
+
+
+
+// function for creating random refferral code
+
+function generateReferralCode(length = 8) {
+    return crypto.randomBytes(length)
+        .toString('base64')
+        .replace(/\+/g, '0') // Replace '+' with '0'
+        .replace(/\//g, '0') // Replace '/' with '0'
+        .replace(/=+$/, '') // Remove '=' padding
+        .substring(0, length); // Ensure the code is of the correct length
+}
+
+
+
+
+
 
 
 
@@ -39,6 +61,7 @@ const getProductData = async (userid) => {
                     item: 1,
                     quantity: 1,
                     size: 1,
+                    price: 1,
                     product: { $arrayElemAt: ['$cartItems', 0] }
                 }
             },
@@ -85,23 +108,47 @@ const totalAmount = async (userid) => {
                 $project: {
                     _id: 0,
                     quantity: "$products.quantity",
-                    price: "$product.price"
+                    price: "$product.price",
+                    discountAmount: "$product.discountAmount"
                 }
             },
             {
                 $group: {
                     _id: null,
-                    totalAmount: { $sum: { $multiply: ["$quantity", "$price"] } }
+                    totalAmount: { 
+                        $sum: { 
+                            $multiply: [
+                                "$quantity", 
+                                {
+                                    $cond: {
+                                        if: { $gt: ['$discountAmount', 0] },
+                                        then: '$discountAmount',
+                                        else: '$price'
+                                    }
+                                }
+                            ] 
+                        } 
+                    }
                 }
             }
         ]);
-        return totalAmount
+        return totalAmount.length > 0 ? totalAmount[0].totalAmount : 0;
     } catch (error) {
         console.log(error);
     }
 }
 
 
+$multiply: [
+    '$quantity',
+    {
+        $cond: {
+            if: { $gt: ['$product.discountAmount', 0] },
+            then: '$product.discountAmount',
+            else: '$product.price'
+        }
+    }
+]
 
 
 
@@ -109,33 +156,48 @@ const eachProductPrice = async (userId) => {
     try {
         const eachAmount = await cart.aggregate([
             {
-                $match: { userId: new ObjectId(userId) }
+                $match: { userId: user }
             },
             {
-                $unwind: "$products"
-            },
-            {
-                $lookup: {
-                    from: "products",
-                    localField: "products.productId",
-                    foreignField: "_id",
-                    as: "product"
-                }
-            },
-            {
-                $unwind: "$product"
+                $unwind: '$products'
             },
             {
                 $project: {
-                    _id: 0,
-                    productId: "$products.productId",
-                    quantity: "$products.quantity",
-                    price: "$product.price",
-                    totalProductPrice: {
-                        $cond: {
-                            if: { $gt: ["$products.quantity", 1] },
-                            then: { $multiply: ["$products.quantity", "$product.price"] },
-                            else: "$product.price"
+                    item: '$products.productId',
+                    quantity: '$products.quantity',
+                    size: '$products.size'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'item',
+                    foreignField: '_id',
+                    as: 'cartItems'
+                }
+            },
+            {
+                $project: {
+                    item: 1,
+                    quantity: 1,
+                    size: 1,
+                    product: { $arrayElemAt: ['$cartItems', 0] }
+                }
+            },
+            {
+                $project: {
+                    total: {
+                        $sum: {
+                            $multiply: [
+                                '$quantity',
+                                {
+                                    $cond: {
+                                        if: { $gt: ['$product.discountAmount', 0] },
+                                        then: '$product.discountAmount',
+                                        else: '$product.price'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -154,7 +216,6 @@ const eachProductPrice = async (userId) => {
         console.log(error);
     }
 };
-
 
 
 
@@ -205,5 +266,6 @@ module.exports = {
     getProductData,
     totalAmount,
     eachProductPrice,
-    getCartCount
+    getCartCount,
+    generateReferralCode
 }

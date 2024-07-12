@@ -41,12 +41,12 @@
             </h3>
         
             <div class="my-3">
-              <% if (productDetailsData.discountedPrice) { %>
-                <span class="h5">MRP: <span class=" text-success fw-bold"> &#8377 <%= productDetailsData.discountedPrice %></span></span>
-                <span class="h5 ms-3 text-muted text-decoration-line-through"><span> &#8377</span><s><%= productDetailsData.price %></s></span>
+              <% if (productDetailsData.discountAmount ) { %>
+                <span class="h5">MRP: <span class=" text-success fw-bold"><%= productDetailsData.discountAmount %>&#8377</span></span>
+                <span class="h5 ms-3 text-muted text-decoration-line-through"><%= productDetailsData.price %><span>&#8377</span></span>
                 
               <% } else { %>
-                <span class="h5">MRP: <span> &#8377</span><%= productDetailsData.price %></span>
+                <span class="h5">MRP: <%= productDetailsData.price - productDetailsData.discountAmount %><span>&#8377</span></span>
               <% } %>
             </div>
         
@@ -206,6 +206,8 @@
 
 const selectedSize = selectedSizeElement.getAttribute('data-size');
 const productId = '<%= productDetailsData.id %>';
+const price = '<%= productDetailsData.price - productDetailsData.discountAmount %>'
+console.log(price,'ppppppppppppppppp');
 
 try {
     const response = await fetch('/add-to-Cart', {
@@ -213,7 +215,7 @@ try {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ productId: productId, selectedSize: selectedSize })
+        body: JSON.stringify({ productId: productId, selectedSize: selectedSize, price: price })
     });
 
     const responseData = await response.json();

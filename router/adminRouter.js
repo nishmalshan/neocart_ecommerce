@@ -157,9 +157,15 @@ admin.post('/change-returnStatus', adminAuthentication.verifyingAdmin, adminCont
 
 admin.get('/offer-product', adminAuthentication.verifyingAdmin, productController.getOfferPage);
 admin.post('/create-offer', adminAuthentication.verifyingAdmin, productController.createOffer);
-admin.delete('/delete-offer/:productId', adminAuthentication.verifyingAdmin, productController.deleteOffer)
+admin.delete('/delete-offer/:productId', adminAuthentication.verifyingAdmin, productController.deleteOffer);
 
 
+
+
+// ------------------------------------- routes for category offer -----------------------------------------
+
+admin.get('/category-offer', adminAuthentication.verifyingAdmin, categoryController.getCategoryOfferPage)
+admin.post('/create-category-offer', adminAuthentication.verifyingAdmin, categoryController.createCategoryOffer)
 
 
 

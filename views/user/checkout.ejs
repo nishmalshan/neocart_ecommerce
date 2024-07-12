@@ -260,7 +260,7 @@
                                     <div class="col-lg-4 mb-3">
                                         <div class="form-check h-100 border rounded-3">
                                             <div class="p-3">
-                                                <% if (User.wallet.balanceAmount < totalAmount[0].totalAmount) { %>
+                                                <% if (User.wallet.balanceAmount < totalAmount) { %>
                                                     <input disabled class="form-check-input" type="radio"
                                                     name="paymentMethod"  
                                                     id="'wallet"
@@ -333,17 +333,17 @@
                                   <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">Subtotal:</p>
-                                      <% if (!totalAmount || totalAmount.length === 0 || totalAmount[0] === undefined) { %>
-                                        <p class="mb-2">₹ 0</p>
+                                      <% if (!totalAmount || totalAmount.length === 0 || totalAmount === undefined) { %>
+                                        <p class="mb-2">0₹</p>
                                        <% } else { %>
-                                        <p class="mb-2">₹ <%= totalAmount[0].totalAmount.toLocaleString('en-US') %></p>
+                                        <p class="mb-2"><%= totalAmount.toLocaleString('en-US') %>₹</p>
                                       <% } %>
                                     </div>
                                     
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">GST:</p>
 
-                                        <p  class="mb-2 text-dark">₹ <%= taxAmount %></p>
+                                        <p  class="mb-2 text-dark"><%= taxAmount %>₹</p>
                                        
 
                                         <!-- <p id="discount" class="mb-2 text-success">No discount</p> -->
@@ -352,8 +352,7 @@
                                   
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">Payment Type:</p>
-                                      <p class="mb-2" id="selectedPayment">Not Selected
-                                      </p>
+                                      <p class="mb-2" id="selectedPayment">Not Selected</p>
                                     </div>
                                  
                             
@@ -362,7 +361,7 @@
                                       <p class="mb-2">Total payable:</p>
                                         <% if (!grandTotal || grandTotal.length === 0 || grandTotal === undefined) { %>
                                          <% } else { %>
-                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= grandTotal.toLocaleString('en-US') %></p>
+                                            <p id="grandTotal" class="mb-2 fw-bold"><%= grandTotal.toLocaleString('en-US') %>₹</p>
                                         <% } %>
                                         
                                         

@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     confirmPassword:{ type: String },
     status: { type:Boolean, default: true },
     profilePhoto: { type: Object },
+    referralCode: { type: String, unique: true },
     wallet: {
         balanceAmount: { type: Number, default: 0},
         transaction: [{

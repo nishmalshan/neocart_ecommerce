@@ -78,9 +78,9 @@
                                             <p class="text-truncate"><%= data.name %></p>
                                             <p class=""><%= data.color %></p>
                                             <% if (data.discountedPrice) { %>
-                                                <p class="">MRP: <span>&#8377;</span><%= data.discountedPrice %> <span class="text-muted ms-2 text-decoration-line-through">&#8377;<%= data.price %></span></p>
+                                                <p class="">MRP: <span class="text-success"><%= data.discountedPrice %>&#8377;</span> <span class="text-muted ms-2 text-decoration-line-through"><%= data.price %>&#8377;</span></p>
                                             <% } else { %>
-                                                <p class="">MRP: <span>&#8377;</span><%= data.price %></p>
+                                                <p class="">MRP: <%= data.price %><span>&#8377;</span></p>
                                             <% } %>
                                         </div>
                                     </a>

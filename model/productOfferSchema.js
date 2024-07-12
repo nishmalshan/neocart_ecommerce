@@ -3,7 +3,6 @@ require('dotenv').config()
 
 
 
-
 const producOfferSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.ObjectId,

@@ -147,12 +147,15 @@ const updateUserOrderStatus = async (req, res) => {
   try {
     const newStatus = req.body.status;
     const orderId = req.params.orderId;
+    // console.log(newStatus,'nnnnnnnnssssssssssss');
+    // console.log(orderId,'ooooooooooiiiiiiiiiiiiiiiii');
 
     const updateStatus = await orders.findByIdAndUpdate(orderId, {
       status: newStatus,
     });
 
     if (updateStatus) {
+      // console.log(updateStatus,'uuuuuuuuuuuuuuuuuuuuu');
       res.json({ success: true, message: "Order status updated successfully" });
     } else {
       res.json({ success: false, message: "Failed to update order status" });
@@ -198,9 +201,11 @@ const updateReaturnOrderStatus = async (req, res) => {
           item.status = status
         }
       }
+      await productData.save()
       console.log(productData,'ppppppppppppppdddddddddddddddddd');
       res.status(200).json({ success: true, message: 'Order returned successfully'})
     } else {
+      console.log('noooooooooooooooooooooooo');
       res.status(400).json({ success: false, message: 'Product data not found'})
     }
     

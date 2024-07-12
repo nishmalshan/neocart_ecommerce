@@ -1,7 +1,6 @@
 const category = require("../model/categorySchema");
-require("dotenv").config();
-
-
+const categoryOffer = require("../model/categoryofferSchema");
+const mongoose = require('mongoose');
 
 
 
@@ -11,8 +10,8 @@ require("dotenv").config();
 const categoryPageGet = async (req, res) => {
   try {
     let i=0;
-    const categoryData = await category.find().sort({ name: 1})
-    res.render("./admin/categorymanage", {categoryData,i, title: 'categoryManagement'});
+    const categoryData = await category.find().sort({ name: 1});
+    res.render("./admin/categorymanage", { categoryData, i, title: 'categoryManagement' });
 
   } catch (error) {
     console.error(error);
@@ -192,6 +191,66 @@ const deleteCategory = async (req,res) => {
 
 
 
+// get method for get category offer page
+
+const getCategoryOfferPage = async (req, res) => {
+  try {
+    const categoryData = await category.find().sort({ name: 1 });
+    const categoryOfferData = await categoryOffer.find()
+    res.render('./admin/categoryofferManage', { title: 'category-offer', categoryData, categoryOfferData})
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+}
+
+
+
+
+// post method for create category offer
+
+const createCategoryOffer = async (req, res) => {
+  try {
+    const { categoryId, discount, startDate, endDate } = req.body;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).render('user/404');
+    }
+
+    const existCategoryOffer = await categoryOffer.findOne({ categoryId: categoryId });
+    if (existCategoryOffer) {
+      existCategoryOffer.percentage = discount;
+      existCategoryOffer.startDate = startDate;
+      existCategoryOffer.expiryDate = endDate;
+      await existCategoryOffer.save();
+      console.log('Category offer updated successfully');
+      return res.json({ success: true, message: 'Category Offer Updated Successfully' });
+    } else {
+      const categoryData = await category.findById(categoryId);
+      if (!categoryData) {
+        return res.status(404).json({ success: false, message: 'Category not found' });
+      }
+
+      const newCategoryOffer = new categoryOffer({
+        categoryId,
+        categoryName: categoryData.name,
+        percentage: discount,
+        startDate: startDate,
+        expiryDate: endDate
+      })
+      await newCategoryOffer.save()
+
+      res.json({ success: true, message: 'Category Offer Created Successfully' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+}
+
+
+
 
 
 
@@ -218,5 +277,7 @@ module.exports = {
   editCategoryPost,
   blockCategory,
   unblockCategory,
-  deleteCategory
+  deleteCategory,
+  getCategoryOfferPage,
+  createCategoryOffer
 };

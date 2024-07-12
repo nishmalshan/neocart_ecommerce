@@ -19,7 +19,8 @@
 }
 .row{
     width: 850px;
-    height: 550px;
+    /* height: 550px; */
+    padding: 10px 0px;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);

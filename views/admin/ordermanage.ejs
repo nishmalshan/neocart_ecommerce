@@ -79,7 +79,7 @@
                                 <option value="Delivered" <% if (order.status === 'Delivered') { %> selected <% } %>>Delivered</option>
                             </select>
                             
-                            <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateReaturnOrderStatus(this)">Update</button>
+                            <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateOrderStatus(this)">Update</button>
                         </td>
                     </tr>
                 <% }) %>

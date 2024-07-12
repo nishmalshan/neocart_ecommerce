@@ -49,13 +49,14 @@
                         <th>PHONE</th>
                         <th>ADDRESS</th>
                         <th>RETURN REASON</th>
+                        <th>Order status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% orderedDetails.forEach((order, index) => { %>
                         <% order.items.forEach((item, itemIndex) => { %>
-                            <% if (item.status === 'Requested for return') { %>
+                            <!-- % if (item.status === 'Requested for return' || item.status === 'Accepted') { %> -->
                                 <tr>
                                     <% if (itemIndex === 0) { %>
                                         <td rowspan="<%= order.items.length %>"><%= index + 1 %></td>
@@ -74,7 +75,8 @@
                                         <td rowspan="<%= order.items.length %>"><%= order.address[0].phone %></td>
                                         <td rowspan="<%= order.items.length %>"><%= order.address[0].address %></td>
                                     <% } %>
-                                    <td><%= item.returnrReason %></td>
+                                    <td><%= item.returnReason %></td>
+                                    <td><%= order.status %></td>
                                     <% if (itemIndex === 0) { %>
                                         <td rowspan="<%= order.items.length %>">
                                             <select name="orderStatus" data-order-id="<%= order._id %>" class="custom-select orderStatus">
@@ -87,7 +89,7 @@
                                         </td>
                                     <% } %>
                                 </tr>
-                            <% } %>
+                            <!-- % } %> -->
                         <% }) %>
                     <% }) %>
                 </tbody>
@@ -148,8 +150,10 @@ console.log(itemId,'iiiiiiiiiiiiiiii');
         })
         .then(response => {
             if (response.success) {
+                console.log('success');
                 window.location.reload();
             } else {
+                console.log('failed');
                 console.error('Failed to update return status.');
             }
         })
