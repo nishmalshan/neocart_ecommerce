@@ -19,32 +19,21 @@
     .address-container {
     max-width: 190px; 
 }
-.btn-close{
-    position: absolute;
-    top: 30px;
-    right: 240px;
-    z-index: 1;
-    font-size: 20px;
-}
 
 </style>
         <!-- address form modal -->
         
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     <div class="modal-dialog modal-lg  ">
-      <div class="modal-content ">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5 " id="staticBackdropLabel">ADD ADDRESS</h1>
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 " id="staticBackdropLabel">ADD ADDRESS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="container  mt-5 mb-5 ">
             <div class="row mx-0 justify-content-center">
               <div class="col-md-6 col-lg-6">
-                <form
-                  method="POST"
-                  class="w-100 rounded-1 p-4 border bg-white"
-                  action="/user-Newaddress"
-                >
+                <form method="POST" class="w-100 rounded-1 p-4 border bg-white" action="/user-Newaddress">
                   <label class="d-block mb-4">
                     <span class="form-label d-block">Name</span>
                     <input  id="addName"
@@ -160,40 +149,42 @@
                                 <div class="col-lg-4 mb-3">
                                     <!-- Address radio -->
                                     <div class="form-check h-100 border rounded-3 shadow position-relative">
-                                        <div class="p-3" style="height: 290px;">
-                                            <input  class="form-check-input" type="radio"
-                                            name="Address" id="flexRadioDefault" 
-                                            value="<%= data._id %>"/>
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Address No: <strong><%= ++i %></strong><br /><br>
-                                                
-                                                <small class="text-muted" >
-                                                    <span style=" color: black;">   <strong>Name: </strong><%= data.name %></span>      
-                                                </small><br>
-                                                <small class="text-muted" >
-                                                    <span style=" color: black;"> <strong>City: </strong> <%= data.city %> </span>     
-                                                </small><br>
-                                                <div class="address-container">
-                                                <small class="text-muted address-text" >
-                                           <span style=" color: black;"> <strong> Address: </strong> <small><%= data.address %></small></span>    
-                                                </small><br>
-                                            </div>
-                                                <small class="text-muted" >
-                                                    <span style=" color: black;"> <strong>State: </strong><%= data.state %></span>  
-                                                </small><br>
-                                                <small class="text-muted" >
-                                                    <span style=" color: black;"> <strong>Pin: </strong><%= data.pincode %></span>  
-                                                </small><br>
-                                                <small class="text-muted" >
-                                                    <span style=" color: black;">  <strong>Phone: </strong><%= data.phone %></span>     
-                                                </small>
-                                                
-                                            </label>
-                                            
-                                        </div>
-                                     <div class="" style="margin-bottom: 6px;margin-left: 180px; position: absolute; bottom: 5px; right: 5px;">
+
+                                     <div class="" style="margin-bottom: 6px; position: absolute; top: 13px; right: 13px;">
     
-                                       <button type="button" style="border: none;background-color: white;"><i class="fas fa-trash fa-lg" onclick="deleteAddress('<%= data._id %>')" style="color:red;"></i></button>
+                                       <button type="button" style="border: none;background-color: white;"><i class="fas fa-trash fa-lg" onclick="deleteAddress('<%= data._id %>')" style="color:#4b4b4b;"></i></button>
+                                    </div>
+
+                                    <div class="p-3" style="height: fit-content;">
+                                        <input  class="form-check-input" type="radio"
+                                        name="Address" id="flexRadioDefault" 
+                                        value="<%= data._id %>"/>
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Address No: <strong><%= ++i %></strong><br /><br>
+                                            
+                                            <small class="text-muted" >
+                                                <span style=" color: black;">   <strong>Name: </strong><%= data.name %></span>      
+                                            </small><br>
+                                            <small class="text-muted" >
+                                                <span style=" color: black;"> <strong>City: </strong> <%= data.city %> </span>     
+                                            </small><br>
+                                            <div class="address-container">
+                                            <small class="text-muted address-text" >
+                                       <span style=" color: black;"> <strong> Address: </strong> <small><%= data.address %></small></span>    
+                                            </small><br>
+                                        </div>
+                                            <small class="text-muted" >
+                                                <span style=" color: black;"> <strong>State: </strong><%= data.state %></span>  
+                                            </small><br>
+                                            <small class="text-muted" >
+                                                <span style=" color: black;"> <strong>Pin: </strong><%= data.pincode %></span>  
+                                            </small><br>
+                                            <small class="text-muted" >
+                                                <span style=" color: black;">  <strong>Phone: </strong><%= data.phone %></span>     
+                                            </small>
+                                            
+                                        </label>
+                                        
                                     </div>
                                     </div>
                                 </div>
@@ -312,42 +303,50 @@
                     </div>
 
                 </div>
-                <div
-                    class="col-xl-4 col-lg-4 d-flex   border card rounded shadow mb-5">
+                <div class="col-xl-4 col-lg-4 d-flex   border card rounded shadow mb-5">
                     <div class="container ">
                         <div class="row pt-3">
-                                <div class="card mb-3 border shadow-0" style="margin-top: 20px">
-                                  <div class="card-body">
-                                  
-                                      <div class="form-group ">
-                                        <label class="form-label"><strong>Have coupon?</strong></label>
-                                        <div class="input-group">
-                                          <input type="text" class="form-control border" id="couponCode" name="" placeholder="Coupon code" />
-                                          <button type="button" class="btn btn-success  text-white">Apply</button>
-                                        </div>
-                                      </div>
-                                
+
+                            <div class="card mb-3 border shadow-0" style="margin-top: 20px">
+                                <div class="card-body">
+                                  <div class="form-group">
+                                    <label class="form-label"><strong>Have coupon?</strong></label>
+                                    <div class="input-group">
+                                      <input type="text" class="form-control border" id="couponCode" placeholder="Coupon code" />
+                                      <button type="button" class="btn btn-success text-white" id="applyCoupon">Apply</button>
+                                    </div>
+                                    <p class="text-danger d-inline" style="font-size: 13px;" id="couponMessage"></p>
+                                    <a href="#" class="text-primary float-end d-none" id="removeCoupon" style="font-size: 13px;">Remove</a>
                                   </div>
                                 </div>
+                              </div>
+                              
+                            
+                            
+
+
                                 <div class="card shadow-0 border">
                                   <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">Subtotal:</p>
                                       <% if (!totalAmount || totalAmount.length === 0 || totalAmount === undefined) { %>
-                                        <p class="mb-2">0₹</p>
+                                        <p class="mb-2">₹0</p>
                                        <% } else { %>
-                                        <p class="mb-2"><%= totalAmount.toLocaleString('en-US') %>₹</p>
+                                        <p class="mb-2">₹ <%= totalAmount.toLocaleString('en-US') %></p>
                                       <% } %>
                                     </div>
                                     
                                     <div class="d-flex justify-content-between">
+                                      <p class="mb-2">Shipping:</p>
+                                      <p class="mb-2" id="selectedPayment">₹ 40</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
                                       <p class="mb-2">GST:</p>
 
-                                        <p  class="mb-2 text-dark"><%= taxAmount %>₹</p>
+                                        <p  class="mb-2 text-dark">₹ <%= taxAmount %></p>
                                        
-
                                         <!-- <p id="discount" class="mb-2 text-success">No discount</p> -->
-
                                     </div>
                                   
                                     <div class="d-flex justify-content-between">
@@ -357,23 +356,17 @@
                                  
                             
                                     <hr>
+
                                     <div class="d-flex justify-content-between">
-                                      <p class="mb-2">Total payable:</p>
+                                        <p class="mb-2">Total payable:</p>
                                         <% if (!grandTotal || grandTotal.length === 0 || grandTotal === undefined) { %>
-                                         <% } else { %>
-                                            <p id="grandTotal" class="mb-2 fw-bold"><%= grandTotal.toLocaleString('en-US') %>₹</p>
+                                        <% } else { %>
+                                            <p id="grandTotal" class="mb-2 fw-bold">₹ <%= grandTotal.toLocaleString('en-US') %></p>
                                         <% } %>
-                                        
-                                        
-
-                                        <!-- <p id="grandTotal" class="mb-2 fw-bold">₹
-                                        </p> -->
-
                                     </div>
                         
                                     <div class="mt-3">
-                                      <button type="submit" class="btn btn-success w-100 shadow-0 mb-2">
-                                        Confirm Order </button>
+                                      <button type="submit" class="btn btn-success w-100 shadow-0 mb-2">Confirm Order</button>
                                         <a href="/add-to-Cart" class="btn btn-light w-100 border mt-2"> Back to Cart </a>
                                     </div>
                                   </div>
@@ -504,8 +497,6 @@
 
 
         async function verifyPayment(response) {
-    console.log('5555555555555555555555555555555555555555');
-    console.log(response, 'rrrrrrrrrrrrrrrrrrrrr');
     const paymentData = {
         order_id: response.razorpay_order_id,
         payment_id: response.razorpay_payment_id,
@@ -537,6 +528,132 @@
     </script>
     
 
+
+
+
+
+    <!-- function for apply coupon -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to initialize coupon code input from local storage
+
+            // function initializeCouponCode() {
+            //     var couponCode = localStorage.getItem('couponCode');
+            //     if (couponCode) {
+            //         $('#couponCode').val(couponCode);
+            //     }
+            // }
+        
+            // Initialize coupon code input on page load
+            // initializeCouponCode();
+        
+            $('#applyCoupon').click(function() {
+                var couponCode = $('#couponCode').val().trim();
+                var couponMessage = $('#couponMessage');
+                var applyButton = $(this);
+                var grandTotal = $('#grandTotal');
+                var removeCoupon = $('#removeCoupon')
+        
+                // Clear any previous messages
+                couponMessage.text('');
+        
+                // Check if the coupon code is empty
+                if (!couponCode) {
+                    couponMessage.text('Please enter a coupon code.');
+                    return;
+                }
+        
+                $.ajax({
+                    url: '/apply-coupon',  // Your backend endpoint to handle the coupon
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ couponCode: couponCode }),
+                    success: function(response) {
+                        if (response.success) {
+                            console.log('Coupon applied successfully', response.coupon);
+        
+                            // Show the response message to the user
+                            couponMessage.css('color', 'green').text(response.message);
+        
+                            // Display the applied coupon code in the input field
+                            $('#couponCode').val(response.coupon.couponCode);
+                            
+                            // Save coupon code to local storage
+                            // localStorage.setItem('couponCode', response.coupon.couponCode);
+        
+                            // Disable the apply button and change text to 'Applied'
+                            applyButton.prop('disabled', true).text('Applied');
+                            removeCoupon.removeClass('d-none').addClass('d-block')
+        
+                            // Update the grand total
+                            grandTotal.text('₹ ' + response.grandTotal.toLocaleString('en-US'));
+                        } else {
+                            // Show an error message to the user based on the response
+                            couponMessage.css('color', 'red').text(response.message || 'Invalid coupon code.');
+                        }
+                    },
+                    error: function(error) {
+                        // Handle error
+                        console.error('Error applying coupon', error);
+                        // Show an error message to the user
+                        couponMessage.css('color', 'red').text('Error applying coupon.');
+                    }
+                });
+            });
+        
+            // Enable the apply button if the coupon code input changes
+            $('#couponCode').on('input', function() {
+                $('#applyCoupon').prop('disabled', false).text('Apply');
+            });
+        });
+        </script>
+        
+
+
+
+        <!-- function for clear coupon code in the session -->
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const removeCoupon = document.getElementById("removeCoupon");
+                const couponCodeInput = document.getElementById("couponCode");
+                const couponMessage = document.getElementById("couponMessage");
+
+                removeCoupon.addEventListener("click", async function (e) {
+                    e.preventDefault(); // Prevent the default link behavior
+
+                    const couponCode = couponCodeInput.value;
+
+                    try {
+                        const response = await fetch("/clear-coupon", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ couponCode })
+                        });
+
+                        const result = await response.json();
+                        if (result.success) {
+                            couponCodeInput.value = "";
+                            // couponMessage.textContent = "Coupon removed successfully.";
+                            location.reload()
+                        } else {
+                            couponMessage.textContent = "Failed to remove coupon.";
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        couponMessage.textContent = "An error occurred. Please try again.";
+                    }
+                });
+            });
+
+        </script>
+        
+        
+    
 
 
 

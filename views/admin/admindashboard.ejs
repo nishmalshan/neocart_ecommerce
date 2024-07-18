@@ -1,37 +1,260 @@
 <%-include('./adminPartials/header')%>
+<%-include('./adminPartials/sidebar')%> 
 
 
-  <link rel="stylesheet" href="/admin_css/admindashboard.css">
+  <!-- <link rel="stylesheet" href="/admin_css/admindashboard.css"> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Admin Dashboard</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+      <style>
+          body {
+              background-color: #f8f9fa;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          }
+          .dashboard {
+              padding: 20px;
+          }
+          .widget-content {
+              background-color: #4e73df;
+              color: white;
+              border-radius: 10px;
+              padding: 20px;
+              transition: all 0.3s ease;
+          }
+          .widget-content:hover {
+              transform: translateY(-5px);
+              box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          }
+          .widget-heading {
+              font-size: 1.2rem;
+              font-weight: bold;
+          }
+          .widget-subheading {
+              font-size: 0.9rem;
+              opacity: 0.8;
+          }
+          .widget-numbers {
+              font-size: 1.8rem;
+              font-weight: bold;
+          }
+          .dashboard-graph-container {
+              background-color: white;
+              border-radius: 10px;
+              padding: 20px;
+              margin-top: 20px;
+              box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          }
+          .recent-orders-table, .top-selling {
+              width: 100%;
+              border-collapse: separate;
+              border-spacing: 0 15px;
+          }
+          .recent-orders-table th, .top-selling th {
+              background-color: #4e73df;
+              color: white;
+              padding: 12px;
+              text-align: left;
+          }
+          .recent-orders-table td, .top-selling td {
+              background-color: white;
+              padding: 12px;
+          }
+          .recent-orders-table tr, .top-selling tr {
+              box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          }
+          .btn-primary {
+              background-color: #4e73df;
+              border: none;
+          }
+          .btn-primary:hover {
+              background-color: #2e59d9;
+          }
+      </style>
+  </head>
+  <body>
+      <main class="dashboard container-fluid">
+          <div class="row mb-4">
+              <div class="col-md-6 col-xl-4 mb-3">
+                  <div class="widget-content">
+                      <div class="widget-content-wrapper">
+                          <div class="widget-content-left">
+                              <div class="widget-heading">Total Orders</div>
+                              <div class="widget-subheading">All-time orders</div>
+                          </div>
+                          <div class="widget-content-right">
+                              <div class="widget-numbers"><span>876,876</span></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6 col-xl-4 mb-3">
+                  <div class="widget-content">
+                      <div class="widget-content-wrapper">
+                          <div class="widget-content-left">
+                              <div class="widget-heading">Total Users</div>
+                              <div class="widget-subheading">Registered accounts</div>
+                          </div>
+                          <div class="widget-content-right">
+                              <div class="widget-numbers"><span>8,687</span></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6 col-xl-4 mb-3">
+                  <div class="widget-content">
+                      <div class="widget-content-wrapper">
+                          <div class="widget-content-left">
+                              <div class="widget-heading">Total Products Sold</div>
+                              <div class="widget-subheading">Across all categories</div>
+                          </div>
+                          <div class="widget-content-right">
+                              <div class="widget-numbers"><span>76,576,576</span></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+  
+          <div class="dashboard-graph-container">
+            <canvas id="myChart"></canvas>
+            <div class="row mb-3 mt-5">
+                <div class="col-md-12 col-lg-4 mb-3">
+                    <div class="form-group">
+                        <label for="time-interval" class="form-label">Select Time Interval:</label>
+                        <select id="time-interval" class="form-select" onchange="updateChart()">
+                            <option value="daily">Daily</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-8">
+                    <div class="reservation-box">
+                        <div class="d-flex flex-wrap align-items-end">
+                            <div class="form-group me-3 mb-3">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" id="startDate" class="form-control" name="date-from">
+                            </div>
+                            <div class="form-group me-3 mb-3">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" id="endDate" class="form-control" name="date-to">
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-primary" onclick="downloadSalesReport()">
+                                    <i class="bx bxs-download me-1"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+  
+          <div class="mt-5">
+              <h2 class="text-center mb-4">Recently Placed Orders</h2>
+              <div class="table-responsive">
+                  <table class="recent-orders-table">
+                      <thead>
+                          <tr>
+                              <th>Order ID</th>
+                              <th>Products</th>
+                              <th>Quantity</th>
+                              <th>Order Date</th>
+                              <th>Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Add your table rows here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+  
+          <div class="mt-5">
+              <h2 class="text-center mb-4">Top Selling Products</h2>
+              <div class="table-responsive">
+                  <table class="top-selling">
+                      <thead>
+                          <tr>
+                              <th>Order ID</th>
+                              <th>Product</th>
+                              <th>Total Orders</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Add your table rows here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+  
+          <div class="mt-5">
+              <h2 class="text-center mb-4">Top Selling Categories</h2>
+              <div class="table-responsive">
+                  <table class="top-selling">
+                      <thead>
+                          <tr>
+                              <th>Category ID</th>
+                              <th>Category Name</th>
+                              <th>Count</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Add your table rows here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </main>
+  
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+          const ctx = document.getElementById('myChart');
+  
+          new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                  datasets: [{
+                      label: '# of Votes',
+                      data: [12, 19, 3, 5, 2, 3],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+  
+          function updateChart() {
+              // Implement chart update logic here
+          }
+  
+          function downloadSalesReport() {
+              // Implement download logic here
+          }
+      </script>
+  </body>
+  </html>
 
 
 
-  <%-include('./adminPartials/sidebar')%> 
-
-
-<main class="dashboard">
-  <h1>DASHBOARD</h1>
-</main>
 
 
 
 
-
-
-<style>
-  .dashboard{
-    width: 70%;
-    margin: auto;
-    text-align: center;
-  }
-  h1{
-    font-size: 50px;
-    font-weight: 700;
-    font-family: Arial,Helvetica, sans-serif;
-    background: linear-gradient(to right, #f32170, #ff6b08,#cf23cf, #eedd44);
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-  }
-</style>
 
 
 

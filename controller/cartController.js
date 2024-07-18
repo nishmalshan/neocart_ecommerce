@@ -10,6 +10,7 @@ const offers = require('../model/productOfferSchema');
 
 
 
+
 // post method for add to cart
 const postaddToCart = async (req, res) => {
     try {
@@ -250,11 +251,14 @@ const checkout = async (req, res) => {
 
 
 
+
+
+
+
 module.exports = {
     postaddToCart,
     getaddToCart,
     deleteCartItem ,
     changeQuantity,
     checkout
-
 }

@@ -34,6 +34,7 @@ const orderSchema = new mongoose.Schema({
         pincode: { type: String},
         phone: { type: Number },
     }],
+    coupons:[{ type: mongoose.Schema.Types.ObjectId }],
     paymentMethod: { type: String },
     paymentStatus: { type: String },
     totalPrice: { type: Number },

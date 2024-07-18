@@ -5,7 +5,7 @@ const adminController = require("../controller/adminController");
 const adminAuthentication = require("../middleware/adminAuth");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
-const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController');
 const upload = require("../middleware/addCategoryMulter");
 const productUploads = require("../middleware/product-multer");
 
@@ -164,8 +164,18 @@ admin.delete('/delete-offer/:productId', adminAuthentication.verifyingAdmin, pro
 
 // ------------------------------------- routes for category offer -----------------------------------------
 
-admin.get('/category-offer', adminAuthentication.verifyingAdmin, categoryController.getCategoryOfferPage)
-admin.post('/create-category-offer', adminAuthentication.verifyingAdmin, categoryController.createCategoryOffer)
+admin.get('/category-offer', adminAuthentication.verifyingAdmin, categoryController.getCategoryOfferPage);
+admin.post('/create-category-offer', adminAuthentication.verifyingAdmin, categoryController.createCategoryOffer);
+
+
+
+// ------------------------------------ route for coupon ---------------------------------------------------
+
+admin.get('/managecoupon', adminAuthentication.verifyingAdmin, couponController.getCouponManagePage);
+admin.post('/create-coupon', adminAuthentication.verifyingAdmin, couponController.createCoupon);
+admin.put('/update-coupon', adminAuthentication.verifyingAdmin , couponController.updateCoupon);
+admin.delete('/delete-coupon/:couponId', adminAuthentication.verifyingAdmin, couponController.deleteCoupon);
+admin.put('/update-coupon-status', adminAuthentication.verifyingAdmin, couponController.updateCouponStatus);
 
 
 

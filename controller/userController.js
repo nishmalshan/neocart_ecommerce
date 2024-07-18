@@ -6,9 +6,7 @@ const products = require('../model/productSchema');
 const wishlist = require('../model/wishlistSchema');
 const sendOTP = require('../controller/otpcontroller');
 const helpers = require('../controller/helpers');
-const crypto = require('crypto')
 const { ObjectId } = require("mongodb");
-const { error } = require("console");
 const product = require("../model/productSchema");
 const offers = require('../model/productOfferSchema');
 
@@ -501,16 +499,13 @@ const productDetails = async (req, res) => {
 
     if (offer) {
       const discountAmount = parseInt((productDetailsData.price * offer.discountPrecentage) / 100);
-      console.log(discountAmount,'dissssssssssssssssssssssss');
       productDetailsData.discountAmount = productDetailsData.price - discountAmount;
       // productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
-console.log('productDetailsData.discountAmoun',productDetailsData.discountAmount);
 
     }else{
       const discountAmount = 0
       // productDetailsData.discountAmount = discountAmount;
       productDetailsData.discountAmount = discountAmount ? discountAmount : 0;
-console.log('productDetailsData.discountAmoun',productDetailsData.discountAmount);
     }
 await productDetailsData.save()
     res.render('./user/productdetails', {
@@ -834,10 +829,13 @@ const changePassword = async (req, res) => {
 
 const getWallet = async (req, res) => {
   try {
-    const User = await user.findOne({ email: req.session.email });
+    const User = await user.findOne({ email: req.session.email }).sort();
     if (!User) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
+
+    User.wallet.transaction.sort((a, b) => b.amount = a.amount);
+    
     const cartCount = await helpers.getCartCount(req.session.email);
     res.render('./user/wallet', {title: "user-wallet", User, cartCount})
   } catch (error) {
@@ -968,12 +966,7 @@ const addWishlist = async (req, res) => {
 
     // Check if the product already exists in the wishlist
     const existWishlistData = await wishlist.findOne({ userId, productId });
-    // console.log(existWishlistData, 'eeeeeeeeexxxxxxxxxxxxxxxxxxxxiiiiiiiiiiiiiii');
     if (existWishlistData) {
-      // If the product is already in the wishlist, remove it
-      // await wishlist.deleteOne({ userId, productId });
-      // console.log('Product removed from the wishlist');
-      // return res.json({ success: true, message: 'Removed from your Wishlist', action: 'removed' });
       return res.json({ success: false, message: 'Product already exist'});
     } else {
       // If the product is not in the wishlist, add it
@@ -982,7 +975,6 @@ const addWishlist = async (req, res) => {
         productId: productData._id
       });
       await wishlistItem.save();
-      // console.log('Wishlist item created', wishlistItem);
       return res.json({ success: true, message: 'Added to your Wishlist', action: 'added' });
     }
 
@@ -1000,9 +992,7 @@ const removeFromWishlist = async (req, res) => {
   try {
 
     const productId = req.params.id
-    // console.log(productId,'iiiiiiiiiiiiii');
     const userId = req.session.userId;
-    // console.log(userId,'uuuuuuuuuuuuuuuuuuuuuuuu');
     await wishlist.findOneAndDelete({ userId, productId })
 
     res.status(200).json({ success: true, message: 'Product removed from wishlist' });
@@ -1012,6 +1002,11 @@ const removeFromWishlist = async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 }
+
+
+
+
+
 
 
 

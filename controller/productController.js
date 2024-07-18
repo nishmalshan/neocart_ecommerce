@@ -269,7 +269,6 @@ const getOfferPage = async (req, res) => {
         const productsData = await product.find();
         // console.log(productsData,'ppppppppppppppppdddddddddddddddddddd');
         const offerData = await offers.find()
-        console.log(offerData,'oooooooooooofffffffffffff');
         
 
         res.render('./admin/productOfferManage', { title: 'offer-product', productsData, offerData })
@@ -293,11 +292,9 @@ const createOffer = async (req, res) => {
             existProductOffer.discountPrecentage = discount
             existProductOffer.startDate = startDate
             existProductOffer.expiryDate = endDate
-            console.log('offer updated');
             await existProductOffer.save()
             return res.json({ success: true, message: 'Offer Updated Succesfully' });
         } else {
-            console.log('fffffffffffffffffffffff');
             
             const newOffer = new offers({
                 product: productId,
@@ -326,7 +323,6 @@ const createOffer = async (req, res) => {
 const deleteOffer = async (req, res) => {
     try {
         const productId = req.params.productId;
-        console.log(productId,'ooooooooooooooofffffffffffffffffffff');
 
         const offer = await offers.findOne({product: productId});
         if (offer) {

@@ -5,6 +5,7 @@ const userController = require("../controller/userController");
 const cartController = require("../controller/cartController");
 const userAuthentication = require("../middleware/userAuth");
 const orderController = require("../controller/orderController");
+const couponController = require('../controller/couponController');
 const profileUpload = require("../middleware/profile-multer");
 const passport = require('passport');
 require('../middleware/passport');
@@ -140,6 +141,8 @@ user.post(
 
 // ------------------------------ route for order -------------------------------------------
 
+user.post('/apply-coupon', userAuthentication.verifyingUser, orderController.applyCoupon);
+user.patch('/clear-coupon', userAuthentication.verifyingUser, orderController.removeCoupon)
 user.post(
   "/placeOrder",
   userAuthentication.verifyingUser,
@@ -201,6 +204,10 @@ user.post(
   userController.editProfileImage
 );
 user.patch('/change-Password', userAuthentication.verifyingUser, userController.changePassword);
+
+
+
+// --------------------------------------------- route for wallet -----------------------------
 user.get('/user-wallet', userAuthentication.verifyingUser, userController.getWallet)
 
 
@@ -209,7 +216,13 @@ user.get('/user-wallet', userAuthentication.verifyingUser, userController.getWal
 
 user.get('/user-wishlist', userAuthentication.verifyingUser, userController.getWishlist);
 user.post('/user-addToWishlist',userAuthentication.verifyingUser, userController.addWishlist);
-user.delete('/user-deleteWishlist/:id', userAuthentication.verifyingUser, userController.removeFromWishlist)
+user.delete('/user-deleteWishlist/:id', userAuthentication.verifyingUser, userController.removeFromWishlist);
+
+
+
+// ---------------------------------- route for coupon page ----------------------------------------------
+
+user.get('/coupons', userAuthentication.verifyingUser, couponController.getUserCouponPage);
 
 
 
