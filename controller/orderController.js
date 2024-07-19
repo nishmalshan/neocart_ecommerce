@@ -389,41 +389,6 @@ const returnOrder = async (req, res) => {
       res.status(200).json({ success: true, message: "Order has been returned" });
     }
 
-    const orderData = await orders.findById(orderId);
-
-    if (orderData && orderData.items) {
-      for (const data of orderData.items) {
-        if (data.status === "Accepted") {
-
-          const userData = await user.findOne({ email: req.session.email });
-          userData.wallet.balanceAmount += parseInt(orderData.totalPrice);
-          userData.wallet.transaction.push({
-            amount: parseInt(orderData.totalPrice),
-            transactionType: "credit",
-            timestamp: new Date(),
-            description: "Refund for returned order item",
-          });
-          await userData.save();
-
-          for (const item of orderData.items) {
-            if (item.productId) {
-              const productData = await product.findById(item.productId);
-
-              if (productData) {
-                const variant = productData.variant.find(
-                  (variant) => variant.size === item.size
-                );
-
-                if (variant) {
-                  variant.quantity += itme.quantity;
-                  await productData.save();
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Internal Server Error" });

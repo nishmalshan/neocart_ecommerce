@@ -21,12 +21,43 @@
     background-color: #fff;
     color: #000;
 }
+.popup-message {
+        width: max-content;
+        position: fixed;
+        top:60px;
+        right: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        z-index: 1000;
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        border-radius: 5px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        font-size: 16px;
+        color: #fff;
+    }
 
+    .popup-message.show {
+        opacity: 1;
+        /* transform: translateY(0); */
+    }
+
+    .popup-success {
+        background: linear-gradient(75.7deg, rgb(34, 126, 34) 3.8%, rgb(99, 162, 17) 87.1%);
+        color: #fff;
+    }
+
+    .popup-error {
+        background-color: #f44336; /* Red */
+        border-left: 5px solid #d32f2f;
+    }
 </style>
 
 <body>
     <main class="px-4" style="width: 50%;">
         <h3 class="mt-5 fw-bold">Return Management</h3>
+        <p id="popup-message" class="popup-message"></p>
         <% if (!orderedDetails || orderedDetails.length < 1) { %>
             <div class="w-100 vh-100">
                 <img src="/images/No_Returned_Products.png" width="30%" alt="no order image" class="img-fluid d-block m-auto" />
@@ -129,36 +160,60 @@
 
     function updateReaturnOrderStatus(button, itemId) {
         console.log('111111111111111111111111');
+        const popupMessage = document.getElementById('popup-message');
+    
+        function showMessage(message, isSuccess) {
+            popupMessage.innerText = message;
+            popupMessage.classList.add(isSuccess ? 'popup-success' : 'popup-error');
+            popupMessage.classList.add('show');
+            setTimeout(() => {
+                popupMessage.classList.remove('show');
+                setTimeout(() => {
+                    popupMessage.classList.remove(isSuccess ? 'popup-success' : 'popup-error');
+                    window.location.reload();
+                }, 500); // Wait for the animation to finish
+            }, 2000);
+        }
+    
         var row = button.closest('tr');
         var selectedStatus = row.querySelector('.orderStatus').value;
         var orderId = row.querySelector('.orderStatus').getAttribute('data-order-id');
-console.log(selectedStatus,'sssssssssssssss');
-console.log(orderId,'ooooooooooooooooiiiiiiii');
-console.log(itemId,'iiiiiiiiiiiiiiii');
+    
+        console.log(selectedStatus, 'sssssssssssssss');
+        console.log(orderId, 'ooooooooooooooooiiiiiiii');
+        console.log(itemId, 'iiiiiiiiiiiiiiii');
+    
         var requestBody = JSON.stringify({
             status: selectedStatus,
             orderId: orderId,
             itemId: itemId
         });
-
+    
         fetch('/admin/change-returnStatus', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: requestBody
         })
-        .then(response => {
-            if (response.success) {
+        .then(response => response.json()) // Ensure the response is parsed as JSON
+        .then(data => {
+            if (data.success) {
                 console.log('success');
-                window.location.reload();
+                showMessage(data.message, true);
             } else {
                 console.log('failed');
                 console.error('Failed to update return status.');
+                showMessage(data.message || 'Failed to update return status.', false);
             }
         })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('An error occurred. Please try again.', false);
+        });
     }
-</script>
+    </script>
+    
 
 
 

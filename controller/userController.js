@@ -829,12 +829,12 @@ const changePassword = async (req, res) => {
 
 const getWallet = async (req, res) => {
   try {
-    const User = await user.findOne({ email: req.session.email }).sort();
+    const User = await user.findOne({ email: req.session.email });
     if (!User) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    User.wallet.transaction.sort((a, b) => b.amount = a.amount);
+    User.wallet.transaction.sort((a, b) => b.amount - a.amount);
     
     const cartCount = await helpers.getCartCount(req.session.email);
     res.render('./user/wallet', {title: "user-wallet", User, cartCount})

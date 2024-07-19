@@ -14,7 +14,7 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: rgba(54, 0, 153, 0.233);
+  background: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%);
 }
 
 .container {
@@ -87,7 +87,7 @@ h4 {
         <div class="row header mt-3">
           <div class="col-sm-5"><p class="fw-bold text-center">Description</p></div>
           <div class="col-sm-3"><P class="fw-bold text-center">Date</P></div>
-          <div class="col-sm-2"><p class="fw-bold text-center">Payment type</p></div>
+          <div class="col-sm-2"><p class="fw-bold text-center">Transaction type</p></div>
           <div class="col-sm-2"><p class="fw-bold text-center">Amount</p></div>
         </div>
         <div class="wallet-history mt-4">
@@ -103,14 +103,14 @@ h4 {
                 <div class="col-sm-2 text-success">
                   <p class="mb-0 text-center"><%= data.transactionType %></p>
                 </div>
-               <div class="col-sm-2 text-secondary text-success">
+               <div class="col-sm-2">
                 <p class="text-center"><%= data.amount.toLocaleString('en-US') %><span>&#8377</span></p>
               </div>
               <% } else { %>
                 <div class="col-sm-2 text-danger">
                   <p class="mb-0 text-center"><%= data.transactionType %></p>
                 </div>
-                <div class="col-sm-2 text-secondary text-danger">
+                <div class="col-sm-2">
                   <p class="text-center"><%= data.amount.toLocaleString('en-US') %><span>&#8377</span></p>
                 </div>
               <% } %>

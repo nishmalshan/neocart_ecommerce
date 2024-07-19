@@ -2,6 +2,8 @@ const dbConnection = require("../config/connection");
 const session = require("express-session");
 const user = require("../model/user");
 const orders = require("../model/orderSchema");
+const dashboard = require("../controller/dashboard")
+const product = require("../model/productSchema");
 
 const credential = {
   email: process.env.ADMIN_EMAIL,
@@ -39,9 +41,17 @@ const adminLoginPost = (req, res) => {
 
 //get method for admin dashboard
 
-const adminDashboard = (req, res) => {
+const adminDashboard = async (req, res) => {
   try {
-    res.render("./admin/admindashboard", { title: "adminhome" });
+    const totalUsers  = await dashboard.getTotalUsers();
+    // console.log(totalUsers,'tttttttttttttttttt');
+    const totalOrders = await dashboard.getTotalOrders();
+    const totalOrderedProduct = await dashboard.getTotalProductsSold();
+    const recentOrders = await dashboard.getRecentOrders();
+    const topSellingProducts = await dashboard.getTopSellingProducts();
+    topSellingCategories = await dashboard.getTopSellingCategories();
+    console.log(topSellingCategories,'topSellingCategories');
+    res.render("./admin/admindashboard", { title: "adminhome", totalUsers, totalOrders, totalOrderedProduct, recentOrders,topSellingProducts, topSellingCategories });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -55,11 +65,7 @@ const userManagement = async (req, res) => {
     let i = 0;
     const userData = await user.find();
 
-    res.render("./admin/usermanagement", {
-      title: "usermanagement",
-      userData,
-      i,
-    });
+    res.render("./admin/usermanagement", { title: "usermanagement", userData, i });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -190,30 +196,65 @@ const getReturnManagement = async (req, res) =>{
 const updateReaturnOrderStatus = async (req, res) => {
   try {
     const { status, orderId, itemId } = req.body;
-    console.log(status,'ssssssssssssssssssss');
-    console.log(orderId,'ooooooooooooiiiiiiiiiiiiiiii');
-    console.log(itemId,'iiiiiiiiiiiiiii');
-    const productData = await orders.findById(orderId)
+
+    const productData = await orders.findById(orderId);
     if (productData) {
       for (const item of productData.items) {
         if (item.id === itemId) {
-          console.log('yyyyyyyyeeeeeeeeeeeeessssssssssssssssss');
-          item.status = status
+          item.status = status;
         }
       }
-      await productData.save()
-      console.log(productData,'ppppppppppppppdddddddddddddddddd');
-      res.status(200).json({ success: true, message: 'Order returned successfully'})
+      productData.status = 'Returned';
+      await productData.save();
+
+      const orderData = await orders.findById(orderId);
+      if (orderData && orderData.items) {
+        for (const data of orderData.items) {
+          if (data.status === "Accepted") {
+
+            const userData = await user.findOne({ _id: orderData.userId });
+            if (!userData) {
+              return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            userData.wallet.balanceAmount += parseInt(orderData.totalPrice);
+            userData.wallet.transaction.push({
+              amount: parseInt(orderData.totalPrice),
+              transactionType: "credit",
+              timestamp: new Date(),
+              description: "Refund for returned order item",
+            });
+            await userData.save();
+
+            for (const item of orderData.items) {
+              if (item.productId) {
+                const productData = await product.findById(item.productId);
+
+                if (productData) {
+                  const variant = productData.variant.find(
+                    (variant) => variant.size === item.size
+                  );
+
+                  if (variant) {
+                    variant.quantity += item.quantity;
+                    await productData.save();
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      res.status(200).json({ success: true, message: 'Order Returned Successfully' });
     } else {
-      console.log('noooooooooooooooooooooooo');
-      res.status(400).json({ success: false, message: 'Product data not found'})
+      res.status(400).json({ success: false, message: 'Product data not found' });
     }
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }
+
 
 
 

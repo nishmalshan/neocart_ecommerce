@@ -149,7 +149,7 @@ admin.post('/change-orderStatus/:orderId', adminAuthentication.verifyingAdmin,ad
 // route for return management
 
 admin.get('/return-manage', adminAuthentication.verifyingAdmin, adminController.getReturnManagement)
-admin.post('/change-returnStatus', adminAuthentication.verifyingAdmin, adminController.updateReaturnOrderStatus)
+admin.put('/change-returnStatus', adminAuthentication.verifyingAdmin, adminController.updateReaturnOrderStatus)
 
 
 // ------------------------------------- routes for product offer -----------------------------------------

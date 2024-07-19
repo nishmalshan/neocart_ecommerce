@@ -16,7 +16,7 @@ const getUserCouponPage = async (req, res) => {
   
       const cartCount = await helpers.getCartCount(req.session.email);
       const date = Date.now()
-      const couponData = await coupons.find({ status: true, expiryDate: {$gt: date }});
+      const couponData = await coupons.find({ status: true, expiryDate: { $gt: date }});
   
       res.render('./user/coupon', { title: 'coupons', cartCount, User, couponData })
     } catch (error) {
