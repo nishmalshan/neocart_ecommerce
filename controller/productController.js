@@ -1,5 +1,5 @@
 const product = require("../model/productSchema")
-const offers = require("../model/productOfferSchema");
+const productOffers = require("../model/productOfferSchema");
 
 
 
@@ -26,11 +26,11 @@ const productPageGet = async(req,res) => {
 
 // get method for add product page
 
-const addProductPage = (req,res) => {
+const addProductPage = async (req,res) => {
 
     try {
-        
-        res.render("./admin/addProduct",{title: 'add products'})
+        const productCategory = await product.distinct('category');
+        res.render("./admin/addProduct",{title: 'add products', productCategory})
 
     } catch (error) {
         console.error(error);
@@ -145,8 +145,9 @@ const editProductGet = async (req,res) => {
     try {
         const id = req.params.id;
         const productData = await product.findOne({_id: id})
+        const productCategory = await product.distinct('category');
 
-        res.render('./admin/editproduct',{productData, title: 'editProduct'})
+        res.render('./admin/editproduct',{productData, title: 'editProduct', productCategory})
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
@@ -268,7 +269,7 @@ const getOfferPage = async (req, res) => {
     try {
         const productsData = await product.find();
         // console.log(productsData,'ppppppppppppppppdddddddddddddddddddd');
-        const offerData = await offers.find()
+        const offerData = await productOffers.find()
         
 
         res.render('./admin/productOfferManage', { title: 'offer-product', productsData, offerData })
@@ -286,7 +287,7 @@ const createOffer = async (req, res) => {
     try {
         const { discount, startDate, endDate, productId } = req.body;
 
-        const existProductOffer = await offers.findOne({ product: productId });
+        const existProductOffer = await productOffers.findOne({ product: productId });
 
         if (existProductOffer) {
             existProductOffer.discountPrecentage = discount
@@ -296,7 +297,7 @@ const createOffer = async (req, res) => {
             return res.json({ success: true, message: 'Offer Updated Succesfully' });
         } else {
             
-            const newOffer = new offers({
+            const newOffer = new productOffers({
                 product: productId,
                 discountPrecentage: discount,
                 startDate: startDate,
@@ -324,9 +325,9 @@ const deleteOffer = async (req, res) => {
     try {
         const productId = req.params.productId;
 
-        const offer = await offers.findOne({product: productId});
+        const offer = await productOffers.findOne({product: productId});
         if (offer) {
-            const deleteOffer = await offers.findByIdAndDelete(offer.id)
+            const deleteOffer = await productOffers.findByIdAndDelete(offer.id)
 
             if (deleteOffer) {
                 console.log('success');
@@ -335,7 +336,6 @@ const deleteOffer = async (req, res) => {
                 res.json({ success: false, message: 'Offer not found' });
               }
         }
-        // const deleteOffer = await offers.findByIdAndDelete(offerId)
         
         
     } catch (error) {

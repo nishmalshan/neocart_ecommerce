@@ -10,7 +10,6 @@ const product = require('../model/productSchema');
 async function getTotalUsers() {
     try {
         const totalUsers = await user.countDocuments({});
-        console.log(`Total Users: ${totalUsers}`);
 
         return totalUsers;
     } catch (err) {
@@ -37,7 +36,6 @@ async function getTotalProductsSold() {
             { $unwind: '$items'},
             {$group: { _id: null, totalOrdersCount: { $sum: '$items.quantity' } } }
         ]);
-        console.log(totalOrderedProducts,'totalOrderedProducts');
         return totalOrderedProducts.length > 0 ? totalOrderedProducts[0].totalOrdersCount : 0;
 
     } catch (err) {

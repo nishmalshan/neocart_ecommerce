@@ -4,7 +4,8 @@ const user = require('../model/user');
 const offer=require('../model/productOfferSchema')
 const crypto = require('crypto');
 
-
+const category = require("../model/categorySchema");
+const categoryOffers = require('../model/categoryofferSchema');
 
 
 
@@ -249,7 +250,17 @@ const getCartCount = async (sessionEmail) => {
 
 
 
+// async function findOfferCategory() {
+//     const categoryOffer = await categoryOffers.find();
+//     const categories = await category.find(); // Fetch all categories
 
+//     const offerCategory = categories.find(cat =>
+//         categoryOffer.some(offer => offer.categoryId.equals(cat._id))
+//     );
+
+//     console.log('offerCategory', offerCategory);
+//     return offerCategory;
+// }
 
 
 
@@ -267,5 +278,6 @@ module.exports = {
     totalAmount,
     eachProductPrice,
     getCartCount,
-    generateReferralCode
+    generateReferralCode,
+    // findOfferCategory
 }

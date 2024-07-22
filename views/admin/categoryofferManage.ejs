@@ -44,8 +44,8 @@
                                     <td><input type="date" class="start-date-input" value="<%= startDate %>" data-index="<%= index %>"></td>
                                     <td><input type="date" class="end-date-input" value="<%= endDate %>" data-index="<%= index %>"></td>
                                     <td class="text-center" style="width: 10rem;">
-                                        <button type="button" class="btn btn-success text-center update-btn" data-index="<%= index %>" data-product-id="<%= data._id %>">Update</button>
-                                        <a href="" class="btn delete-btn" data-index="<%= index %>" data-product-id="<%= data._id %>"><i class="bi bi-trash"></i></a>
+                                        <button type="button" class="btn btn-success text-center update-btn" data-index="<%= index %>" data-category-id="<%= data._id %>">Update</button>
+                                        <a href="" class="btn delete-btn" data-index="<%= index %>" data-category-id="<%= data._id %>"><i class="bi bi-trash"></i></a>
                                     </td>
                                 </tr>
                              
@@ -134,12 +134,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const updateButtons = document.querySelectorAll('.update-btn');
-
+        const deleteButtons = document.querySelectorAll('.delete-btn');
         updateButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const index = this.getAttribute('data-index');
                 const discountInput = document.querySelector(`.discount-input[data-index="${index}"]`);
-                const categoryId = this.getAttribute('data-product-id');
+                const categoryId = this.getAttribute('data-category-id');
                 const startDateInput = document.querySelector(`.start-date-input[data-index="${index}"]`);
                 const endDateInput = document.querySelector(`.end-date-input[data-index="${index}"]`);
                 
@@ -188,6 +188,33 @@
                 })
                 .catch(error => {
                     showMessage('Error creating offer', 'error');
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const productId = this.getAttribute('data-category-id');
+                
+                fetch(`/admin/delete-category-offer/${productId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage(data.message, true);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    } else {
+                        showMessage(data.message || 'Error deleting offer', false);
+                    }
+                })
+                .catch(error => {
+                    showMessage('Error deleting offer', false);
                     console.error('Error:', error);
                 });
             });

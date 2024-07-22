@@ -166,6 +166,7 @@ admin.delete('/delete-offer/:productId', adminAuthentication.verifyingAdmin, pro
 
 admin.get('/category-offer', adminAuthentication.verifyingAdmin, categoryController.getCategoryOfferPage);
 admin.post('/create-category-offer', adminAuthentication.verifyingAdmin, categoryController.createCategoryOffer);
+admin.delete('/delete-category-offer/:categoryId', adminAuthentication.verifyingAdmin, categoryController.deleteCategoryOffer)
 
 
 
@@ -176,7 +177,6 @@ admin.post('/create-coupon', adminAuthentication.verifyingAdmin, couponControlle
 admin.put('/update-coupon', adminAuthentication.verifyingAdmin , couponController.updateCoupon);
 admin.delete('/delete-coupon/:couponId', adminAuthentication.verifyingAdmin, couponController.deleteCoupon);
 admin.put('/update-coupon-status', adminAuthentication.verifyingAdmin, couponController.updateCouponStatus);
-
 
 
 

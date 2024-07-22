@@ -112,8 +112,9 @@
                                         <option value="Processing" <% if (order.status === 'Processing') { %> selected <% } %>>Processing</option>
                                         <option value="Shipped" <% if (order.status === 'Shipped') { %> selected <% } %>>Shipped</option>
                                         <option value="Delivered" <% if (order.status === 'Delivered') { %> selected <% } %>>Delivered</option>
+                                        <option value="Delivered" disabled <% if (order.status === 'Returned') { %> selected <% } %>>Returned</option>
                                     </select>
-                                    <button class="btn btn-success text-center" <% if (order.status === 'Cancelled') { %> disabled <% } %> onclick="updateOrderStatus(this)">Update</button>
+                                    <button class="btn btn-success text-center" <% if (order.status === 'Cancelled' || order.status === 'Returned') { %> disabled <% } %> onclick="updateOrderStatus(this)">Update</button>
                                 </td>
                             <% } %>
                         </tr>

@@ -2,13 +2,15 @@ const user = require("../model/user");
 const OTP = require('../model/otpSchema');
 const bcrypt = require("bcrypt");
 const category = require("../model/categorySchema");
+const categoryOffers = require('../model/categoryofferSchema');
 const products = require('../model/productSchema');
 const wishlist = require('../model/wishlistSchema');
 const sendOTP = require('../controller/otpcontroller');
 const helpers = require('../controller/helpers');
 const { ObjectId } = require("mongodb");
 const product = require("../model/productSchema");
-const offers = require('../model/productOfferSchema');
+const productOffers = require('../model/productOfferSchema');
+
 
 
 // const toGuestPageGet = async (req, res) => {
@@ -432,6 +434,7 @@ const viewAllProducts = async (req, res) => {
     const User = await user.findOne({ email: req.session.email });
     const cartCount = await helpers.getCartCount(req.session.email);
     const productCategory = await products.distinct('category');
+    console.log(productCategory);
     const productBrand = await products.distinct('brand');
 
     // Pagination logic
@@ -441,20 +444,23 @@ const viewAllProducts = async (req, res) => {
 
     const totalProducts = await products.countDocuments({ status: true });
     const allProducts = await products.find({ status: true }).skip(skip).limit(limit);
-    const offerProducts = await offers.find();
+    const offerProducts = await productOffers.find();
+    const categoryOffer = await categoryOffers.find();
+    const categories = await category.find(); // Fetch all categories
 
     // Apply offers to products
     allProducts.forEach(product => {
-      const offer = offerProducts.find(offer => offer.product.equals(product._id));
-      if (offer) {
-        const discountAmount = parseInt((product.price * offer.discountPrecentage) / 100);
+      // Apply product-specific offers
+      const productOffer = offerProducts.find(offer => offer.product.equals(product._id));
+      if (productOffer) {
+        const discountAmount = parseInt((product.price * productOffer.discountPrecentage) / 100);
         product.discountAmount = discountAmount;
         product.discountedPrice = product.price - discountAmount;
       }
+
+      
     });
 
-    // console.log('allProducts', allProducts);
-    // console.log('offerProducts', offerProducts);
 
     res.render('./user/viewallProducts', {
       User,
@@ -481,6 +487,7 @@ const viewAllProducts = async (req, res) => {
 
 
 
+
 // get method for product details page
 
 
@@ -495,7 +502,7 @@ const productDetails = async (req, res) => {
     }
 
     const productDetailsData = await products.findOne({ _id: id, status: true });
-    const offer = await offers.findOne({ product: id });
+    const offer = await productOffers.findOne({ product: id });
 
     if (offer) {
       const discountAmount = parseInt((productDetailsData.price * offer.discountPrecentage) / 100);

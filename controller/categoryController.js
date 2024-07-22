@@ -253,6 +253,30 @@ const createCategoryOffer = async (req, res) => {
 
 
 
+// delete method for delete category offer 
+const deleteCategoryOffer = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const deletedCategoryOffer = await categoryOffer.deleteOne({ categoryId: categoryId });
+    if (deletedCategoryOffer) {
+        
+        res.json({ success: true, message: 'Offer deleted successfully' });
+
+    } else {
+      console.log('Offer not found');
+      res.json({ success: false, message: 'Offer not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting offer:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
+
 
 
 
@@ -279,5 +303,6 @@ module.exports = {
   unblockCategory,
   deleteCategory,
   getCategoryOfferPage,
-  createCategoryOffer
+  createCategoryOffer,
+  deleteCategoryOffer
 };

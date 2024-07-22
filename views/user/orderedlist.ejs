@@ -122,9 +122,11 @@
                         
                           <% } else { %>
                            
-                            <div class="col-2 hidden-sm-down">
-                              <button id="cancelButton<%= data._id %>" class="btn btn-danger mb-2 cancel-button" data-bs-toggle="modal" data-bs-target="#cancelOrderModal<%= data._id %>">Cancel Order</button>
-                            </div>
+                            <% if (data.status !== 'Returned') { %>
+                              <div class="col-2 hidden-sm-down">
+                                <button id="cancelButton<%= data._id %>" class="btn btn-danger mb-2 cancel-button" data-bs-toggle="modal" data-bs-target="#cancelOrderModal<%= data._id %>">Cancel Order</button>
+                              </div>
+                            <% } %>
                         <% } %>
                       <% } %>
                     </div>

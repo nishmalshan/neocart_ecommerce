@@ -54,11 +54,11 @@
                         </div>
                     </form>
                 </div>
-                <div class="filteredProducts">
+                <!-- <div class="filteredProducts">
                     <div class="row justify-content-start"  id="productList">
                         
                     </div>
-                </div>
+                </div> -->
                 <div class="product-list">
                     <div class="header-mark mb-5 d-flex justify-content-start align-items-center">
                         <span></span>
@@ -116,28 +116,9 @@
 
 <style>
 
-.filter-product {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    /* width: 18%; */
-    height: fit-content;
-}
 .img{
     width: 100%;
     height: 100%;
-}
-#productList{
-    padding: 20px;
-    position: fixed;
-    width: 82%;
-    top: 0;
-    height: 100%;
-    background-color: #fff;
-    z-index: 2;
-    overflow: scroll;
-    display: none;
 }
 .pagination-controls {
   display: flex;
@@ -164,6 +145,11 @@
             const category = document.getElementById('categorySelect').value;
             const brand = document.getElementById('brandSelect').value;
 
+            console.log(priceLowToHigh);
+            console.log(priceHighToLow);
+            console.log(category);
+            console.log(brand);
+
 
             fetch('/filter-products', {
                 method: 'POST',
@@ -173,8 +159,13 @@
                 body: JSON.stringify({ priceLowToHigh, priceHighToLow, category, brand })
             })
             .then(response => response.json())
-            .then(data => {
-                displayFilteredProducts(data)
+            .then(response => {
+                if(response.success){
+                    displayFilteredProducts(response.data)
+                }else{
+
+                }
+                
             })
             .catch(error => {
                 console.error('Error applying filter:', error);
@@ -184,31 +175,59 @@
 
 
            function displayFilteredProducts(data) {
-            const filteredProducts = data.data;
+    console.log("Data received:", data);
 
-            const productList = document.getElementById('productList')
-            productList.innerHTML = '';
 
-            filteredProducts.forEach(product => {
-                productList.style.display = 'flex'
-                const productElement = document.createElement('div');
-                productElement.classList.add('filter-product', 'col-2', 'mx-3');
-                productElement.innerHTML = 
-                `<a href="/productdetails/${product._id}"><img src="/productImages/${product.images[0]}" class="image-fluid" height="170px" width="100%" alt="hello"></a>
-                <p>${product.brand}</p>
-                <p class="text-truncate">${product.name}</p>
-                <p>${product.color}</p>
-                <p>${product.price}</p>`;
-                productList.appendChild(productElement);
-            });
-           }
+    
+    // Ensure the product container is selected correctly
+    const productContainer = document.querySelector('.product-list .row');
+    if (!productContainer) {
+        console.error('Product container not found');
+        return;
+    }
+
+    // Clear the current product listing
+    productContainer.innerHTML = '';
+
+    if(data.length==0){
+        productContainer.innerHTML = `
+        <div class="text-center">
+            <h2>No products found</h2>
+        </div>
+        `
+        return;
+    }
+
+    data.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('all-products', 'best', 'col-lg-3', 'col-md-3', 'col-sm-6', 'px-3', 'mb-5');
+        
+        productDiv.innerHTML = `
+            <div class="product position-relative">
+                <a href="/productdetails/${product._id}">
+                    <img src="/productImages/${product.images[0]}" class="image-fluid" height="250px" width="100%" alt="">
+                    <div class="product-btn">
+                        <p>${product.brand}</p>
+                        <p class="text-truncate">${product.name}</p>
+                        <p>${product.color}</p>
+                        ${product.discountedPrice ? 
+                            `<p>MRP: <span class="text-success">${product.discountedPrice}&#8377;</span> <span class="text-muted ms-2 text-decoration-line-through">${product.price}&#8377;</span></p>` :
+                            `<p>MRP: ${product.price}<span>&#8377;</span></p>`
+                        }
+                    </div>
+                </a>
+            </div>
+        `;
+        productContainer.appendChild(productDiv);
+    });
+}
 
            function resetFilter() {
+            console.log('rrrrrrrrrrrrrrrrrrrrrrrr');
             document.getElementById('priceLowToHigh').checked = false;
             document.getElementById('priceHighToLow').checked = false;
             document.getElementById('categorySelect').value = 'ALL';
             document.getElementById('brandSelect').value = 'ALL';
-            document.getElementById('productList').style.display = 'none'
             window.location.reload();
            }
 

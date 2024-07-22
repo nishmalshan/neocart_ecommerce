@@ -49,9 +49,106 @@ const adminDashboard = async (req, res) => {
     const totalOrderedProduct = await dashboard.getTotalProductsSold();
     const recentOrders = await dashboard.getRecentOrders();
     const topSellingProducts = await dashboard.getTopSellingProducts();
-    topSellingCategories = await dashboard.getTopSellingCategories();
-    console.log(topSellingCategories,'topSellingCategories');
-    res.render("./admin/admindashboard", { title: "adminhome", totalUsers, totalOrders, totalOrderedProduct, recentOrders,topSellingProducts, topSellingCategories });
+    const topSellingCategories = await dashboard.getTopSellingCategories();
+    const selectedTimeInterval = req.body.interval;
+    const deliveredOrders = await orders.find({ status: "Delivered" });
+
+    let timeFormat, timeUnit, dateFormat;
+      if (selectedTimeInterval === "monthly") {
+        timeFormat = "%Y-%m";
+        timeUnit = "$month";
+        dateFormat = "MMMM YYYY";
+      } else if (selectedTimeInterval === "yearly") {
+        timeFormat = "%Y";
+        timeUnit = "$year";
+        dateFormat = "YYYY"
+      } else {
+        timeFormat = '%Y-%m-%d';
+        timeUnit = "$dayOfMonth";
+        dateFormat = "MMMM DD, YYYY"
+      }
+      console.log(deliveredOrders,'deliveredOrders');
+
+      const deliveredOrderIds = deliveredOrders.map(order => order._id);
+console.log(deliveredOrderIds,'deliveredOrderIds');
+const orderWithDate = await orders.aggregate([
+    {
+        $match: {
+            _id: { $in: deliveredOrderIds },
+            orderDate: { $exists: true }
+        }
+    },
+    {
+        $addFields: {
+            orderDate: { $toDate: '$orderDate' }
+        }
+    },
+    {
+        $group: {
+            _id: {
+                $dateToString: {
+                    format: timeFormat, // "%Y-%m-%d" for daily, "%Y-%m" for monthly, "%Y" for yearly
+                    date: '$orderDate',
+                    timezone: "+0530"
+                }
+            },
+            count: { $sum: 1 }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            date: "$_id",
+            count: 1
+        }
+    },
+    {
+        $sort: {
+            date: 1
+        }
+    }
+]).exec();
+
+console.log('orderWithDate', orderWithDate);
+
+const validOrdersWithDate = orderWithDate.filter(
+  (order) => order.date && order.date !== null
+);
+
+console.log(validOrdersWithDate,'validOrdersWithDate');
+
+const xValues = validOrdersWithDate.map((order) => order.date);
+const yValues = validOrdersWithDate.map((order) => order.count);
+console.log(xValues,'x values');
+console.log(yValues.toString(),'y values');
+const recentlyPlacedOrders = await orders
+.find()
+.sort({ orderDate: -1 })
+.populate("items.productId.product")
+.limit(5);
+
+
+
+console.log(recentlyPlacedOrders,'recentlyPlacedOrders');
+
+
+
+
+    res.render("./admin/admindashboard", {
+      title: "adminhome",
+      totalUsers,
+      totalOrders,
+      totalOrderedProduct,
+      recentOrders,
+      topSellingProducts,
+      topSellingCategories,
+      orders: deliveredOrders,
+      xValues,
+      yValues,
+      recentlyPlacedOrders,
+      selectedTimeInterval,
+      dateFormat
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -254,6 +351,10 @@ const updateReaturnOrderStatus = async (req, res) => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }
+
+
+
+
 
 
 
