@@ -4,6 +4,11 @@ const user = require("../model/user");
 const orders = require("../model/orderSchema");
 const dashboard = require("../controller/dashboard")
 const product = require("../model/productSchema");
+const moment = require('moment');
+const fs = require('fs');
+const path = require('path');
+const pdf = require('html-pdf');
+const ejs = require('ejs');
 
 const credential = {
   email: process.env.ADMIN_EMAIL,
@@ -44,116 +49,121 @@ const adminLoginPost = (req, res) => {
 const adminDashboard = async (req, res) => {
   try {
     const totalUsers  = await dashboard.getTotalUsers();
-    // console.log(totalUsers,'tttttttttttttttttt');
     const totalOrders = await dashboard.getTotalOrders();
     const totalOrderedProduct = await dashboard.getTotalProductsSold();
     const recentOrders = await dashboard.getRecentOrders();
     const topSellingProducts = await dashboard.getTopSellingProducts();
     const topSellingCategories = await dashboard.getTopSellingCategories();
-    const selectedTimeInterval = req.body.interval;
     const deliveredOrders = await orders.find({ status: "Delivered" });
+    console.log(deliveredOrders,'deliveredOrders');
+    const selectedTimeInterval = req.body.interval || 'daily';
+
 
     let timeFormat, timeUnit, dateFormat;
-      if (selectedTimeInterval === "monthly") {
-        timeFormat = "%Y-%m";
-        timeUnit = "$month";
-        dateFormat = "MMMM YYYY";
-      } else if (selectedTimeInterval === "yearly") {
-        timeFormat = "%Y";
-        timeUnit = "$year";
-        dateFormat = "YYYY"
-      } else {
-        timeFormat = '%Y-%m-%d';
-        timeUnit = "$dayOfMonth";
-        dateFormat = "MMMM DD, YYYY"
-      }
-      console.log(deliveredOrders,'deliveredOrders');
-
-      const deliveredOrderIds = deliveredOrders.map(order => order._id);
-console.log(deliveredOrderIds,'deliveredOrderIds');
-const orderWithDate = await orders.aggregate([
-    {
-        $match: {
-            _id: { $in: deliveredOrderIds },
-            orderDate: { $exists: true }
+        if (selectedTimeInterval === "monthly") {
+          timeFormat = "%Y-%m";
+          timeUnit = "$month";
+          dateFormat = "MMMM YYYY";
+        } else if (selectedTimeInterval === "yearly") {
+          timeFormat = "%Y";
+          timeUnit = "$year";
+          dateFormat = "YYYY"
+        } else {
+          timeFormat = '%Y-%m-%d';
+          timeUnit = "$dayOfMonth";
+          dateFormat = "MMMM DD, YYYY"
         }
-    },
-    {
-        $addFields: {
-            orderDate: { $toDate: '$orderDate' }
-        }
-    },
-    {
-        $group: {
-            _id: {
-                $dateToString: {
-                    format: timeFormat, // "%Y-%m-%d" for daily, "%Y-%m" for monthly, "%Y" for yearly
-                    date: '$orderDate',
-                    timezone: "+0530"
-                }
-            },
-            count: { $sum: 1 }
-        }
-    },
-    {
-        $project: {
-            _id: 0,
-            date: "$_id",
-            count: 1
-        }
-    },
-    {
-        $sort: {
-            date: 1
-        }
-    }
-]).exec();
 
-console.log('orderWithDate', orderWithDate);
+  
+        const deliveredOrderIds = deliveredOrders.map(order => order._id);
 
-const validOrdersWithDate = orderWithDate.filter(
-  (order) => order.date && order.date !== null
-);
+        const orderWithDate = await dashboard.ordersWithDates(deliveredOrderIds, timeFormat);
 
-console.log(validOrdersWithDate,'validOrdersWithDate');
+      const validOrdersWithDate = orderWithDate.filter((order) => order.date && order.date !== null );
+      
+      const xValues = validOrdersWithDate.map((order) => order.date);
+      const yValues = validOrdersWithDate.map((order) => order.count);
 
-const xValues = validOrdersWithDate.map((order) => order.date);
-const yValues = validOrdersWithDate.map((order) => order.count);
-console.log(xValues,'x values');
-console.log(yValues.toString(),'y values');
-const recentlyPlacedOrders = await orders
-.find()
-.sort({ orderDate: -1 })
-.populate("items.productId.product")
-.limit(5);
+      const recentlyPlacedOrders = await orders
+      .find()
+      .sort({ orderDate: -1 })
+      .populate("items.productId")
+      .limit(5);
+
+          res.render("./admin/admindashboard", {
+            title: "adminhome",
+            totalUsers,
+            totalOrders,
+            totalOrderedProduct,
+            recentOrders,
+            topSellingProducts,
+            topSellingCategories,
+            orders: deliveredOrders,
+            xValues: JSON.stringify(xValues),
+            yValues,
+            recentlyPlacedOrders,
+            selectedTimeInterval,
+            dateFormat
+          });
 
 
-
-console.log(recentlyPlacedOrders,'recentlyPlacedOrders');
-
-
-
-
-    res.render("./admin/admindashboard", {
-      title: "adminhome",
-      totalUsers,
-      totalOrders,
-      totalOrderedProduct,
-      recentOrders,
-      topSellingProducts,
-      topSellingCategories,
-      orders: deliveredOrders,
-      xValues,
-      yValues,
-      recentlyPlacedOrders,
-      selectedTimeInterval,
-      dateFormat
-    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+const salesReport = async (req, res) => {
+  try {
+    console.log('Generating sales report...');
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+
+    // Parse and format dates using moment.js
+    const formattedStartDate = moment(startDate).format('YYYY-MM-DD');
+    const formattedEndDate = moment(endDate).format('YYYY-MM-DD');
+
+    // Fetch orders
+    const ordersData = await orders.find({
+      orderDate: {
+        $gte: formattedStartDate,
+        $lte: formattedEndDate,
+      },
+      status: 'Delivered',
+    }).populate('items.productId');
+
+    // Construct the absolute path to the EJS template
+    const templatePath = path.join(__dirname, '../views/admin/salesreport.ejs');
+
+    // Read the EJS template content
+    const templateContent = fs.readFileSync(templatePath, "utf-8");
+    const renderHTML = ejs.render(templateContent, {
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      orders: ordersData,
+    });
+    console.log('HTML rendered for PDF');
+
+    // Generate PDF using html-pdf
+    const options = { format: 'Letter' };
+    pdf.create(renderHTML, options).toBuffer((err, buffer) => {
+      if (err) {
+        console.error('Error generating PDF:', err);
+        return res.status(500).send("Internal Server Error");
+      }
+
+      console.log('PDF generated');
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `attachment; filename=sales_report_${startDate}_to_${endDate}.pdf`);
+      res.send(buffer);
+    });
+  } catch (error) {
+    console.error('Error generating sales report:', error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
 
 // list the users who signed Up
 
@@ -377,6 +387,7 @@ module.exports = {
   adminLoginPageGet,
   adminLoginPost,
   adminDashboard,
+  salesReport,
   userManagement,
   blockUser,
   unblockUser,

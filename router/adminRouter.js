@@ -32,6 +32,7 @@ admin.get(
   adminAuthentication.verifyingAdmin,
   adminController.adminDashboard
 );
+admin.get('/download-sales-report', adminAuthentication.verifyingAdmin, adminController.salesReport)
 admin.post(
   "/adminlogout",
   adminAuthentication.verifyingAdmin,

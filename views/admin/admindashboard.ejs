@@ -121,7 +121,7 @@
                 <div class="col-md-12 col-lg-4 mb-3">
                     <div class="form-group">
                         <label for="time-interval" class="form-label">Select Time Interval:</label>
-                        <select id="time-interval" class="form-select" onchange="updateChart()">
+                        <select id="time-interval" class="form-select">
                             <option value="daily">Daily</option>
                             <option value="monthly">Monthly</option>
                             <option value="yearly">Yearly</option>
@@ -248,130 +248,117 @@
           </div>
       </main>
   
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
       <script>
-
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     let selectedTimeInterval = 'daily';
-
-        //     function updateChart() {
-        //         selectedTimeInterval = document.getElementById('time-interval').value;
-        //         updateChartData(selectedTimeInterval);
-
-
-        //         function updateChartData(timeInterval) {
-        //             const timeFormat = {
-        //                 'monthly': { unit: 'month', unitStepSize: 1, tooltipFormat: 'MMM YYYY' },
-        //                 'yearly': { unit: 'year', unitStepSize: 1, tooltipFormat: 'YYYY' },
-        //                 'dayily': {unit: 'day', unitStepSize: 1, tooltipFormat: 'MMM DD, YYYY' }
-        //             };
-
-        //             const { unit, unitStepSize, tooltipFormat } = timeFormat[timeInterval];
-        //             const xValues = JSON.parse('<%- JSON.stringify(xValues) %>');
-        //             const yValues = JSON.parse('<%- JSON.stringify(yValues) %>');
-        //             console.log('xValues',xValues);
-        //             console.log('yValues',yValues);
-
-        //             const formatedXValues = xValues.map(dateString => formatXLabel(dateString, timeInterval));
-                    
-        //             new Chart(ctx, {
-        //                 type: 'bar',
-        //                 data: {
-        //                     labels: formatedXValues,
-        //                     datasets: [{
-        //                         label: 'neo cart',
-        //                         data: yValues,
-        //                         borderWidth: 1
-        //                     }]
-        //                 },
-        //                 options: {
-        //                     scales: {
-		// 						xAxes: [{
-		// 							type: 'time',
-		// 							time: { unit, unitStepSize, tooltipFormat },
-		// 							scaleLabel: { display: true }
-		// 						}],
-		// 						yAxes: [{
-		// 							ticks: { min: 1, stepSize: 1 },
-		// 						    scaleLabel: { display: true, labelString: 'Number of Products' }
-		// 						}]
-		// 					},
-        //                 }
-        //             });
-        //         }
-        //     }
-
-
-        //     function formatXLabel(dateString, timeInterval) {
-		// 			const date = new Date(dateString);
-		// 			if (timeInterval === 'monthly') return `${getMonthName(date.getMonth())} ${date.getFullYear()}`;
-		// 			if (timeInterval === 'yearly') return `${date.getFullYear()}`;
-		// 			return `${getMonthName(date.getMonth())} ${date.getDate()}, ${date.getFullYear()}`;
-		// 		}
-				
-		// 	function getMonthName(monthIndex) {
-		// 		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		// 	    return months[monthIndex];
-		// 	}
-				
-		// 	document.getElementById('time-interval').addEventListener('change', updateChart);
-		// 	updateChartData(selectedTimeInterval);
-
-                        
-        // });
-        //   const ctx = document.getElementById('myChart');
-  
-  
-          
-  
-          function downloadSalesReport() {
-              // Implement download logic here
-          }
-
-
-
-   // -----------------------------------------------------------------------------------------
-
-
-// Dashboard clicking function start 
-
-    var toggle = document.getElementById("toggle");
-    var container = document.getElementById("container");
+        document.addEventListener('DOMContentLoaded', function () {
+            let selectedTimeInterval = 'daily';
+            let chartInstance;
     
-    toggle.onclick = function () {
-        container.classList.toggle("active")
+            // Initialize chart on page load
+            updateChart();
+    
+            // Add event listener for the dropdown
+            document.getElementById('time-interval').addEventListener('change', updateChart);
+    
+            function updateChart() {
+                selectedTimeInterval = document.getElementById('time-interval').value;
+                updateChartData(selectedTimeInterval);
+            }
+    
+            function updateChartData(timeInterval) {
+    const timeFormat = {
+        'monthly': { unit: 'month', tooltipFormat: 'MMM YYYY' },
+        'yearly': { unit: 'year', tooltipFormat: 'YYYY' },
+        'daily': { unit: 'day', tooltipFormat: 'MMM DD, YYYY' }
+    };
+
+    const { unit, tooltipFormat } = timeFormat[timeInterval];
+
+    // Example dynamic data
+    const xValues = JSON.parse('<%- xValues %>');
+    const yValues = JSON.parse('<%- JSON.stringify(yValues) %>');
+    const maxYValue = Math.max(...yValues);
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    // Destroy the previous chart instance if it exists
+    if (chartInstance) {
+        chartInstance.destroy();
     }
 
-
-    // Dashboard clicking function end
-
-  </script>
-
-
-
-<!-- 
-<script>
-    function updateChart() {
-        var interval = document.getElementById('time-interval').value;
-    
-        // Make an AJAX request to the backend with the selected interval
-        fetch('/admin/dashboard', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'neo cart',
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#15cda8",
+                borderColor: "#4edd8a",
+                data: yValues
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: { unit, tooltipFormat },
+                    title: { display: true, text: 'Date' }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: maxYValue,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: { display: true, text: 'Number of Products' }
+                }
             },
-            body: JSON.stringify({ interval: interval })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Use the fetched data to update the chart
-            console.log(data);
-            // Example: updateChartWithData(data);
-        })
-        .catch(error => console.error('Error fetching sales report:', error));
-    }
-    </script>  -->
+            elements: { point: { radius: 4 } },
+            plugins: {
+                tooltip: { intersect: false, mode: 'index' }
+            }
+        }
+    });
+}
+    
+            function formatXLabel(dateString, timeInterval) {
+                const date = new Date(dateString);
+                if (timeInterval === 'monthly') return `${getMonthName(date.getMonth())} ${date.getFullYear()}`;
+                if (timeInterval === 'yearly') return `${date.getFullYear()}`;
+                return `${getMonthName(date.getMonth())} ${date.getDate()}, ${date.getFullYear()}`;
+            }
+    
+            function getMonthName(monthIndex) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return months[monthIndex];
+            }
+        });
+
+
+
+        // function for downloading sales report
+
+        function downloadSalesReport() {
+            console.log('1111111111111111111111111111');
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+            console.log(startDate,'startdate');
+            console.log(endDate,'endDate');
+            if (startDate === '' || endDate === "") {
+                alert("Please select both start and end dates");
+                return;
+            }
+
+            var downloadURL = '/admin/download-sales-report?startDate=' + startDate + '&endDate=' + endDate;
+            window.open(downloadURL, '_blank');
+        }
+    </script>
+
 
 
 

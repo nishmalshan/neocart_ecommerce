@@ -146,6 +146,55 @@ async function getTopSellingCategories() {
 
 
 
+async function ordersWithDates(deliveredOrderIds, timeFormat) {
+    try {
+        const orderWithDate = await orders.aggregate([
+            {
+                $match: {
+                    _id: { $in: deliveredOrderIds },
+                    orderDate: { $exists: true }
+                }
+            },
+            {
+                $addFields: {
+                    orderDate: { $toDate: '$orderDate' }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: timeFormat, // "%Y-%m-%d" for daily, "%Y-%m" for monthly, "%Y" for yearly
+                            date: '$orderDate',
+                            timezone: "+0530"
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: "$_id",
+                    count: 1
+                }
+            },
+            {
+                $sort: {
+                    date: 1
+                }
+            }
+        ]).exec();
+        return orderWithDate;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+
+
+
 
 
 
@@ -159,5 +208,6 @@ module.exports = {
     getTotalProductsSold,
     getRecentOrders,
     getTopSellingProducts,
-    getTopSellingCategories
+    getTopSellingCategories,
+    ordersWithDates
 }
