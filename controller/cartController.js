@@ -15,6 +15,7 @@ const offers = require('../model/productOfferSchema');
 const postaddToCart = async (req, res) => {
     try {
         const { productId, selectedSize, price } = req.body;
+        console.log(price,'cart price from req.body');
         const cartData = await cart.findOne({ userId : req.session.userId });
 
         if (cartData) {
@@ -73,6 +74,7 @@ const getaddToCart = async (req, res) => {
         const cartCount = await helpers.getCartCount(req.session.email);
         const cartData = await helpers.getProductData(req.session.userId);
         const total = await helpers.totalAmount(req.session.userId);
+        console.log(total,'total');
         const taxAmount = Math.round(((total * 18) / 100));
         const grandTotal = total + taxAmount;
         const eachProductPrice = await helpers.eachProductPrice(req.session.userId);
@@ -84,7 +86,17 @@ const getaddToCart = async (req, res) => {
     
 
 
-        res.render('./user/cart', { title: 'Shopping cart', User, total, cartCount, taxAmount, grandTotal, cartData , eachProductPrice, i });
+        res.render("./user/cart", {
+          title: "Shopping cart",
+          User,
+          total,
+          cartCount,
+          taxAmount,
+          grandTotal,
+          cartData,
+          eachProductPrice,
+          i,
+        });
 
         // if (cartCount === 0) {
         //     res.render('./user/cart', { cartCount });
@@ -226,7 +238,7 @@ const checkout = async (req, res) => {
         } else {
             const taxAmount = Math.round(((totalAmount * 18) / 100));
             
-            const grandTotal = totalAmount + taxAmount;
+            const grandTotal = totalAmount + taxAmount + 40;
             req.session.totalAmount = grandTotal;
             res.render('./user/checkout',{title: 'checkout', totalAmount, grandTotal, taxAmount, User, cartCount, i, logoUrl: '/images/Neo_icon.png'})
         }

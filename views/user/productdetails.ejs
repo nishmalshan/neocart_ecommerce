@@ -41,14 +41,14 @@
             </h3>
         
             <div class="my-3">
-              <% if (productDetailsData.discountAmount ) { %>
-                <span class="h5">MRP: <span class=" text-success fw-bold"><%= productDetailsData.discountAmount %>&#8377</span></span>
-                <span class="h5 ms-3 text-muted text-decoration-line-through"><%= productDetailsData.price %><span>&#8377</span></span>
-                
+              <% if (productDetailsData.discountAmount > 0) { %>
+                <span class="h5">MRP: <span class="text-success fw-bold"><%= productDetailsData.discountedPrice %>&#8377;</span></span>
+                <span class="h5 ms-3 text-muted text-decoration-line-through"><%= productDetailsData.price %>&#8377;</span>
               <% } else { %>
-                <span class="h5">MRP: <%= productDetailsData.price - productDetailsData.discountAmount %><span>&#8377</span></span>
+                <span class="h5">MRP: <%= productDetailsData.price %>&#8377;</span>
               <% } %>
             </div>
+            
         
             <div class="mb-4">
               <p style="font-size: 15px; color: #646464;"><%= productDetailsData.description %></p>
@@ -56,7 +56,7 @@
         
             <div class="row">
               <dt class="col-3">Type:</dt>
-              <dd class="col-9"><%= productDetailsData.category %></dd>
+              <dd class="col-9"><%= productDetailsData.categoryName %></dd>
         
               <dt class="col-3">Color</dt>
               <dd class="col-9"><%= productDetailsData.color %></dd>
@@ -254,15 +254,6 @@ try {
 
 <script>
   $(document).ready(function() {
-    // Check if the wishlist icon state is stored in localStorage
-    // var wishlistIconState = localStorage.getItem('wishlistIconState');
-
-    // // Restore the wishlist button state if it was previously set
-    // if (wishlistIconState === 'filled') {
-    //   $('#addToWishlist').html('<i class="bi bi-heart-fill"></i>').css('color', 'red').animate({
-    //     fontSize: '30px'
-    //   }, 'slow');
-    // }
 
     $('#addToWishlist').on('click', function(e) {
       e.preventDefault();
@@ -311,29 +302,8 @@ try {
                 });
               }, 2000);
 
-            // Check if the action was to add or remove the product from the wishlist
-            // if (response.action === 'added') {
-            //   // Change icon to filled heart and animate
-            //   $('#addToWishlist').html('<i class="bi bi-heart-fill"></i>').css('color', 'red').animate({
-            //     fontSize: '30px'
-            //   }, 'slow');
-
-            //   // Store the icon state in localStorage
-            //   localStorage.setItem('wishlistIconState', 'filled');
-
-              
-            // } else if (response.action === 'removed') {
-            //   // If the product was removed from the wishlist, revert to original icon (empty heart) and color (black)
-            //   $('#addToWishlist').html('<i class="bi bi-heart"></i>').css('color', 'black');
-            //   // Remove the filled state from localStorage
-            //   localStorage.removeItem('wishlistIconState');
-            // }
           } else {
-            // If response is false, revert to original icon (empty heart) and color (black)
-            // $('#addToWishlist').html('<i class="bi bi-heart"></i>').css('color', 'black');
-            // // Remove the filled state from localStorage
-            // localStorage.removeItem('wishlistIconState');
-
+            
             var message = $('<div>')
                   .attr('id', 'wishlistSuccessMessage')
                   .html(response.message || 'User not logined')  // Use the response message with icon
@@ -452,29 +422,6 @@ try {
   });
   </script>
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -87,7 +87,7 @@
                 <tbody>
                     <% orderedDetails.forEach((order, index) => { %>
                         <% order.items.forEach((item, itemIndex) => { %>
-                            <!-- % if (item.status === 'Requested for return' || item.status === 'Accepted') { %> -->
+                            <% if (item.status === 'Requested for return' || item.status === 'Accepted' ||  item.status === 'Rejected') { %>
                                 <tr>
                                     <% if (itemIndex === 0) { %>
                                         <td rowspan="<%= order.items.length %>"><%= index + 1 %></td>
@@ -120,7 +120,7 @@
                                         </td>
                                     <% } %>
                                 </tr>
-                            <!-- % } %> -->
+                            <% } %>
                         <% }) %>
                     <% }) %>
                 </tbody>

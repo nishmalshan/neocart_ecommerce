@@ -1,5 +1,6 @@
 const product = require("../model/productSchema")
 const productOffers = require("../model/productOfferSchema");
+const categorySchema = require('../model/categorySchema');
 
 
 
@@ -30,6 +31,7 @@ const addProductPage = async (req,res) => {
 
     try {
         const productCategory = await product.distinct('category');
+        console.log(productCategory,'product category');
         res.render("./admin/addProduct",{title: 'add products', productCategory})
 
     } catch (error) {
@@ -44,53 +46,60 @@ const addProductPage = async (req,res) => {
 // Post method for add product
 
 
-const addProductPost = async (req,res) => {
-
+const addProductPost = async (req, res) => {
     try {
+        const { name, description, brand, category, color, price, variant } = req.body;
+        console.log(category, 'category');
 
-        const {name, description, brand, category, color, price} = req.body
+        // Convert category to an array if it's not already one
+        const categories = Array.isArray(category) ? category : [category];
+        console.log(categories,'categories');
+        const findCategory = await categorySchema.findOne({ name: { $in: categories } });
+        console.log(findCategory, 'find category');
 
-        const existProduct = await product.findOne({ name: name});
+        if (!findCategory) {
+            return res.redirect('/admin/product-manage?message=Category not found');
+        }
 
-        if(existProduct) {
-            res.redirect('/admin/product-manage?message=Product already exist')
-        }else{
+        const existProduct = await product.findOne({ name: name });
 
-            let obj = []
-            for(let i=0; i<req.body.variant.size.length; i++) {
+        if (existProduct) {
+            return res.redirect('/admin/product-manage?message=Product already exists');
+        } else {
+            let obj = [];
+            for (let i = 0; i < variant.size.length; i++) {
                 obj.push({
-                    size: req.body.variant.size[i],
-                    quantity: req.body.variant.quantity[i]
-                })
+                    size: variant.size[i],
+                    quantity: variant.quantity[i]
+                });
             }
 
             const images = req.files;
-
-
             const allImages = [].concat(...Object.values(images).map(arr => arr.map(file => file.filename)));
-
 
             const newProduct = await product.create({
                 name,
                 description,
                 brand,
-                category,
+                categoryId: findCategory.id,
+                categoryName: findCategory.name,
                 color,
                 price,
                 images: allImages,
                 variant: obj
-            })
+            });
 
-            if(newProduct) {
-                res.redirect('/admin/product-manage')
+            if (newProduct) {
+                return res.redirect('/admin/product-manage?message=Product added successfully');
             }
         }
-
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        return res.status(500).send("Internal Server Error");
     }
-}
+};
+
+
 
 
 
@@ -166,8 +175,8 @@ const editProductPost = async (req, res) => {
         const id = req.params.id;
         const productDetails = req.body;
         const files = req.files;
-
-        console.log("Received files:", files);
+        console.log(productDetails,'productDetails');
+        // console.log("Received files:", files);
 
         let obj = [];
         for (let i = 0; i < req.body.variant.size.length; i++) {
@@ -176,9 +185,15 @@ const editProductPost = async (req, res) => {
                 quantity: req.body.variant.quantity[i]
             });
         }
+        const findCategory = await categorySchema.findOne({ name: { $in: productDetails.category } });
+        console.log(findCategory, 'find category');
+
+        if (!findCategory) {
+            return res.redirect('/admin/product-manage?message=Category not found');
+        }
 
         const productData = await product.findById(id);
-        console.log(productData.images,'pppppppppppppppppiiiiiiiiiiiiiiiiiiii');
+        // console.log(productData.images,'pppppppppppppppppiiiiiiiiiiiiiiiiiiii');
 
         if (!productData) {
             console.log('data not found');
@@ -191,13 +206,14 @@ const editProductPost = async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             brand: req.body.brand,
-            category: req.body.category,
+            categoryId: findCategory._id,
+            categoryName: req.body.category,
             color: req.body.color,
             variant: obj,
             images: productData.images.slice()  // Clone the existing images array
         };
 
-        console.log("Initial updateData.images:", updateData.images);
+        // console.log("Initial updateData.images:", updateData.images);
 
         // Update the main image (index 0)
         // if (files && files.image1) {
@@ -210,19 +226,19 @@ const editProductPost = async (req, res) => {
         let j =0;
         for (let i = 1; i <= 5; i++) {
             const imageName = `image${i}`;
-            console.log(`Processing ${imageName}`);
+            // console.log(`Processing ${imageName}`);
             if (files && files[imageName]) {
-                console.log(`Updating image ${i} with file ${files[imageName][0].filename}`);
+                // console.log(`Updating image ${i} with file ${files[imageName][0].filename}`);
                 updateData.images[j] = files[imageName][0].filename;
                 j++
             } else {
-                console.log(`Keeping existing image ${i}: ${productData.images[i]}`);
+                // console.log(`Keeping existing image ${i}: ${productData.images[i]}`);
                 updateData.images[j] = productData.images[j] || null;
                 j++
             }
         }
 
-        console.log("Final updateData.images:", updateData.images);
+        // console.log("Final updateData.images:", updateData.images);
 
         const uploaded = await product.updateOne({ _id: id }, { $set: updateData });
 

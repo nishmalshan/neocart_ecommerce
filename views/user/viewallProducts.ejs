@@ -68,12 +68,9 @@
                         <% allProducts.forEach(data => { %>
                             <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3 mb-5">
                                 <div class="product position-relative">
-                                    <!-- <a href="#" class="wishlist-fvrte-btn"><i class="bi bi-heart"></i></a> -->
-                                    
                                     <a href="/productdetails/<%= data._id %>">
                                         <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
                                         <div class="product-btn">
-                                            <!-- <a href=""><i class="bi bi-cart3"></i>Add To Cart</a> -->
                                             <p class=""><%= data.brand %></p>
                                             <p class="text-truncate"><%= data.name %></p>
                                             <p class=""><%= data.color %></p>
@@ -88,6 +85,8 @@
                             </div>
                         <% }) %>
                     </div>
+                    
+                    
                 </div>
                 
     

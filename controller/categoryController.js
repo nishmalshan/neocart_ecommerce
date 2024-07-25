@@ -56,7 +56,7 @@ const addCategoryPost = async (req, res) => {
         } else {
             if (image !== null) {
                 const newCategory = await category.create({
-                    name: categoryName,
+                    name: categoryName.toLowerCase(),
                     image: image,
                 });
                 
@@ -103,20 +103,21 @@ const editCategoryPost = async (req,res) =>{
     const id = req.params.id;
 
   const name = req.body.categoryName;
-  const lowerCaseName = name.toLowerCase();
+  // const lowerCaseName = name.toLowerCase();
 
   const newImage = req.file?req.file.filename:undefined;
   
-  const updatedCategory = await category.findByIdAndUpdate(id,{
-    
+  const updatedCategory = await category.findByIdAndUpdate(id, {
     $set: {
-    name: lowerCaseName,
-    image: newImage
-  }
-})
+      name: name.toLowerCase(),
+      image: newImage,
+    },
+  });
 
 
-res.redirect('/admin/category');
+if (updatedCategory) {
+  res.redirect('/admin/category');
+}
 
   } catch (error) {
     console.error(error);

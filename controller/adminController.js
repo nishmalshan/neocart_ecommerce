@@ -55,7 +55,6 @@ const adminDashboard = async (req, res) => {
     const topSellingProducts = await dashboard.getTopSellingProducts();
     const topSellingCategories = await dashboard.getTopSellingCategories();
     const deliveredOrders = await orders.find({ status: "Delivered" });
-    console.log(deliveredOrders,'deliveredOrders');
     const selectedTimeInterval = req.body.interval || 'daily';
 
 

@@ -433,8 +433,7 @@ const viewAllProducts = async (req, res) => {
   try {
     const User = await user.findOne({ email: req.session.email });
     const cartCount = await helpers.getCartCount(req.session.email);
-    const productCategory = await products.distinct('category');
-    console.log(productCategory);
+    const productCategory = await products.distinct('categoryName');
     const productBrand = await products.distinct('brand');
 
     // Pagination logic
@@ -449,6 +448,11 @@ const viewAllProducts = async (req, res) => {
     const categories = await category.find(); // Fetch all categories
 
     // Apply offers to products
+    const categoryOffersMap = {};
+    categoryOffer.forEach(offer => {
+      categoryOffersMap[offer.categoryId.toString()] = offer.percentage; // Mapping categoryId to discount percentage
+    });
+
     allProducts.forEach(product => {
       // Apply product-specific offers
       const productOffer = offerProducts.find(offer => offer.product.equals(product._id));
@@ -456,11 +460,17 @@ const viewAllProducts = async (req, res) => {
         const discountAmount = parseInt((product.price * productOffer.discountPrecentage) / 100);
         product.discountAmount = discountAmount;
         product.discountedPrice = product.price - discountAmount;
+      } else {
+        // Apply category offers if no product-specific offer
+        const categoryOfferPercentage = categoryOffersMap[product.categoryId.toString()];
+        if (categoryOfferPercentage) {
+          const discountAmount = parseInt((product.price * categoryOfferPercentage) / 100);
+          // console.log(discountAmount,'discountAmount');
+          product.discountAmount = discountAmount;
+          product.discountedPrice = product.price - discountAmount;
+        }
       }
-
-      
     });
-
 
     res.render('./user/viewallProducts', {
       User,
@@ -488,6 +498,10 @@ const viewAllProducts = async (req, res) => {
 
 
 
+
+
+
+
 // get method for product details page
 
 
@@ -501,20 +515,26 @@ const productDetails = async (req, res) => {
       return res.status(400).render('user/404');
     }
 
-    const productDetailsData = await products.findOne({ _id: id, status: true });
-    const offer = await productOffers.findOne({ product: id });
+    const productDetailsData = await products.findOne({ _id: id, status: true }).populate('categoryId');
+    const productOffer = await productOffers.findOne({ product: id });
+    const categoryOffer = await categoryOffers.findOne({ categoryId: productDetailsData.categoryId });
 
-    if (offer) {
-      const discountAmount = parseInt((productDetailsData.price * offer.discountPrecentage) / 100);
+    if (productOffer) {
+      const discountAmount = parseInt((productDetailsData.price * productOffer.discountPrecentage) / 100);
+      console.log(discountAmount,'product discountAmount');
       productDetailsData.discountAmount = productDetailsData.price - discountAmount;
-      // productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
-
-    }else{
-      const discountAmount = 0
-      // productDetailsData.discountAmount = discountAmount;
-      productDetailsData.discountAmount = discountAmount ? discountAmount : 0;
+      productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
+    } else if (categoryOffer) {
+      console.log(categoryOffer,'categoryOffer');
+      const discountAmount = parseInt((productDetailsData.price * categoryOffer.percentage) / 100);
+      console.log(discountAmount,'category discountAmount');
+      productDetailsData.discountAmount = productDetailsData.price - discountAmount;
+      productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
+    } else {
+      productDetailsData.discountAmount = 0;
+      productDetailsData.discountedPrice = productDetailsData.price;
     }
-await productDetailsData.save()
+  await productDetailsData.save()
     res.render('./user/productdetails', {
       User,
       cartCount,
@@ -526,6 +546,7 @@ await productDetailsData.save()
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 
