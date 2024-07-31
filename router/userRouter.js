@@ -160,7 +160,7 @@ user.get('/order-List',userAuthentication.verifyingUser,orderController.orderLis
 user.get('/orderDetails/:id', userAuthentication.verifyingUser, orderController.orderDetails);
 user.post('/cancelOrder',userAuthentication.verifyingUser,orderController.cancelOrder);
 user.patch('/returnOrder', userAuthentication.verifyingUser, orderController.returnOrder);
-
+user.post('/download-invoice',userAuthentication.verifyingUser, orderController.generateInvoice)
 
 // ---------------------------- route for searche products & filter products ------------------------------
 

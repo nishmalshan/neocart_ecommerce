@@ -8,6 +8,9 @@ const { ObjectId } = require("mongodb");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
+const path = require('path');
+const { addHeader, addCustomerInformation, addInvoiceTable, addFooter } = require('../service/PDFDocument');
 const { RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY } = process.env;
 
 let razorpayInstance = new Razorpay({
@@ -112,6 +115,7 @@ const placeOrder = async (req, res) => {
     const userId = User._id;
     const selectedAddressId = req.body.address;
     const paymentMethod = req.body.paymentMethod;
+    console.log(paymentMethod,'payment method');
 
     if (!User.address || User.address.length === 0) {
       return res.status(400).json({ success: false, message: "No addresses found for user" });
@@ -139,15 +143,22 @@ const placeOrder = async (req, res) => {
         grandTotal = totalAmount
         console.log(grandTotal,'else');
       }
+      
     const products = await helpers.getProductData(userId);
+    console.log(products,'products');
     const orderDate = new Date();
     const arrivingDate = new Date(orderDate);
     arrivingDate.setDate(orderDate.getDate() + 4);
+    
+    if (paymentMethod === "COD" && grandTotal <= 1000) {
+      return res.status(400).send({ success: false, message: "Cash on delivery is only applicable for orders above 1000 rupees." });
+      } 
 
     const items = products.map((productItem) => ({
       productId: productItem.item,
       name: productItem.product.name,
       image: productItem.product.images[0],
+      price: productItem.discountAmount ? productItem.discountAmount : productItem.product.price,
       size: productItem.size,
       quantity: productItem.quantity,
     }));
@@ -175,6 +186,7 @@ const placeOrder = async (req, res) => {
     const saveOrder = await newOrder.save();
 
     if (saveOrder) {
+      console.log(saveOrder,'save order');
       await cart.findOneAndDelete({ userId });
 
       for (const item of products) {
@@ -189,7 +201,7 @@ const placeOrder = async (req, res) => {
        req.session.couponData = null;
        
     }
-    if (paymentMethod === "COD") {
+    if (paymentMethod === "COD" ) {
       return res.json({ codSuccess: true, message: "Order placed successfully" });
     } else if (paymentMethod === "Online") {
       console.log("payment online");
@@ -201,10 +213,12 @@ const placeOrder = async (req, res) => {
 
       razorpayInstance.orders.create(options, (err, order) => {
         if (!err) {
+          console.log(order,'order');
           res.status(200).send({
             online: true,
             msg: "Order Created",
             order_id: order.id,
+            orderId: saveOrder._id,
             amount: order.amount,
             key_id: RAZORPAY_KEY_ID,
             produc_name: saveOrder.items[0].name,
@@ -241,28 +255,34 @@ const placeOrder = async (req, res) => {
 
 const verifyPayment = async (req, res, next) => {
   try {
-    const { order_id, payment_id, signature } = req.body;
-
+    console.log('11111111111111111111111111');
+    const { orderId, order_id, payment_id, signature } = req.body;
+    console.log('order_id', order_id);
+    console.log('payment_id', payment_id);
+    console.log('signature', signature);
+    console.log('orderId', orderId);
+    
     const shasum = crypto.createHmac("sha256", RAZORPAY_SECRET_KEY);
     shasum.update(`${order_id}|${payment_id}`);
     const digest = shasum.digest("hex");
 
     if (digest === signature) {
+      console.log('yesssssssssssssssssssssss');
       const updateOrder = await orders.findOneAndUpdate(
-          { razorpayOrderId: order_id },
-          {
-            paymentMethod: "Online",
-            paymentStatus: "Paid",
-          }
-        )
-        .then(() => {
-          res.json({ success: true, message: "Payment verified successfully" });
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).json({ success: false, message: "Error updating order status" });
-        });
-
+        { _id: orderId }, // Use orderId instead of order_id here
+        {
+          paymentId: order_id,
+          paymentMethod: "Razorpay",
+          paymentStatus: "Paid",
+        }
+      )
+      await updateOrder.save()
+console.log(updateOrder,'updateOrder');
+      if (updateOrder) {
+        res.status(400).json({ success: true, message: "Payment verified successfully" });
+      } else {
+        res.json({ success: false, message: "Payment verified failed" });
+      }
     } else {
       res.status(400).json({ success: false, message: "Invalid payment signature" });
     }
@@ -271,6 +291,7 @@ const verifyPayment = async (req, res, next) => {
     return res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 // get method for order lists page
 
@@ -324,9 +345,10 @@ const cancelOrder = async (req, res) => {
       orderData.reason = req.body.cancellationReason;
 
       if (
-        orderData.paymentMethod === "Online" ||
+        orderData.paymentMethod === "Razorpay" && orderData.paymentStatus === "Paid" ||
         orderData.paymentMethod === "Wallet"
       ) {
+        console.log('yoooooooooooooooooooooo');
         const userData = await user.findOne({ email: req.session.email });
         userData.wallet.balanceAmount += parseInt(orderData.totalPrice);
         userData.wallet.transaction.push({
@@ -399,6 +421,47 @@ const returnOrder = async (req, res) => {
 
 
 
+// post method for generate invoice 
+
+const generateInvoice = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    console.log(orderId, 'order Id');
+
+    const order = await orders.findById(orderId).populate('items.productId').exec();
+
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found" });
+    }
+
+    const doc = new PDFDocument({ margin: 50 });
+
+    res.setHeader('Content-disposition', `attachment; filename=invoice_${order._id}.pdf`);
+    res.setHeader('Content-type', 'application/pdf');
+    doc.pipe(res);
+
+    addHeader(doc, order);
+    addCustomerInformation(doc, order);
+    addInvoiceTable(doc, order);
+    addFooter(doc);
+
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
   applyCoupon,
   removeCoupon,
@@ -408,5 +471,6 @@ module.exports = {
   orderList,
   orderDetails,
   cancelOrder,
-  returnOrder
+  returnOrder,
+  generateInvoice
 };

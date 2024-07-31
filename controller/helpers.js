@@ -23,7 +23,17 @@ function generateReferralCode(length = 8) {
 
 
 
+// generating random password for google authentication 
 
+function generateRandomPassword(length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+    return password;
+  }
 
 
 
@@ -279,5 +289,6 @@ module.exports = {
     eachProductPrice,
     getCartCount,
     generateReferralCode,
+    generateRandomPassword,
     // findOfferCategory
 }

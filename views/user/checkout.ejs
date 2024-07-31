@@ -211,7 +211,7 @@
                                                 <input  class="form-check-input" type="radio"
                                                     name="paymentMethod" id="flexRadioDefault3" 
                                                     
-                                                    value= COD />
+                                                    value= "COD" />
                                                 
                                                 <label class="form-check-label" for="flexRadioDefault3">
                                                     <strong>
@@ -231,7 +231,7 @@
                                                 <input  class="form-check-input" type="radio"
                                                     name="paymentMethod" id="flexRadioDefault4" 
                                                     
-                                                    value= Online />
+                                                    value= "Online" />
                                                     
                                                 <label class="form-check-label" for="flexRadioDefault4">
                                                     <strong>
@@ -254,8 +254,8 @@
                                                 <% if (User.wallet.balanceAmount < totalAmount) { %>
                                                     <input disabled class="form-check-input" type="radio"
                                                     name="paymentMethod"  
-                                                    id="'wallet"
-                                                    value= 'Wallet' />
+                                                    id="wallet"
+                                                    value= "Wallet" />
                                                     <label class="form-check-label" for="wallet" data-walletAmount="" id="">
                                                         <strong>
                                                         Wallet
@@ -272,8 +272,8 @@
 
                                                         <input class="form-check-input" type="radio"
                                                     name="paymentMethod"  
-                                                    id="'wallet"
-                                                    value= 'Wallet' />
+                                                    id="wallet"
+                                                    value= "Wallet" />
                                                      
                                                         <label class="form-check-label" for="wallet" data-walletAmount="" id="">
                                                             <strong>
@@ -437,33 +437,45 @@
         });
     
         async function sendDataToBackend(addressValue, paymentMethodValue) {
-            const data = {
-                address: addressValue,
-                paymentMethod: paymentMethodValue
-            };
-    
-            try {
-                const response = await fetch('/placeOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                
-                if (result.codSuccess) {
-                    window.location.href = '/orderConfirmation';
-                } else if (result.online) {
-                    console.log('2222222222222222222222222222222222222222');
-                    initiateRazorpayPayment(result);
-                } else if (result.walletSuccess) {
-                    window.location.href = '/orderConfirmation';
-                }
-            } catch (error) {
-                console.log(error, 'Error sending data to backend');
-            }
-        }
+            const responseMessage = document.getElementById('errorMessage');
+            responseMessage.textContent = " ";
+  const data = {
+    address: addressValue,
+    paymentMethod: paymentMethodValue
+  };
+
+  
+
+  try {
+    const response = await fetch('/placeOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+
+    if (result.codSuccess) {
+      window.location.href = '/orderConfirmation';
+    } else if (result.online) {
+      console.log('2222222222222222222222222222222222222222');
+      initiateRazorpayPayment(result);
+    } else if (result.walletSuccess) {
+      window.location.href = '/orderConfirmation';
+    } else {
+      responseMessage.textContent = result.message || 'An error occurred. Please try again.';
+      responseMessage.style.display = 'block';
+
+      setTimeout(() => {
+        responseMessage.style.display = 'none';
+    }, 3000);
+    }
+  } catch (error) {
+    console.log(error, 'Error sending data to backend');
+  }
+}
+
     
         function initiateRazorpayPayment(orderDetails) {
     console.log('33333333333333333333333333333333333333');
@@ -471,13 +483,15 @@
         key: orderDetails.key_id,
         amount: orderDetails.amount,
         currency: 'INR',
+        orderId: orderDetails.orderId,
         name: orderDetails.name,
         description: 'Order Payment',
         image: '<%= logoUrl %>',
         order_id: orderDetails.order_id,
         handler: function (response) {
+            console.log(response,'response');
             console.log('444444444444444444444444444444444');
-            verifyPayment(response);
+            verifyPayment(response, orderDetails.orderId);
         },
         prefill: {
             name: orderDetails.name,
@@ -488,7 +502,7 @@
             color: '#F37254'
         }
     };
-
+console.log(options,'options');
     const rzp1 = new Razorpay(options);
     rzp1.open();
 }
@@ -496,13 +510,16 @@
 
 
 
-        async function verifyPayment(response) {
+        async function verifyPayment(response, orderId) {
+            console.log(orderId,'aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+            console.log(response,'response');
     const paymentData = {
+        orderId: orderId,
         order_id: response.razorpay_order_id,
         payment_id: response.razorpay_payment_id,
         signature: response.razorpay_signature
     };
-    
+    console.log(paymentData,'paymentData');
     fetch('/verify-payment', {
         method: 'POST',
         headers: {

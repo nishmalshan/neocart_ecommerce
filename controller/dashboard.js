@@ -46,7 +46,7 @@ async function getTotalProductsSold() {
 
 async function getRecentOrders() {
     try {
-        const recentOrders = await orders.find({})
+        const recentOrders = await orders.find({ status:{ $ne: 'Cancelled'}})
             .sort({ orderDate: -1 })
             .limit(5);
 

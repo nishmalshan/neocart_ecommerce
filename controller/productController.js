@@ -30,7 +30,7 @@ const productPageGet = async(req,res) => {
 const addProductPage = async (req,res) => {
 
     try {
-        const productCategory = await product.distinct('category');
+        const productCategory = await categorySchema.distinct('name');
         console.log(productCategory,'product category');
         res.render("./admin/addProduct",{title: 'add products', productCategory})
 
@@ -154,7 +154,7 @@ const editProductGet = async (req,res) => {
     try {
         const id = req.params.id;
         const productData = await product.findOne({_id: id})
-        const productCategory = await product.distinct('category');
+        const productCategory = await categorySchema.distinct('name');
 
         res.render('./admin/editproduct',{productData, title: 'editProduct', productCategory})
     } catch (error) {

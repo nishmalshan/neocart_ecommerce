@@ -40,7 +40,7 @@ const orderSchema = new mongoose.Schema({
     totalPrice: { type: Number },
     orderDate: { type: Date },
     arrivingDate: { type: Date },
-    paymentId: { type: Number },
+    paymentId: { type: String },
     reason: { type: String, default: 'Not Cancelled'}
 })
 

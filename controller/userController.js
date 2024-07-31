@@ -54,18 +54,19 @@ const successGoogleLogin = async (req, res) => {
     if (!req.user) {
       return res.redirect('/failure');
     }
-    // console.log(req.user);
+    console.log(req.user);
     const googleEmail = req.user.email;
 
 
     const existUser = await user.findOne({ email: googleEmail });
     if (!existUser) {
-      const randomPassword = generateRandomPassword(8);
+      const randomPassword = await helpers.generateRandomPassword(8);
       const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the password
       const newUser = await new user({
         name: req.user.displayName,
         email: req.user.email,
         mobile: '',
+        profilePhoto: req.user.picture,
         password: hashedPassword
       }).save();
       

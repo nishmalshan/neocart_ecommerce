@@ -55,11 +55,11 @@
         <h2 class="pt-3 text-white fw-bold">Order Details</h2>
     <div class="container bg-white rounded-3 pb-4">
         <div class="row pt-4 justify-content-center align-items-center">
-            <div class="orderid col-8">
+            <div class="orderid col-7 border-end">
                 <h6 class="fw-bold">Order ID: <span><%= orderDetails._id %></span></h6>
             </div>
-            <div class="col-4 row">
-                <div class="status col-8 pe-0">
+            <div class="col-5 row">
+                <div class="status col-6 border-end">
                     <% if (orderDetails.status === 'Pending') { %>
                         <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #ffc107; font-weight: 600; padding: 2px 10px; background-color: #ffc10721; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #ffc107; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } else if (orderDetails.status === 'Cancelled') { %>
@@ -74,8 +74,11 @@
                                     <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #4a4a4a; font-weight: 600; padding: 2px 10px; background-color: #9191911c; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #4a4a4a; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } %>
                 </div>
-                <div class="invoice col-4">
-                    <!-- <p class="mb-0">invoice</p> -->
+                <div class="invoice col-6 pe-0 d-flex">
+                    <p style="font-size: 14px;">Download Invoice: </p>
+                    <button type="button" class="btn bg-secondary-subtle px-1 py-0 shadow-sm" title="Invoice Download" onclick="generateAndDownloadInvoice('<%= orderDetails._id %>')">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -114,7 +117,11 @@
                     <div class="details col-10">
                         <h5>Payment</h5>
                         <p class="mt-2">Payment type: <span><%= orderDetails.paymentMethod %></span></p>
-                        <!-- <p>Payment status: <span class="text-success"><%= orderDetails.paymentStatus %></span></p> -->
+                        <% if (orderDetails.paymentStatus === "Paid") { %>
+                            <p>Payment status: <span class="text-success"><%= orderDetails.paymentStatus %></span></p>
+                                <% } else if (orderDetails.paymentMethod === "Online" && orderDetails.paymentStatus !== "Paid") { %>
+                                    <p>Payment status:  <span class="text-danger">Payment failed</span></p>
+                            <% } %>
                         <p>Name: <span><%= orderDetails.address[0].name %></span></p>
                         <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
                     </div>
@@ -166,6 +173,41 @@
     </div>
 
 </main>
+
+
+
+
+
+
+<script>
+    async function generateAndDownloadInvoice(orderId) {
+      try {
+        const response = await fetch('/download-invoice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ orderId })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    }
+  </script>
 
 
 

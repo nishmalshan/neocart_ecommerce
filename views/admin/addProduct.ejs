@@ -28,8 +28,8 @@
                                     <label class="fw-bold mb-2" for="productCategory">Category</label> <br>
                                     <select class="form-select w-auto" name="category" id="categorySelect" required>
                                       <option value="ALL">All Categories</option>
-                                      <% productCategory.forEach(x => { %>
-                                          <option value="<%= x %>"><%= x %></option>
+                                      <% productCategory.forEach(category => { %>
+                                          <option value="<%= category %>"><%= category %></option>
                                       <% }) %>
                                   </select>
                                     <p id="categoryNameError" class="text-danger mb-3" style="font-size: 13px;"></p>

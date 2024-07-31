@@ -66,10 +66,12 @@
                     </div>
                     <div class="row">
                         <% allProducts.forEach(data => { %>
-                            <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-3 mb-5">
+                            <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-1 shadow-sm mb-5">
                                 <div class="product position-relative">
                                     <a href="/productdetails/<%= data._id %>">
-                                        <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
+                                        <div style="overflow: hidden;">
+                                            <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
+                                        </div>
                                         <div class="product-btn">
                                             <p class=""><%= data.brand %></p>
                                             <p class="text-truncate"><%= data.name %></p>
@@ -81,6 +83,9 @@
                                             <% } %>
                                         </div>
                                     </a>
+                                    <!-- <div class="cart">
+                                        <button class="" data-item-id="" id="addtoCart"><i class="bi bi-cart3 fs-4"></i> ADD TO CART </button>
+                                    </div> -->
                                 </div>
                             </div>
                         <% }) %>
@@ -124,12 +129,30 @@
   justify-content: center;
   margin-top: 20px;
 }
-
 .pagination-controls .btn {
   margin: 0 5px;
 }
-
-
+.cart{
+    width: 100%;
+    background-color: darkgrey;
+    margin-top: 20px;
+    transition: all 0.3s;
+    display: none;
+    border-radius: 0px 0px 5px 5px;
+}
+.all-products:hover .cart{
+    display: block;
+    margin-top: -45px;
+    transition: all 0.3s;
+}
+.cart button{
+    padding: 5px 20px;
+    font-weight: 600;
+    width: 100%;
+    border: none;
+    background-color: darkgrey;
+    border-radius: 0px 0px 5px 5px;
+}
 </style>
 
 

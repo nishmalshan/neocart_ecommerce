@@ -3,7 +3,6 @@ const product = require('../model/productSchema');
 const user = require('../model/user');
 const helpers = require('../controller/helpers');
 const { ObjectId } = require('mongodb');
-const offers = require('../model/productOfferSchema');
 
 
 
@@ -78,12 +77,7 @@ const getaddToCart = async (req, res) => {
         const taxAmount = Math.round(((total * 18) / 100));
         const grandTotal = total + taxAmount;
         const eachProductPrice = await helpers.eachProductPrice(req.session.userId);
-        const cartProduct = await cart.find({ userId: req.session.userId })
         let i = 0;
-        // console.log('CART DATA',cartData);
-        // console.log('eachProductPrice',eachProductPrice);
-        // console.log(total,'total');
-    
 
 
         res.render("./user/cart", {
