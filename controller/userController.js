@@ -10,7 +10,8 @@ const helpers = require('../controller/helpers');
 const { ObjectId } = require("mongodb");
 const product = require("../model/productSchema");
 const productOffers = require('../model/productOfferSchema');
-
+const fs = require('fs');
+const path = require('path');
 
 
 // const toGuestPageGet = async (req, res) => {
@@ -788,40 +789,50 @@ const editAddress = async (req, res) => {
 
 // post method for edit user profile image
 
-
 const editProfileImage = async (req, res) => {
   try {
-
     const imageData = req.file; // Use req.file instead of req.body.imageData
-
 
     // Check if imageData is valid
     if (imageData) {
+      // Fetch the current user data to get the existing profile image
+      const currentUser = await user.findOne({ email: req.session.email });
+
+      if (currentUser && currentUser.profilePhoto) {
+        // Construct the path to the existing image file, not just the directory
+        const filePath = path.join(__dirname, '../public/userImage', currentUser.profilePhoto);
+
+        // Delete the existing profile image file from the server
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error('Error deleting existing profile image:', err);
+          } else {
+            console.log('Existing profile image deleted successfully');
+          }
+        });
+      }
+
+      // Update the profile with the new image
       const updatedProfile = await user.findOneAndUpdate(
         { email: req.session.email },
-        { profilePhoto: req.file },
+        { profilePhoto: imageData.filename },  // Assuming multer saves the file with 'filename'
         { new: true }
-      )
+      );
 
       if (updatedProfile) {
-        const userData = await user.findOne({ email: req.session.email })
-
         return res.json({ success: true, message: 'Profile image saved successfully' });
       } else {
-        res.status(400).json({ error: "user not found" })
+        res.status(400).json({ error: "User not found" });
       }
     } else {
       throw new Error('No image data received');
     }
-    
-    // Send response
-    res.json({ imageData });
 
   } catch (error) {
     console.error('Error editing profile image:', error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
-}
+};
 
 
 
