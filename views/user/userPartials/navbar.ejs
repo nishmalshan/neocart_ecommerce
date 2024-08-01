@@ -1,10 +1,7 @@
 
-
-
-
 <!-- Nav-bar -->
 <header class="nav-menu">
-    <div class="logo"><a href="/"><img src="images/Neo_icon.png" alt="logo"></a></div>
+    <div class="logo"><a href="/"><img src="../images/Neo_icon.png" alt="logo"></a></div>
     <div class="hamburger">
         <div class="line"></div>
         <div class="line"></div>
@@ -163,50 +160,50 @@ document.addEventListener('click', function (event) {
 
 
 <script>
-    function searchProducts() {
-        const searchInput = document.getElementById('searchInput').value.trim();
-        if (searchInput === '') {
-            window.location.reload();
-        } else {
-            if (searchInput.length > 0) {
-            fetch(`/products/search?q=${searchInput}`)
-                .then(response => response.json())
-                .then(data => {
-                    displaySearchResult(data)
-                })
-                .catch(error => {
-                    console.error('Error searching products:', error);
-                    alert('An error occurred while searching products. Please try again.');
-                })
-        }
-        }
-    }
+    // function searchProducts() {
+    //     const searchInput = document.getElementById('searchInput').value.trim();
+    //     if (searchInput === '') {
+    //         window.location.reload();
+    //     } else {
+    //         if (searchInput.length > 0) {
+    //         fetch(`/products/search?q=${searchInput}`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 displaySearchResult(data)
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error searching products:', error);
+    //                 alert('An error occurred while searching products. Please try again.');
+    //             })
+    //     }
+    //     }
+    // }
 
-    function displaySearchResult(result) {
-        const searchResultDiv = document.getElementById('searchResults')
-        searchResultDiv.innerHTML = '';
-        searchResultDiv.style.display = 'flex'
+    // function displaySearchResult(result) {
+    //     const searchResultDiv = document.getElementById('searchResults')
+    //     searchResultDiv.innerHTML = '';
+    //     searchResultDiv.style.display = 'flex'
 
-        if (result.success && result.data.length > 0) {
-            result.data.forEach(product => {
-                const productDiv = document.createElement('div');
-                productDiv.classList.add('search-product', 'col-2');
-                productDiv.innerHTML = `
-            <a href="/productdetails/${product._id}"><img src="/productImages/${product.images[0]}" class="image-fluid" height="250px" width="100%" alt="hello"></a>
-            <p class="text-secondary">${product.brand}</p>
-            <p class="fw-bold text-truncate">${product.name}</p>
-            <p>${product.color}</p>
-            <p class="fw-bold">${product.price}</p>
-        `;
-                searchResultDiv.appendChild(productDiv);
-            });
-        } else {
-                const productDiv = document.createElement('div');
-                productDiv.classList.add('no-product', 'text-center');
-                productDiv.innerHTML = `<p class="fw-bold">No products found</p>`;
-                searchResultDiv.appendChild(productDiv);
-        }
+    //     if (result.success && result.data.length > 0) {
+    //         result.data.forEach(product => {
+    //             const productDiv = document.createElement('div');
+    //             productDiv.classList.add('search-product', 'col-2');
+    //             productDiv.innerHTML = `
+    //         <a href="/productdetails/${product._id}"><img src="/productImages/${product.images[0]}" class="image-fluid" height="250px" width="100%" alt="hello"></a>
+    //         <p class="text-secondary">${product.brand}</p>
+    //         <p class="fw-bold text-truncate">${product.name}</p>
+    //         <p>${product.color}</p>
+    //         <p class="fw-bold">${product.price}</p>
+    //     `;
+    //             searchResultDiv.appendChild(productDiv);
+    //         });
+    //     } else {
+    //             const productDiv = document.createElement('div');
+    //             productDiv.classList.add('no-product', 'text-center');
+    //             productDiv.innerHTML = `<p class="fw-bold">No products found</p>`;
+    //             searchResultDiv.appendChild(productDiv);
+    //     }
 
-    }
+    // }
 
 </script>

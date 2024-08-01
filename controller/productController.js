@@ -1,6 +1,7 @@
 const product = require("../model/productSchema")
 const productOffers = require("../model/productOfferSchema");
 const categorySchema = require('../model/categorySchema');
+const cron = require('node-cron');
 
 
 
@@ -338,27 +339,52 @@ const createOffer = async (req, res) => {
 // delete method for delete offer
 
 const deleteOffer = async (req, res) => {
-    try {
-        const productId = req.params.productId;
+  try {
+    const productId = req.params.productId;
 
-        const offer = await productOffers.findOne({product: productId});
-        if (offer) {
-            const deleteOffer = await productOffers.findByIdAndDelete(offer.id)
+    const offer = await productOffers.findOne({ product: productId });
+    if (offer) {
+      const deleteOffer = await productOffers.findByIdAndDelete(offer.id);
 
-            if (deleteOffer) {
-                console.log('success');
-                res.json({ success: true, message: 'Offer Deleted Successfully' });
-              } else {
-                res.json({ success: false, message: 'Offer not found' });
-              }
-        }
-        
-        
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      if (deleteOffer) {
+        console.log("success");
+        res.json({ success: true, message: "Offer Deleted Successfully" });
+      } else {
+        res.json({ success: false, message: "Offer not found" });
+      }
     }
-}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+
+
+
+
+
+const deleteExpiredOffers = async () => {
+    try {
+        const currentDate = new Date();
+        const offers = await productOffers.deleteMany({ expiryDate: { $lt: currentDate } });
+
+        if (offers.deletedCount > 0) {
+            console.log(`Deleted ${result.deletedCount} expired offers.`);
+        } else {
+            console.log('No expired offers found.');
+        }
+    } catch (error) {
+        console.error('Error deleting expired offers:', error);
+    }
+};
+
+// Schedule the job to run at midnight every day
+cron.schedule('0 0 * * *', deleteExpiredOffers, {
+    scheduled: true,
+    timezone: "Asia/Kolkata"
+});
 
 
 

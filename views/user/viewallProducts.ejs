@@ -22,11 +22,11 @@
                         <div>
                             <h6 class="fw-bold">Price</h6>
                             <div class="ps-3">
-                                <input type="checkbox" name="priceLowToHigh" id="priceLowToHigh" class="border-0">
+                                <input type="radio" name="priceOrder" id="priceLowToHigh" value="priceLowToHigh" class="border-0">
                                 <label for="priceLowToHigh">Price low to high</label>
                             </div>
                             <div class="ps-3 mb-4">
-                                <input type="checkbox" name="priceHighToLow" id="priceHighToLow" class="border-0">
+                                <input type="radio" name="priceOrder" id="priceHighToLow" value="priceHighToLow" class="border-0">
                                 <label for="priceHighToLow">Price high to low</label>
                             </div>
                             <h6 class="fw-bold">Category</h6>
@@ -60,14 +60,14 @@
                     </div>
                 </div> -->
                 <div class="product-list">
-                    <div class="header-mark mb-5 d-flex justify-content-start align-items-center">
+                    <!-- <div class="header-mark mb-5 d-flex justify-content-start align-items-center">
                         <span></span>
                         <h3 class="mb-0 ms-2">All Products</h3>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <% allProducts.forEach(data => { %>
                             <div class="all-products best col-lg-3 col-md-3 col-sm-6 px-1 shadow-sm mb-5">
-                                <div class="product position-relative">
+                                <div class="product border position-relative">
                                     <a href="/productdetails/<%= data._id %>">
                                         <div style="overflow: hidden;">
                                             <img src="/productImages/<%= data.images[0] %>" class="image-fluid" height="250px" width="100%" alt="">
@@ -160,72 +160,78 @@
 
         <!-- Filter products -->
         <script>
+            function applyFilter(page = 1) {
+    // Get filter values
+    const category = document.getElementById('categorySelect').value;
+    const brand = document.getElementById('brandSelect').value;
+    const selectedPriceOrder = document.querySelector('input[name="priceOrder"]:checked');
+    let priceOrder = selectedPriceOrder ? selectedPriceOrder.value : null;
 
-           function applyFilter() {
-            const priceLowToHigh = document.getElementById('priceLowToHigh').checked;
-            const priceHighToLow = document.getElementById('priceLowToHigh').checked;
-            const category = document.getElementById('categorySelect').value;
-            const brand = document.getElementById('brandSelect').value;
-
-            console.log(priceLowToHigh);
-            console.log(priceHighToLow);
-            console.log(category);
-            console.log(brand);
-
-
-            fetch('/filter-products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ priceLowToHigh, priceHighToLow, category, brand })
-            })
-            .then(response => response.json())
-            .then(response => {
-                if(response.success){
-                    displayFilteredProducts(response.data)
-                }else{
-
-                }
-                
-            })
-            .catch(error => {
-                console.error('Error applying filter:', error);
-            })
-
-           }
+    fetch('/filter-products', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ priceOrder, category, brand, page })
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.success) {
+            displayFilteredProducts(response.data, response.currentPage, response.totalPages);
+        }
+    })
+    .catch(error => {
+        console.error('Error applying filter:', error);
+    });
+}
 
 
-           function displayFilteredProducts(data) {
-    console.log("Data received:", data);
-
-
-    
-    // Ensure the product container is selected correctly
-    const productContainer = document.querySelector('.product-list .row');
-    if (!productContainer) {
-        console.error('Product container not found');
-        return;
+function resetFilter() {
+    const selectedPriceOrder = document.querySelector('input[name="priceOrder"]:checked');
+    if (selectedPriceOrder) {
+        selectedPriceOrder.checked = false;
     }
+    document.getElementById('categorySelect').value = 'ALL';
+    document.getElementById('brandSelect').value = 'ALL';
+    applyFilter(1); // Reset to the first page after filter reset
+}
 
-    // Clear the current product listing
+function searchProducts(page = 1) {
+    const query = document.getElementById('searchInput').value;
+    console.log(query);
+
+    fetch(`/products/search?q=${query}&page=${page}`)
+    .then(response => response.json())
+    .then(response => {
+        if (response.success) {
+            console.log('3333333333333333333333333');
+            displayFilteredProducts(response.data, response.currentPage, response.totalPages);
+        }
+    })
+    .catch(error => {
+        console.error('Error searching products:', error);
+    });
+}
+
+
+
+
+function displayFilteredProducts(data, currentPage, totalPages) {
+    // Display products (same as before)
+    const productContainer = document.querySelector('.product-list .row');
     productContainer.innerHTML = '';
 
-    if(data.length==0){
-        productContainer.innerHTML = `
-        <div class="text-center">
-            <h2>No products found</h2>
-        </div>
-        `
+    if (data.length === 0) {
+        productContainer.innerHTML = '<div class="text-center"><h2>No products found</h2></div>';
         return;
     }
 
     data.forEach(product => {
         const productDiv = document.createElement('div');
-        productDiv.classList.add('all-products', 'best', 'col-lg-3', 'col-md-3', 'col-sm-6', 'px-3', 'mb-5');
-        
+        productDiv.classList.add('all-products', 'best', 'col-lg-3', 'col-md-3', 'col-sm-6', 'px-1', 'shadow-sm', 'mb-5');
+
         productDiv.innerHTML = `
-            <div class="product position-relative">
+            <div class="product border position-relative">
                 <a href="/productdetails/${product._id}">
                     <img src="/productImages/${product.images[0]}" class="image-fluid" height="250px" width="100%" alt="">
                     <div class="product-btn">
@@ -234,7 +240,7 @@
                         <p>${product.color}</p>
                         ${product.discountedPrice ? 
                             `<p>MRP: <span class="text-success">${product.discountedPrice}&#8377;</span> <span class="text-muted ms-2 text-decoration-line-through">${product.price}&#8377;</span></p>` :
-                            `<p>MRP: ${product.price}<span>&#8377;</span></p>`
+                            `<p>MRP: ${product.price}&#8377;</p>`
                         }
                     </div>
                 </a>
@@ -242,41 +248,27 @@
         `;
         productContainer.appendChild(productDiv);
     });
-}
 
-           function resetFilter() {
-            console.log('rrrrrrrrrrrrrrrrrrrrrrrr');
-            document.getElementById('priceLowToHigh').checked = false;
-            document.getElementById('priceHighToLow').checked = false;
-            document.getElementById('categorySelect').value = 'ALL';
-            document.getElementById('brandSelect').value = 'ALL';
-            window.location.reload();
-           }
+    // Update pagination controls
+    const paginationControls = document.querySelector('.pagination-controls');
+    paginationControls.innerHTML = '';
+
+    if (currentPage > 1) {
+        paginationControls.innerHTML += `<a href="javascript:void(0)" class="btn btn-primary" onclick="applyFilter(${currentPage - 1})">Previous</a>`;
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        paginationControls.innerHTML += `<a href="javascript:void(0)" class="btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}" onclick="applyFilter(${i})">${i}</a>`;
+    }
+
+    if (currentPage < totalPages) {
+        paginationControls.innerHTML += `<a href="javascript:void(0)" class="btn btn-primary" onclick="applyFilter(${currentPage + 1})">Next</a>`;
+    }
+}
 
 
         </script>
-
-
-
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

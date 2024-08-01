@@ -81,8 +81,20 @@
               <% }) %>
             </div>
         
-            <button class="btn btn-dark shadow-0" data-item-id="<%= productDetailsData.id %>" style="padding: 5px 20px; font-weight: 600;" id="addtoCart"><i class="bi bi-cart3 fs-4"></i> ADD TO CART </button>
-            <a href="/user-addToWishlist" class="wishlist-fvrte-btn text-decoration-none fs-3 ms-3 shadow-sm mb-5 bg-body rounded-circle" data-item-id="<%= productDetailsData.id %>" id="addToWishlist"><i class="bi bi-heart"></i></a>
+            <div class="buttons">
+              <button class="btn btn-dark shadow-0" data-item-id="<%= productDetailsData.id %>" style="padding: 5px 20px; font-weight: 600;" id="addtoCart"><i class="bi bi-cart3 fs-4"></i> ADD TO CART </button>
+            <% if (wishlistProduct && productDetailsData.id.toString() === wishlistProduct.productId.toString()) { %>
+              <a href="/user-addToWishlist" class="wishlist-fvrte-btn text-decoration-none fs-3 ms-3" data-item-id="<%= productDetailsData.id %>" id="addToWishlist">
+                <!-- <i class="fa-solid"></i> -->
+                 <img src="../images/wishlist-icon.png" alt="">
+              </a>
+            <% } else { %>
+              <a href="/user-addToWishlist" class="wishlist-fvrte-btn text-decoration-none fs-3 ms-3" data-item-id="<%= productDetailsData.id %>" id="addToWishlist">
+                <i class="icon-heart"></i>
+              </a>
+            <% } %>
+            </div>
+            
           </div>
         </main>
         
@@ -96,7 +108,7 @@
 
 
   <style>
-    .buy-now{
+    /* .buy-now{
       padding: 12px 30px;
       font-weight: 600;
       background: transparent;
@@ -119,7 +131,37 @@
   .wishlist-fvrte-btn{
     padding: 7px 10px;
     border-radius: 50px;
-  }
+  } */
+  .icon-heart {
+    background: url('http://i.imgur.com/MIP7hPg.png');
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: auto;
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    display: inline-block;
+}
+.icon-heart--clicked {
+   -webkit-animation: animateLove 1s steps(14, start);
+   background-position: right;
+}
+
+@-webkit-keyframes animateLove {
+   0% { background-position: 0px 0px; }
+   100% { background-position: -2800px 0px; }
+}
+.buttons{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+/* .fa-solid{
+  background-image: url(../images/wishlist-icon.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+} */
   </style>
 
 
@@ -259,7 +301,7 @@ try {
       e.preventDefault();
 
       var productId = $(this).data('item-id');
-      console.log(productId, 'pppppppppppppp');
+
       $.ajax({
         url: '/user-addToWishlist',
         method: 'POST',
@@ -269,48 +311,51 @@ try {
           if (response.success) {
 
             // Create the success message element and animation using response message and icon
-            var message = $('<div>')
-                  .attr('id', 'wishlistSuccessMessage')
-                  .html('<i class="fa-solid fa-circle-check" style="color: #0cb800; margin-right: 10px"></i> ' + response.message)  // Use the response message with icon
-                  .css({
-                    'width': 'max-content',
-                    'position': 'fixed',
-                    'top': '50px', // Start above the viewport
-                    'right': '50%',
-                    'left': '50%',
-                    'transform': 'translate(-50%, -50%)',
-                    'background': '#212121',
-                    'color': 'white',
-                    'padding': '10px',
-                    'border-radius': '5px',
-                    'border': '#212121',
-                    'box-shadow': '#1px 0 2px 0 rgba(0,0,0,.2)',
-                    'z-index': '1000',
-                    'display': 'none' // Initially hidden
-                  });
+            // var message = $('<div>')
+            //       .attr('id', 'wishlistSuccessMessage')
+            //       .html('<i class="fa-solid fa-circle-check" style="color: #0cb800; margin-right: 10px"></i> ' + response.message)
+            //       .css({
+            //         'width': 'max-content',
+            //         'position': 'fixed',
+            //         'top': '50px',
+            //         'right': '50%',
+            //         'left': '50%',
+            //         'transform': 'translate(-50%, -50%)',
+            //         'background': '#212121',
+            //         'color': 'white',
+            //         'padding': '10px',
+            //         'border-radius': '5px',
+            //         'border': '#212121',
+            //         'box-shadow': '1px 0 2px 0 rgba(0,0,0,.2)',
+            //         'z-index': '1000',
+            //         'display': 'none'
+            //       });
 
-              // Append the message to the body
-              $('body').append(message);
+            // $('body').append(message);
 
-              // Animate the message
-              message.slideDown(300).animate({ top: '120px' }, { duration: 500 });
+            if (response.action === 'added') {
+              // Trigger the animation by adding the --clicked class
+              $('#addToWishlist .icon-heart').addClass('icon-heart--clicked');
+            }
 
-              // Remove the message after 3 seconds
-              setTimeout(function() {
-                message.fadeOut(300, function() {
-                  message.remove();
-                });
-              }, 2000);
+            // message.slideDown(300).animate({ top: '120px' }, { duration: 500 });f
+
+            setTimeout(function() {
+              message.fadeOut(300, function() {
+                message.remove();
+                location.reload();
+              });
+            }, 2000);
 
           } else {
-            
+
             var message = $('<div>')
                   .attr('id', 'wishlistSuccessMessage')
-                  .html(response.message || 'User not logined')  // Use the response message with icon
+                  .html(response.message || 'User not logged in')
                   .css({
                     'width': 'max-content',
                     'position': 'fixed',
-                    'top': '50px', // Start above the viewport
+                    'top': '50px',
                     'right': '50%',
                     'left': '50%',
                     'transform': 'translate(-50%, -50%)',
@@ -319,25 +364,21 @@ try {
                     'padding': '10px',
                     'border-radius': '5px',
                     'border': '#D10000',
-                    'box-shadow': '#1px 0 2px 0 rgba(0,0,0,.2)',
+                    'box-shadow': '1px 0 2px 0 rgba(0,0,0,.2)',
                     'z-index': '1000',
-                    'display': 'none' // Initially hidden
+                    'display': 'none'
                   });
 
-              // Append the message to the body
-              $('body').append(message);
+            $('body').append(message);
 
-              // Animate the message
-              message.slideDown(300).animate({ top: '120px' }, { duration: 500 });
+            message.slideDown(300).animate({ top: '120px' }, { duration: 500 });
 
-              // Remove the message after 3 seconds
-              setTimeout(function() {
-                message.fadeOut(300, function() {
-                  message.remove();
-                });
-              }, 2000);
+            setTimeout(function() {
+              message.fadeOut(300, function() {
+                message.remove();
+              });
+            }, 2000);
 
-              
           }
         },
         error: function(xhr, status, error) {
@@ -347,6 +388,8 @@ try {
     });
   });
 </script>
+
+
 
 
 

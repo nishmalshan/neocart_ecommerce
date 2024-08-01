@@ -511,12 +511,16 @@ const productDetails = async (req, res) => {
     const User = await user.findOne({ email: req.session.email });
     const cartCount = await helpers.getCartCount(req.session.email);
     const id = req.params.id;
+    console.log(id,'id');
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).render('user/404');
     }
 
+    const wishlistProduct = await wishlist.findOne({ productId: id });
+    console.log(wishlistProduct,'wishlist product');
     const productDetailsData = await products.findOne({ _id: id, status: true }).populate('categoryId');
+    console.log(productDetailsData,'product details data');
     const productOffer = await productOffers.findOne({ product: id });
     const categoryOffer = await categoryOffers.findOne({ categoryId: productDetailsData.categoryId });
 
@@ -540,6 +544,7 @@ const productDetails = async (req, res) => {
       User,
       cartCount,
       productDetailsData,
+      wishlistProduct,
       title: 'Product Details'
     });
   } catch (error) {
@@ -880,27 +885,41 @@ const getWallet = async (req, res) => {
 // get method for product search
 
 const searchProducts = async (req, res) => {
-
   const query = req.query.q;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 8; // Default to 8 items per page
 
   try {
-
     const regex = new RegExp(query, 'i');
-    const searchResult = await products.find({
+    const searchQuery = {
       $or: [
         { name: { $regex: regex } },
         { description: { $regex: regex } },
-        { brand: {$regex: regex } },
-        { category: {$regex: regex } }
+        { brand: { $regex: regex } },
+        { category: { $regex: regex } }
       ]
-    }).exec();
+    };
 
-    res.json({ success: true, data: searchResult })
+    const searchResult = await products.find(searchQuery)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
+
+    const totalItems = await products.countDocuments(searchQuery);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.json({ 
+      success: true, 
+      data: searchResult, 
+      currentPage: page, 
+      totalPages: totalPages 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 }
+
 
 
 
@@ -908,42 +927,46 @@ const searchProducts = async (req, res) => {
 // post method for filter products
 
 const filterProducts = async (req, res) => {
+  const { priceOrder, category, brand, page = 1, limit = 8 } = req.body;
 
   try {
-    const { priceLowToHigh, priceHighToLow, category, brand } = req.body;
+    let query = {};
 
-      const allProducts = await products.find();
-      let filteredProducts = [...allProducts];
+    if (category && category !== 'ALL') {
+      query.categoryName = category;
+    }
 
-      // Filter by price
-      if (priceLowToHigh) {
+    if (brand && brand !== 'ALL') {
+      query.brand = brand;
+    }
 
-        filteredProducts.sort((a,b) => a.price - b.price);
-      } else if (priceHighToLow) {
+    let sortOrder = {};
+    if (priceOrder === "priceLowToHigh") {
+      sortOrder.price = 1;
+    } else if (priceOrder === "priceHighToLow") {
+      sortOrder.price = -1;
+    }
 
-        filteredProducts.sort((a,b) => b.price - a.price);
-      }
+    const filteredProducts = await products.find(query)
+      .sort(sortOrder)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-      // Filter by category
-      if (category && category !== 'ALL') {
+    const totalItems = await products.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / limit);
 
-        filteredProducts = filteredProducts.filter(product => product.category === category);
-      }
-
-      // Filter by brand
-      if (brand && brand !== 'ALL') {
-
-        filteredProducts = filteredProducts.filter(product => product.brand === brand);
-      }
-
-      res.json({ success: true, data: filteredProducts });
-
-
+    res.json({ 
+      success: true, 
+      data: filteredProducts, 
+      currentPage: page, 
+      totalPages: totalPages 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 }
+
 
 
 // get method for wishlist page

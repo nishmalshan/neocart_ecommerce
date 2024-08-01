@@ -61,7 +61,7 @@
     overflow: hidden;
 }
 .product:hover img{
-    transform: scale(1.09);
+    transform: scale(1.2);
 }
 .wishlist-fvrte-btn{
     text-decoration: none;
