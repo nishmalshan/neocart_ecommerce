@@ -237,6 +237,7 @@
 
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 
@@ -343,7 +344,8 @@ async function verifyPayment(response, orderId) {
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location = '/orderConfirmation';
+                // Reload the page after the alert is closed
+                location.reload();
             });
         } else {
             console.error('Payment verification failed');
@@ -365,6 +367,7 @@ async function verifyPayment(response, orderId) {
         });
     });
 }
+
 
 
 </script>

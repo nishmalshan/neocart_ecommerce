@@ -485,11 +485,11 @@ try {
             // message.slideDown(300).animate({ top: '120px' }, { duration: 500 });f
 
             setTimeout(function() {
-              message.fadeOut(300, function() {
-                message.remove();
+              // message.fadeOut(300, function() {
+                // message.remove();
                 location.reload();
-              });
-            }, 2000);
+              // });
+            }, 800);
 
           } else {
 
@@ -590,23 +590,34 @@ try {
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const sizeButtons = document.querySelectorAll('.btn-size');
-  
+    
     sizeButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const quantity = parseInt(this.getAttribute('data-quantity'));
-        const lowStockMessage = document.querySelector('.low-stock-message');
-        // Check if quantity is less than 4
-        if (quantity < 4) {
-          lowStockMessage.textContent = `${quantity} Stock left`;
-        } else if (quantity < 1) {
-          lowStockMessage.textContent = 'Out of stock';
-          return
-        } else {
-          lowStockMessage.textContent = ''; // Clear the message if quantity is sufficient
-        }
-      });
+        button.addEventListener('click', function() {
+            // Reset all buttons to default color
+            sizeButtons.forEach(btn => {
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+            });
+
+            // Change the color of the clicked button
+            this.style.backgroundColor = 'black';
+            this.style.color = 'white';
+
+            const quantity = parseInt(this.getAttribute('data-quantity'));
+            const lowStockMessage = this.parentElement.nextElementSibling;
+            
+            // Check if quantity is less than 4
+            if (quantity < 4) {
+                lowStockMessage.textContent = `${quantity} Stock left`;
+            } else if (quantity < 1) {
+                lowStockMessage.textContent = 'Out of stock';
+            } else {
+                lowStockMessage.textContent = ''; // Clear the message if quantity is sufficient
+            }
+        });
     });
-  });
+});
+
   </script>
   
 
