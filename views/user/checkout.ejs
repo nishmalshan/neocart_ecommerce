@@ -315,7 +315,7 @@
                                       <input type="text" class="form-control border" id="couponCode" placeholder="Coupon code" />
                                       <button type="button" class="btn btn-success text-white" id="applyCoupon">Apply</button>
                                     </div>
-                                    <p class="text-danger d-inline" style="font-size: 13px;" id="couponMessage"></p>
+                                    <p class="text-success d-inline" style="font-size: 13px;" id="couponMessage"></p>
                                     <a href="#" class="text-primary float-end d-none" id="removeCoupon" style="font-size: 13px;">Remove</a>
                                   </div>
                                 </div>
@@ -339,6 +339,11 @@
                                     <div class="d-flex justify-content-between">
                                       <p class="mb-2">Shipping:</p>
                                       <p class="mb-2" id="selectedPayment">₹ 40</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <p class="mb-2" id="discountAmount-div"></p>
+                                        <p class="mb-2 text-success fw-bold" id="discountAmount"></p> <!-- New p tag for discount amount -->
                                     </div>
 
                                     <div class="d-flex justify-content-between">
@@ -554,78 +559,68 @@ console.log(options,'options');
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Function to initialize coupon code input from local storage
-
-            // function initializeCouponCode() {
-            //     var couponCode = localStorage.getItem('couponCode');
-            //     if (couponCode) {
-            //         $('#couponCode').val(couponCode);
-            //     }
-            // }
-        
-            // Initialize coupon code input on page load
-            // initializeCouponCode();
-        
             $('#applyCoupon').click(function() {
                 var couponCode = $('#couponCode').val().trim();
                 var couponMessage = $('#couponMessage');
                 var applyButton = $(this);
                 var grandTotal = $('#grandTotal');
-                var removeCoupon = $('#removeCoupon')
-        
+                var removeCoupon = $('#removeCoupon');
+                var discountAmount = $('#discountAmount'); // New variable for discount amount p tag
+                var discountAmount_div = $('#discountAmount-div')
+    
                 // Clear any previous messages
                 couponMessage.text('');
-        
+                discountAmount.text(''); // Clear previous discount amount
+                discountAmount_div.text('');
+    
                 // Check if the coupon code is empty
                 if (!couponCode) {
                     couponMessage.text('Please enter a coupon code.');
                     return;
                 }
-        
+    
                 $.ajax({
-                    url: '/apply-coupon',  // Your backend endpoint to handle the coupon
+                    url: '/apply-coupon',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ couponCode: couponCode }),
                     success: function(response) {
                         if (response.success) {
                             console.log('Coupon applied successfully', response.coupon);
-        
+    
                             // Show the response message to the user
                             couponMessage.css('color', 'green').text(response.message);
-        
+    
                             // Display the applied coupon code in the input field
                             $('#couponCode').val(response.coupon.couponCode);
-                            
-                            // Save coupon code to local storage
-                            // localStorage.setItem('couponCode', response.coupon.couponCode);
-        
+    
+                            // Show the discount amount
+                            discountAmount.text(response.coupon.discountAmount.toLocaleString('en-US') +'%');
+                            discountAmount_div.text('Discount:');
+    
                             // Disable the apply button and change text to 'Applied'
                             applyButton.prop('disabled', true).text('Applied');
-                            removeCoupon.removeClass('d-none').addClass('d-block')
-        
+                            removeCoupon.removeClass('d-none').addClass('d-block');
+    
                             // Update the grand total
                             grandTotal.text('₹ ' + response.grandTotal.toLocaleString('en-US'));
                         } else {
-                            // Show an error message to the user based on the response
                             couponMessage.css('color', 'red').text(response.message || 'Invalid coupon code.');
                         }
                     },
                     error: function(error) {
-                        // Handle error
                         console.error('Error applying coupon', error);
-                        // Show an error message to the user
                         couponMessage.css('color', 'red').text('Error applying coupon.');
                     }
                 });
             });
-        
+    
             // Enable the apply button if the coupon code input changes
             $('#couponCode').on('input', function() {
                 $('#applyCoupon').prop('disabled', false).text('Apply');
             });
         });
-        </script>
+    </script>
         
 
 

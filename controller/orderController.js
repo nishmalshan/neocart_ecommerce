@@ -10,7 +10,7 @@ const crypto = require("crypto");
 const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 const path = require('path');
-const { addHeader, addCustomerInformation, addInvoiceTable, addFooter } = require('../service/PDFDocument');
+const { createInvoice, addCustomerInformation, addHeader, addInvoiceTable, addLogo, addTotals } = require('../service/PDFDocument');
 const { RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY } = process.env;
 
 let razorpayInstance = new Razorpay({
@@ -221,7 +221,7 @@ const placeOrder = async (req, res) => {
             orderId: saveOrder._id,
             amount: order.amount,
             key_id: RAZORPAY_KEY_ID,
-            produc_name: saveOrder.items[0].name,
+            product_name: saveOrder.items[0].name,
             contact: saveOrder.address[0].phone,
             name: saveOrder.address[0].name,
             email: req.session.email,
@@ -291,6 +291,48 @@ console.log(updateOrder,'updateOrder');
     return res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
+
+
+const pendingPayment = async (req, res) => {
+  try {
+    const { orderId, paymentMethod } = req.body;
+    console.log(req.body);
+    console.log("payment online");
+    const findOrder = await orders.findOne({ _id: orderId })
+    console.log(findOrder,'find Order');
+    console.log(req.session,'session');
+      const options = {
+        amount: findOrder.totalPrice * 100,
+        currency: "INR",
+        receipt: findOrder._id.toString(),
+      };
+      
+      razorpayInstance.orders.create(options, (err, order) => {
+        if (!err) {
+          console.log(order,'order');
+          res.status(200).send({
+            success: true,
+            msg: "Payment success",
+            order_id: order.id,
+            orderId: findOrder._id,
+            amount: order.amount,
+            key_id: RAZORPAY_KEY_ID,
+            product_name: findOrder.items[0].name,
+            contact: findOrder.address[0].phone,
+            name: findOrder.address[0].name,
+            email: req.session.email,
+          });
+        } else {
+          res.status(400).send({ online: false, message: "Something went wrong" });
+        }
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+}
 
 
 // get method for order lists page
@@ -434,16 +476,18 @@ const generateInvoice = async (req, res) => {
       return res.status(404).json({ success: false, error: "Order not found" });
     }
 
-    const doc = new PDFDocument({ margin: 50 });
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
 
     res.setHeader('Content-disposition', `attachment; filename=invoice_${order._id}.pdf`);
     res.setHeader('Content-type', 'application/pdf');
+
     doc.pipe(res);
 
+    addLogo(doc);
     addHeader(doc, order);
     addCustomerInformation(doc, order);
     addInvoiceTable(doc, order);
-    addFooter(doc);
+    addTotals(doc, order);
 
     doc.end();
   } catch (error) {
@@ -467,6 +511,7 @@ module.exports = {
   removeCoupon,
   placeOrder,
   verifyPayment,
+  pendingPayment,
   orderConfirmation,
   orderList,
   orderDetails,

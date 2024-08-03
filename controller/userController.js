@@ -512,40 +512,52 @@ const productDetails = async (req, res) => {
     const User = await user.findOne({ email: req.session.email });
     const cartCount = await helpers.getCartCount(req.session.email);
     const id = req.params.id;
-    console.log(id,'id');
+    console.log(id, 'id');
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).render('user/404');
     }
 
     const wishlistProduct = await wishlist.findOne({ productId: id });
-    console.log(wishlistProduct,'wishlist product');
+    console.log(wishlistProduct, 'wishlist product');
+
     const productDetailsData = await products.findOne({ _id: id, status: true }).populate('categoryId');
-    console.log(productDetailsData,'product details data');
+    console.log(productDetailsData, 'product details data');
+
     const productOffer = await productOffers.findOne({ product: id });
     const categoryOffer = await categoryOffers.findOne({ categoryId: productDetailsData.categoryId });
 
     if (productOffer) {
       const discountAmount = parseInt((productDetailsData.price * productOffer.discountPrecentage) / 100);
-      console.log(discountAmount,'product discountAmount');
+      console.log(discountAmount, 'product discountAmount');
       productDetailsData.discountAmount = productDetailsData.price - discountAmount;
       productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
     } else if (categoryOffer) {
-      console.log(categoryOffer,'categoryOffer');
+      console.log(categoryOffer, 'categoryOffer');
       const discountAmount = parseInt((productDetailsData.price * categoryOffer.percentage) / 100);
-      console.log(discountAmount,'category discountAmount');
+      console.log(discountAmount, 'category discountAmount');
       productDetailsData.discountAmount = productDetailsData.price - discountAmount;
       productDetailsData.discountedPrice = productDetailsData.price - discountAmount;
     } else {
       productDetailsData.discountAmount = 0;
       productDetailsData.discountedPrice = productDetailsData.price;
     }
-  await productDetailsData.save()
+
+    await productDetailsData.save();
+
+    // Find related products (for example, products in the same category)
+    const relatedProducts = await products.find({
+      categoryId: productDetailsData.categoryId,
+      _id: { $ne: id }, // Exclude the current product
+      status: true
+    }).limit(4); // Limit to 4 related products, or adjust as needed
+
     res.render('./user/productdetails', {
       User,
       cartCount,
       productDetailsData,
       wishlistProduct,
+      relatedProducts, // Pass related products to the view
       title: 'Product Details'
     });
   } catch (error) {
@@ -553,6 +565,7 @@ const productDetails = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 

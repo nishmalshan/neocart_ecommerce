@@ -150,6 +150,7 @@ user.post(
   orderController.placeOrder
 );
 user.post('/verify-payment', userAuthentication.verifyingUser, orderController.verifyPayment);
+user.post('/failed-payment', userAuthentication.verifyingUser, orderController.pendingPayment)
 user.get(
   "/orderConfirmation",
   userAuthentication.verifyingUser,

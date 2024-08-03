@@ -43,6 +43,21 @@
                 vertical-align: middle;
                 text-align: center;
             }
+            .action button {
+                padding: 0.5em;
+                width: 60%;
+                /* height: 100%; */
+                font-weight: 600;
+                font-size: 1em;
+                color: #ffffff;
+                border: none;
+                border-radius: 0.3em;
+                transition: background-color 0.2s ease-in-out;
+                background-color: #2962ff;
+                }
+                .action button:hover {
+                background: #2979ff;
+                }
         </style>
     
 
@@ -59,7 +74,7 @@
                 <h6 class="fw-bold">Order ID: <span><%= orderDetails._id %></span></h6>
             </div>
             <div class="col-5 row">
-                <div class="status col-6 border-end">
+                <div class="status col-7 border-end">
                     <% if (orderDetails.status === 'Pending') { %>
                         <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #ffc107; font-weight: 600; padding: 2px 10px; background-color: #ffc10721; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #ffc107; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } else if (orderDetails.status === 'Cancelled') { %>
@@ -74,7 +89,7 @@
                                     <p>Order status: <span class="d-inline-flex justify-content-center align-items-center shadow-sm" style="color: #4a4a4a; font-weight: 600; padding: 2px 10px; background-color: #9191911c; border-radius: 8px;"><i class="fa-solid fa-circle-dot" style="color: #4a4a4a; font-size: 10px; margin-right: 5px;"></i> <%= orderDetails.status %></span></p>
                         <% } %>
                 </div>
-                <div class="invoice col-6 pe-0 d-flex">
+                <div class="invoice col-5 pe-0 d-flex">
                     <p style="font-size: 14px;">Download Invoice: </p>
                     <button type="button" class="btn bg-secondary-subtle px-1 py-0 shadow-sm" title="Invoice Download" onclick="generateAndDownloadInvoice('<%= orderDetails._id %>')">
                         <i class="fa-solid fa-download"></i>
@@ -103,7 +118,8 @@
                     </div>
                     <div class="details col-10">
                         <h5>Order info</h5>
-                        <p class="mt-2">Product name: <span><%= orderDetails.items[0].name %></span></p>
+                        <p class="mt-2">Total items: <span><%= orderDetails.items.length %></span></p>
+                        <p>Toatal: <span><%= orderDetails.totalPrice %><span> &#8377</span></span></p>
                         <p>Order date: <span><%= orderDetails.orderDate.toISOString().substring(0, 10) %></span></p>
                         <p>Delivery date: <span><%= orderDetails.arrivingDate.toISOString().substring(0, 10) %></span></p>
                     </div>
@@ -120,10 +136,15 @@
                         <% if (orderDetails.paymentStatus === "Paid") { %>
                             <p>Payment status: <span class="text-success"><%= orderDetails.paymentStatus %></span></p>
                                 <% } else if (orderDetails.paymentMethod === "Online" && orderDetails.paymentStatus !== "Paid") { %>
-                                    <p>Payment status:  <span class="text-danger">Payment failed</span></p>
+                                        <p>Payment status:  <span class="text-danger">Payment failed</span></p>
                             <% } %>
                         <p>Name: <span><%= orderDetails.address[0].name %></span></p>
                         <p>Phone: <span><%= orderDetails.address[0].phone %></span></p>
+                        <% if (orderDetails.paymentMethod === "Online" && orderDetails.paymentStatus !== "Paid") { %>
+                         <div class="action">
+                            <button id="payment-btn" value="Online" onclick="sendDataToBackend('<%= orderDetails._id %>', this.value)">Pay Now</button>
+                         </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -162,7 +183,7 @@
                             <td><%= data.name %></td>
                             <td><%= data.size %></td>
                             <td><%= data.quantity %></td>
-                            <td><%= orderDetails.totalPrice %><span> &#8377</span></td>
+                            <td><%= orderDetails.items[0].price %><span> &#8377</span></td>
                         </tr>
                     <% }) %>
                 </tbody>
@@ -208,6 +229,145 @@
       }
     }
   </script>
+
+
+
+
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+async function sendDataToBackend(orderId, paymentMethodValue) {
+    console.log('111111111111111111111111111111');
+    console.log(orderId);
+    console.log(paymentMethodValue);
+    // const responseMessage = document.getElementById('errorMessage');
+    // responseMessage.textContent = " ";
+
+    const data = {
+        orderId: orderId,
+        paymentMethod: paymentMethodValue // This will be "Online" or whatever the button value is
+    };
+    console.log(data,'data');
+
+    try {
+        const response = await fetch('/failed-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('2222222222222222222222222222222222222222');
+            initiateRazorpayPayment(result);
+        } else {
+            responseMessage.textContent = result.message || 'An error occurred. Please try again.';
+            responseMessage.style.display = 'block';
+
+            setTimeout(() => {
+                responseMessage.style.display = 'none';
+            }, 3000);
+        }
+    } catch (error) {
+        console.log(error, 'Error sending data to backend');
+    }
+}
+
+
+
+    function initiateRazorpayPayment(orderDetails) {
+console.log(orderDetails,'33333333333333333333333333333333333333');
+const options = {
+    key: orderDetails.key_id,
+    amount: orderDetails.amount,
+    currency: 'INR',
+    orderId: orderDetails.orderId,
+    name: orderDetails.name,
+    description: 'Order Payment',
+    // image: '%= logoUrl %>',
+    order_id: orderDetails.order_id,
+    handler: function (response) {
+        console.log(response,'response');
+        console.log('444444444444444444444444444444444');
+        verifyPayment(response, orderDetails.orderId);
+    },
+    prefill: {
+        name: orderDetails.name,
+        email: orderDetails.email,
+        contact: orderDetails.contact
+    },
+    theme: {
+        color: '#F37254'
+    }
+};
+console.log(options,'options');
+const rzp1 = new Razorpay(options);
+rzp1.open();
+}
+
+
+
+
+async function verifyPayment(response, orderId) {
+    console.log(orderId, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    console.log(response, 'response');
+
+    const paymentData = {
+        orderId: orderId,
+        order_id: response.razorpay_order_id,
+        payment_id: response.razorpay_payment_id,
+        signature: response.razorpay_signature
+    };
+
+    console.log(paymentData, 'paymentData');
+
+    fetch('/verify-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Payment Successful!',
+                text: 'Your payment has been successfully verified.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location = '/orderConfirmation';
+            });
+        } else {
+            console.error('Payment verification failed');
+            Swal.fire({
+                title: 'Payment Failed!',
+                text: 'Payment verification failed. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error verifying payment', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'There was an error verifying your payment. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
+}
+
+
+</script>
 
 
 

@@ -126,6 +126,28 @@ const deleteCoupon = async (req, res) => {
 
 
 
+// function for automatically delete expiry coupon
+
+const deleteExpiredCoupons = async () => {
+    try {
+        const currentDate = new Date();
+
+        // Delete coupons where expiryDate is less than the current date
+        const result = await coupons.deleteMany({ expiryDate: { $lt: currentDate } });
+
+        if (result.deletedCount > 0) {
+            console.log(`Deleted ${result.deletedCount} expired coupons.`);
+        } else {
+            console.log('No expired coupons found.');
+        }
+    } catch (error) {
+        console.error('Error deleting expired coupons:', error);
+    }
+};
+
+
+
+
 // put method for update coupon status 
 
 const updateCouponStatus = async (req, res) => {

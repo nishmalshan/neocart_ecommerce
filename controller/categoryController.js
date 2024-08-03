@@ -1,7 +1,7 @@
 const category = require("../model/categorySchema");
 const categoryOffer = require("../model/categoryofferSchema");
 const mongoose = require('mongoose');
-
+const cron = require('node-cron');
 
 
 
@@ -275,6 +275,27 @@ const deleteCategoryOffer = async (req, res) => {
 
 
 
+// funcion for automatically delete category offer
+const deleteExpiredCategoryOffers = async () => {
+  try {
+      const currentDate = new Date();
+      const result = await categoryOffer.deleteMany({ expiryDate: { $lt: currentDate } });
+
+      if (result.deletedCount > 0) {
+          console.log(`Deleted ${result.deletedCount} expired category offers.`);
+      } else {
+          console.log('No expired category offers found.');
+      }
+  } catch (error) {
+      console.error('Error deleting expired category offers:', error);
+  }
+};
+
+// Schedule the job to run at midnight every day
+cron.schedule('0 0 * * *', deleteExpiredCategoryOffers, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
+});
 
 
 

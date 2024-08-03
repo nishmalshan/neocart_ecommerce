@@ -364,6 +364,7 @@ const deleteOffer = async (req, res) => {
 
 
 
+// funcion for automatically delete product offer
 
 const deleteExpiredOffers = async () => {
     try {
